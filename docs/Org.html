@@ -1,0 +1,1050 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-08-12 周六 19:18 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>快速入门 Org Mode</title>
+<meta name="author" content="谢骐" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">快速入门 Org Mode</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org096215a">1. 关于文档自身</a>
+<ul>
+<li><a href="#org2cf7b5b">1.1. 键位</a></li>
+</ul>
+</li>
+<li><a href="#org03235f9">2. 结构化文本</a>
+<ul>
+<li><a href="#org1dabeaa">2.1. 标题层次</a></li>
+<li><a href="#orge819138">2.2. 列表</a>
+<ul>
+<li><a href="#org2f1f321">2.2.1. 列表序号</a></li>
+<li><a href="#orgfc5fa43">2.2.2. 给列表打标</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgf18bfb5">3. 排版</a>
+<ul>
+<li><a href="#orgafe92d0">3.1. 标记法</a>
+<ul>
+<li><a href="#orge152a26">3.1.1. 注意事项</a></li>
+</ul>
+</li>
+<li><a href="#orgd57a223">3.2. 链接</a>
+<ul>
+<li><a href="#orga833c86">3.2.1. 内部链接&#xa0;&#xa0;&#xa0;<span class="tag"><span class="linked">linked</span>&#xa0;<span class="____">内部链接</span></span></a></li>
+<li><a href="#orgd637b42">3.2.2. 外部链接</a></li>
+</ul>
+</li>
+<li><a href="#org40cdd38">3.3. 块文本</a>
+<ul>
+<li><a href="#org07d32f5">3.3.1. 等宽块</a></li>
+<li><a href="#orgebabd35">3.3.2. 代码块</a></li>
+<li><a href="#org7128e73">3.3.3. 诗句块</a></li>
+<li><a href="#org5ece0b6">3.3.4. 引用块</a></li>
+<li><a href="#org7d9b440">3.3.5. 居中块</a></li>
+</ul>
+</li>
+<li><a href="#orgdceb42a">3.4. 表格</a>
+<ul>
+<li><a href="#org8277b54">3.4.1. 不带字段的表格</a></li>
+<li><a href="#org9206982">3.4.2. 带字段的表格</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgb9aceee">4. LaTeX</a></li>
+<li><a href="#orgf6aa94c">5. 交互</a>
+<ul>
+<li><a href="#org9cb16d5">5.1. 任务清单&#xa0;&#xa0;&#xa0;<span class="tag"><span class="linked">linked</span>&#xa0;<span class="_____">给列表打标</span></span></a>
+<ul>
+<li><a href="#orgf51ab39">5.1.1. <span class="todo TODO">TODO</span> 任务清单示例 <code>[33%]</code>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="linked">linked</span>&#xa0;<span class="____">任务清单</span></span></a></li>
+</ul>
+</li>
+<li><a href="#orga93175f">5.2. 文字编程&#xa0;&#xa0;&#xa0;<span class="tag"><span class="linked">linked</span>&#xa0;<span class="___">代码块</span></span></a></li>
+</ul>
+</li>
+<li><a href="#orgc3036cf">6. 注解</a>
+<ul>
+<li><a href="#orga8fd631">6.1. 脚注</a>
+<ul>
+<li><a href="#org513466c">6.1.1. 具名脚注</a></li>
+<li><a href="#orgca91012">6.1.2. 引用脚注</a></li>
+<li><a href="#orgb3bba0b">6.1.3. 匿名脚注</a></li>
+</ul>
+</li>
+<li><a href="#orgf2d7e1e">6.2. 注释</a>
+<ul>
+<li><a href="#orgdd76d13">6.2.1. 单行注释</a></li>
+<li><a href="#orga8c1f7a">6.2.2. 内联注释</a></li>
+<li><a href="#org0f987f8">6.2.3. 块注释</a></li>
+<li><a href="#orge08c208">6.2.4. 结构化注释</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgb7b8538">7. 下一步</a>
+<ul>
+<li><a href="#orgeec4bfa">7.1. 支持 Org Mode 的软件</a>
+<ul>
+<li><a href="#org39cc8a9">7.1.1. 编写 Org 文件</a></li>
+<li><a href="#org111adde">7.1.2. 格式转换</a></li>
+</ul>
+</li>
+<li><a href="#org69a5812">7.2. 更多资料</a></li>
+<li><a href="#orgb8f4163">7.3. Contribute</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org096215a" class="outline-2">
+<h2 id="org096215a"><span class="section-number-2">1.</span> 关于文档自身</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+允许在文件的 <b>最开头</b> 添加附属信息:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org">#+title: 标题 (比一级标题还要高一级)
+#+author: 作者
+#+date: 年年年年-月-日
+
+正文 ... ...
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org2cf7b5b" class="outline-3">
+<h3 id="org2cf7b5b"><span class="section-number-3">1.1.</span> 键位</h3>
+<div class="outline-text-3" id="text-1-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">导出</td>
+<td class="org-left"><code>C-c C-e</code></td>
+</tr>
+
+<tr>
+<td class="org-left">折叠标题</td>
+<td class="org-left"><code>&lt;tab&gt;</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org03235f9" class="outline-2">
+<h2 id="org03235f9"><span class="section-number-2">2.</span> 结构化文本</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org1dabeaa" class="outline-3">
+<h3 id="org1dabeaa"><span class="section-number-3">2.1.</span> 标题层次</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+顶格写 ‘​<code>*</code>​’ , 并续上至少 <b>1 个空格</b>, 表示一级标题.
+星号 (<code>*</code>) 的数量代表标题的级数.
+二级标题从属一级标题, 以此类推.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge819138" class="outline-3">
+<h3 id="orge819138"><span class="section-number-3">2.2.</span> 列表</h3>
+<div class="outline-text-3" id="text-2-2">
+</div>
+<div id="outline-container-org2f1f321" class="outline-4">
+<h4 id="org2f1f321"><span class="section-number-4">2.2.1.</span> 列表序号</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+有序列表用 <code>+</code>​/​<code>-</code>​, 无序列表用 <code>1.</code>​/​<code>A.</code>​, 可以嵌套:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org">A. 植物
+   + 水果
+     1. 桃子
+   + 谷物
+     - 大米
+B. 动物
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfc5fa43" class="outline-4">
+<h4 id="orgfc5fa43"><span class="section-number-4">2.2.2.</span> 给列表打标</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+可以给列表的表项添加 <i>勾选框</i> (<code>[ ]</code>), 也可以加 <i>tag</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org">- [ ] 买橘子
+- 作业 :: 写数学作业
+- [ ] 锻炼 :: 跑步
+</pre>
+</div>
+
+<p>
+这样的列表提供了 <b>交互式</b> 操作, 见 <a href="#org9cb16d5">5.1</a>.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf18bfb5" class="outline-2">
+<h2 id="orgf18bfb5"><span class="section-number-2">3.</span> 排版</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgafe92d0" class="outline-3">
+<h3 id="orgafe92d0"><span class="section-number-3">3.1.</span> 标记法</h3>
+<div class="outline-text-3" id="text-3-1">
+<div class="org-src-container">
+<pre class="src src-org">/斜体/  *粗体*  +删除线+  _下划线_  强制换行 \\
+~代码~  =不是代码但需要等宽=
+/*+_~组合~_+*/
+
+S_{c} = \pi{}r_c^2
+</pre>
+</div>
+
+<p>
+效果如下<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>:
+</p>
+
+<p>
+<i>斜体</i>  <b>粗体</b>  <del>删除线</del>  <span class="underline">下划线</span>  强制换行 <br />
+<code>代码</code>  <code>不是代码但需要等宽</code>
+<i><b><del><span class="underline"><code>组合</code></span></del></b></i>
+</p>
+
+<p>
+S<sub>c</sub> = &pi;r<sub>c</sub><sup>2</sup>
+</p>
+</div>
+
+<div id="outline-container-orge152a26" class="outline-4">
+<h4 id="orge152a26"><span class="section-number-4">3.1.1.</span> 注意事项</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+内联标记时, 大部分情况下标记的两端必须保留 <i>空白字符</i>.
+</p>
+
+<p>
+例如, <code>‘~code~’</code> 中的 <code>code</code> 就不能正常渲染.
+常见的做法是在 <code>‘这里~code~这里’</code> 添加零宽字符.
+</p>
+
+<p>
+比如, 在你的 Org 文件的 <b>最尾端</b> 写下:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org">正文 ... ...
+
+# Local Variables:
+# eval: (keymap-local-set "&lt;f9&gt;"
+#                         "\N{ZERO WIDTH SPACE}")
+# End:
+</pre>
+</div>
+
+<p>
+当你的 Emacs 打开该文件时, 按下 <code>&lt;f9&gt;</code> 即输入 ‘零宽字符’.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd57a223" class="outline-3">
+<h3 id="orgd57a223"><span class="section-number-3">3.2.</span> 链接</h3>
+<div class="outline-text-3" id="text-3-2">
+<pre class="example">
+[[类型:定位][描述]]
+</pre>
+
+
+<p>
+其中, <code>[描述]</code> 是可选的.
+</p>
+</div>
+
+<div id="outline-container-orga833c86" class="outline-4">
+<h4 id="orga833c86"><span class="section-number-4">3.2.1.</span> 内部链接&#xa0;&#xa0;&#xa0;<span class="tag"><span class="linked">linked</span>&#xa0;<span class="____">内部链接</span></span></h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+省略掉 <code>类型:</code>, <code>定位</code> 填入同一个文件的某个标题.
+例如, <code>[[内部链接]]</code> 指向 <a href="#orga833c86">3.2.1</a> (也就是本小节).
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd637b42" class="outline-4">
+<h4 id="orgd637b42"><span class="section-number-4">3.2.2.</span> 外部链接</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<ul class="org-ul">
+<li><p>
+<code>http</code>​/​<code>https</code> <br />
+</p>
+<pre class="example">
+[[https://github.com/shynur/.emacs.d][本文件最初位于该仓库下]]
+</pre>
+
+<p>
+<a href="https://github.com/shynur/.emacs.d">本文件最初位于该仓库下</a>
+</p></li>
+<li><p>
+<code>file</code> 本地文件 <br />
+</p>
+<pre class="example">
+[[file:./][当前目录]]
+</pre>
+
+<p>
+<a href="./">当前目录</a>
+</p></li>
+</ul>
+</div>
+
+<ol class="org-ol">
+<li><a id="org3949b6e"></a>图片链接<br />
+<div class="outline-text-5" id="text-3-2-2-1">
+<p>
+Org 会根据后缀自动识别图片.
+</p>
+
+<p>
+若 图片 就位于你的 <b>本地机器</b> 上, 则在 Emacs 中键入 <code>C-c C-x C-v</code> 即时渲染.
+</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org40cdd38" class="outline-3">
+<h3 id="org40cdd38"><span class="section-number-3">3.3.</span> 块文本</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+使用 <code>#+BEGIN_XXX</code> 和 <code>#+END_XXX</code> (无所谓大小写, 但大写显然更直观) 包裹文本, 赋予其特殊含义.
+如果块中文本在行首出现了 <code>*</code> 或 <code>#+</code>, 则 <i>额外</i> 添加一个 <code>,</code>.
+</p>
+
+<p>
+下面是 <a href="https://github.com/shynur/.emacs.d/tree/main/etc/yas-snippets/org-mode/BEGIN-END-block.yasnippet">我写的补全模板</a>:
+</p>
+
+
+<div id="org92684a9" class="figure">
+<p><img src="https://user-images.githubusercontent.com/98227472/260117711-02936942-76fe-4ee5-a5c9-e60ced038e73.gif" alt="如果看到了这句话, 说明图片失效了 (那么请到 &lt;https://github.com/shynur/.emacs.d/issues/1&gt; 查看), 或者你的网络环境有问题." width="400px" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org07d32f5" class="outline-4">
+<h4 id="org07d32f5"><span class="section-number-4">3.3.1.</span> 等宽块</h4>
+<div class="outline-text-4" id="text-3-3-1">
+<div class="org-src-container">
+<pre class="src src-org">#+BEGIN_EXAMPLE
+ABCdef&lt;&gt;/;"
+#+END_EXAMPLE
+</pre>
+</div>
+
+<p>
+效果如下:
+</p>
+
+<pre class="example" id="orga3ccb3d">
+ABCdef&lt;&gt;/;"
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgebabd35" class="outline-4">
+<h4 id="orgebabd35"><span class="section-number-4">3.3.2.</span> 代码块</h4>
+<div class="outline-text-4" id="text-3-3-2">
+<p>
+等宽块仅仅是为了等宽, 而 <i>代码块</i> 允许你 <b>在 Org 文件中运行代码</b> (见 <a href="#orga93175f">5.2</a>).
+这一节仅展示语法.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org">#+BEGIN_SRC bash
+ls
+#+END_SRC
+</pre>
+</div>
+
+<p>
+通过指定编程语言 (此例中是 <code>Bash</code>), Org 会调用不同的程序 (编译并) 执行这段代码, 并且 (如果你有相关插件的话, 还会在导出时) 对其选择不同的高亮方案.
+</p>
+</div>
+
+<ol class="org-ol">
+<li><a id="org49e6f6e"></a>单行代码<br />
+<div class="outline-text-5" id="text-3-3-2-1">
+<div class="org-src-container">
+<pre class="src src-org"># 任意数量的额外的缩进
+ : assume cs:code, ss:stack
+</pre>
+</div>
+
+<p>
+效果如下 (没有高亮):
+</p>
+<pre class="example">
+assume cs:code, ss:stack
+</pre>
+</div>
+</li>
+
+<li><a id="org1813d62"></a>代码块行号<br />
+<div class="outline-text-5" id="text-3-3-2-2">
+<pre class="example">
+#+BEGIN_SRC Language -n 第一行的行号 (缺省为 1)
+#+BEGIN_SRC Language +n 第一行的行号比上一个代码块最后一行的行号多的数值 (缺省为 1)
+</pre>
+</div>
+</li>
+</ol>
+</div>
+
+<div id="outline-container-org7128e73" class="outline-4">
+<h4 id="org7128e73"><span class="section-number-4">3.3.3.</span> 诗句块</h4>
+<div class="outline-text-4" id="text-3-3-3">
+<p>
+保留 <b>缩进</b> 与 <b>换行</b>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org">#+BEGIN_VERSE
+     我的前面有五个空格
+  这边只有两个
+               ---佚名
+#+END_VERSE
+</pre>
+</div>
+
+<p>
+效果如下:
+</p>
+
+<p class="verse">
+&#xa0;&#xa0;&#xa0;我的前面有五个空格<br />
+这边只有两个<br />
+&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#x2014;佚名<br />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5ece0b6" class="outline-4">
+<h4 id="org5ece0b6"><span class="section-number-4">3.3.4.</span> 引用块</h4>
+<div class="outline-text-4" id="text-3-3-4">
+<p>
+使用 <code>#+BEGIN_QUOTE</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7d9b440" class="outline-4">
+<h4 id="org7d9b440"><span class="section-number-4">3.3.5.</span> 居中块</h4>
+<div class="outline-text-4" id="text-3-3-5">
+<div class="org-src-container">
+<pre class="src src-org">#+BEGIN_CENTER
+Thank you, \\
+shynur
+&lt;one.last.kiss@outlook.com&gt;.  \\
+August 12, 2023
+#+END_CENTER
+</pre>
+</div>
+
+<p>
+效果如下:
+</p>
+
+<div class="org-center">
+<p>
+Thank you, <br />
+shynur &lt;one.last.kiss@outlook.com&gt;.  <br />
+August 12, 2023
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdceb42a" class="outline-3">
+<h3 id="orgdceb42a"><span class="section-number-3">3.4.</span> 表格</h3>
+<div class="outline-text-3" id="text-3-4">
+</div>
+<div id="outline-container-org8277b54" class="outline-4">
+<h4 id="org8277b54"><span class="section-number-4">3.4.1.</span> 不带字段的表格</h4>
+<div class="outline-text-4" id="text-3-4-1">
+<div class="org-src-container">
+<pre class="src src-org">| 我是 | 一个   | 只由 |
+| 两行 | 组成的 | 表格 |
+</pre>
+</div>
+
+<p>
+效果如下:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">我是</td>
+<td class="org-left">一个</td>
+<td class="org-left">只由</td>
+</tr>
+
+<tr>
+<td class="org-left">两行</td>
+<td class="org-left">组成的</td>
+<td class="org-left">表格</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org9206982" class="outline-4">
+<h4 id="org9206982"><span class="section-number-4">3.4.2.</span> 带字段的表格</h4>
+<div class="outline-text-4" id="text-3-4-2">
+<div class="org-src-container">
+<pre class="src src-org">| 年龄 | 职业 | ID     |
+|------+------+--------+
+| 24   | 学生 | 114514 |
+</pre>
+</div>
+
+<p>
+效果如下:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">年龄</th>
+<th scope="col" class="org-left">职业</th>
+<th scope="col" class="org-right">ID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">24</td>
+<td class="org-left">学生</td>
+<td class="org-right">114514</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb9aceee" class="outline-2">
+<h2 id="orgb9aceee"><span class="section-number-2">4.</span> LaTeX</h2>
+</div>
+<div id="outline-container-orgf6aa94c" class="outline-2">
+<h2 id="orgf6aa94c"><span class="section-number-2">5.</span> 交互</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org9cb16d5" class="outline-3">
+<h3 id="org9cb16d5"><span class="section-number-3">5.1.</span> 任务清单&#xa0;&#xa0;&#xa0;<span class="tag"><span class="linked">linked</span>&#xa0;<span class="_____">给列表打标</span></span></h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+在 <b>标题</b> 前加上 <code>TODO</code> 关键字,
+可选地加上优先级 <code>[#字母]</code>, 可选地在末尾加上 <code>[%]</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org">*** TODO [#B] 示例 [%]
+
+- [ ] TAG1 :: 未完成
+- [-] 正在进行中
+- [ ] TAG1 :: 等会完成
+</pre>
+</div>
+
+<p>
+在 Emacs 中, 将光标置于第三个任务中, 键入 <code>C-c C-c</code> 将会勾选 <code>[X]</code> 并更新任务进度,
+见 <a href="#orgf51ab39">5.1.1</a>.
+</p>
+</div>
+
+<div id="outline-container-orgf51ab39" class="outline-4">
+<h4 id="orgf51ab39"><span class="section-number-4">5.1.1.</span> <span class="todo TODO">TODO</span> 任务清单示例 <code>[33%]</code>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="linked">linked</span>&#xa0;<span class="____">任务清单</span></span></h4>
+<div class="outline-text-4" id="text-5-1-1">
+<dl class="org-dl">
+<dt class="off"><code>[&#xa0;]</code> TAG1</dt><dd>未完成</dd>
+<dt class="trans"><code>[-]</code> (no term)</dt><dd>正在进行中</dd>
+<dt class="on"><code>[X]</code> TAG1</dt><dd>等会完成</dd>
+</dl>
+
+<p>
+全部完成后, <code>TODO</code> 关键字会变成 <code>DONE</code>.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga93175f" class="outline-3">
+<h3 id="orga93175f"><span class="section-number-3">5.2.</span> 文字编程&#xa0;&#xa0;&#xa0;<span class="tag"><span class="linked">linked</span>&#xa0;<span class="___">代码块</span></span></h3>
+</div>
+</div>
+<div id="outline-container-orgc3036cf" class="outline-2">
+<h2 id="orgc3036cf"><span class="section-number-2">6.</span> 注解</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orga8fd631" class="outline-3">
+<h3 id="orga8fd631"><span class="section-number-3">6.1.</span> 脚注</h3>
+<div class="outline-text-3" id="text-6-1">
+</div>
+<div id="outline-container-org513466c" class="outline-4">
+<h4 id="org513466c"><span class="section-number-4">6.1.1.</span> 具名脚注</h4>
+<div class="outline-text-4" id="text-6-1-1">
+<pre class="example">
+那个人发明了 C++[fn:OOP: 这是一种面向对象的编程语言.].
+</pre>
+
+
+<p>
+效果如下:
+</p>
+
+<p>
+那个人发明了 C++<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgca91012" class="outline-4">
+<h4 id="orgca91012"><span class="section-number-4">6.1.2.</span> 引用脚注</h4>
+<div class="outline-text-4" id="text-6-1-2">
+<pre class="example">
+那个人发明了 Python[fn:OOP].
+</pre>
+
+
+<p>
+效果如下:
+</p>
+
+<p>
+那个人发明了 Python<sup><a id="fnr.2.100" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb3bba0b" class="outline-4">
+<h4 id="orgb3bba0b"><span class="section-number-4">6.1.3.</span> 匿名脚注</h4>
+<div class="outline-text-4" id="text-6-1-3">
+<pre class="example">
+我[fn:: 菜鸡]不喜欢 Bash.
+</pre>
+
+
+<p>
+效果如下:
+</p>
+
+<p>
+我<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>不喜欢 Bash.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf2d7e1e" class="outline-3">
+<h3 id="orgf2d7e1e"><span class="section-number-3">6.2.</span> 注释</h3>
+<div class="outline-text-3" id="text-6-2">
+</div>
+<div id="outline-container-orgdd76d13" class="outline-4">
+<h4 id="orgdd76d13"><span class="section-number-4">6.2.1.</span> 单行注释</h4>
+<div class="outline-text-4" id="text-6-2-1">
+<p>
+顶格写 <code>#一个空格</code>:
+</p>
+<pre class="example">
+# 这是注释.
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orga8c1f7a" class="outline-4">
+<h4 id="orga8c1f7a"><span class="section-number-4">6.2.2.</span> 内联注释</h4>
+<div class="outline-text-4" id="text-6-2-2">
+<pre class="example">
+你@@comment:这是注释@@好!
+</pre>
+
+<p>
+
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0f987f8" class="outline-4">
+<h4 id="org0f987f8"><span class="section-number-4">6.2.3.</span> 块注释</h4>
+<div class="outline-text-4" id="text-6-2-3">
+<div class="org-src-container">
+<pre class="src src-org">#+BEGIN_COMMENT
+这里是注释.
+
+这里也是!
+#+END_COMMENT
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge08c208" class="outline-4">
+<h4 id="orge08c208"><span class="section-number-4">6.2.4.</span> 结构化注释</h4>
+<div class="outline-text-4" id="text-6-2-4">
+<div class="org-src-container">
+<pre class="src src-org">* 大标题
+** COMMENT 大批注
+*** 小批注
+批注...
+** 小标题
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb7b8538" class="outline-2">
+<h2 id="orgb7b8538"><span class="section-number-2">7.</span> 下一步</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-orgeec4bfa" class="outline-3">
+<h3 id="orgeec4bfa"><span class="section-number-3">7.1.</span> 支持 Org Mode 的软件</h3>
+<div class="outline-text-3" id="text-7-1">
+</div>
+<div id="outline-container-org39cc8a9" class="outline-4">
+<h4 id="org39cc8a9"><span class="section-number-4">7.1.1.</span> 编写 Org 文件</h4>
+<div class="outline-text-4" id="text-7-1-1">
+<ul class="org-ul">
+<li>Vim
+<ul class="org-ul">
+<li><code>org.vim</code></li>
+<li><code>vim-orgmode</code></li>
+<li><code>orgmode.nvim</code></li>
+</ul></li>
+<li>Visual Studio Code
+<ul class="org-ul">
+<li><code>vscode-org-mode</code></li>
+</ul></li>
+<li>Atom
+<ul class="org-ul">
+<li><code>org-mode</code></li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org111adde" class="outline-4">
+<h4 id="org111adde"><span class="section-number-4">7.1.2.</span> 格式转换</h4>
+<div class="outline-text-4" id="text-7-1-2">
+</div>
+<ol class="org-ol">
+<li><a id="org3c1eb9f"></a>导入导出<br />
+<div class="outline-text-5" id="text-7-1-2-1">
+<ul class="org-ul">
+<li>Pandoc</li>
+<li>Drupal converter</li>
+<li>ox-hugo</li>
+<li>ox-​*</li>
+<li>VimWiki</li>
+<li>Exchange calendars</li>
+</ul>
+</div>
+</li>
+
+<li><a id="orgc261c69"></a>发布博客<br />
+<div class="outline-text-5" id="text-7-1-2-2">
+<ul class="org-ul">
+<li>Hugo</li>
+<li>Org-Jekyll</li>
+<li>o-blog</li>
+<li>Org2Blog</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org69a5812" class="outline-3">
+<h3 id="org69a5812"><span class="section-number-3">7.2.</span> 更多资料</h3>
+<div class="outline-text-3" id="text-7-2">
+<ul class="org-ul">
+<li><a href="https://orgmode.org/guide/">Org Mode Compact Guide</a></li>
+<li><a href="https://orgmode.org/quickstart.html">Getting started with Org-mode</a></li>
+<li><a href="https://orgmode.org/manual/Markup-for-Rich-Contents.html">Markup for Rich Contents</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb8f4163" class="outline-3">
+<h3 id="orgb8f4163"><span class="section-number-3">7.3.</span> Contribute</h3>
+<div class="outline-text-3" id="text-7-3">
+<p>
+任何见解 (issue) 或修改 (pull request) <b>请先到 <a href="https://github.com/shynur/.emacs.d">https://github.com/shynur/.emacs.d</a> 提议</b>.
+</p>
+
+<hr />
+
+<p>
+
+</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">当我说 ‘​<i>效果如下</i>​’ 时, 指的是 <b>导出后</b> 的效果, 比如, 用 <code>C-c C-e h o</code> 导出成 <code>HTML</code>.</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">这是一种面向对象的编程语言.</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">菜鸡</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="author">Author: 谢骐</p>
+<p class="date">Created: 2023-08-12 周六 19:18</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

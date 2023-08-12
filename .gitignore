@@ -1,10 +1,16 @@
 /*
-!/COPYING.md
-!/README.md
 !/.dir-locals.el
 !/.gitignore
+!/COPYING.md
+!/README.md
+!/docs/
 
-!/elisp.org
+!/ELisp.org
+!/Org.org
+!/YAML.yaml
+
+/docs/*
+!/docs/?*.html
 
 # Local Variables:
 # coding: utf-8-unix
