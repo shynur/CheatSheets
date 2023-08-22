@@ -7,7 +7,7 @@
 ## 标记语言
 
 - [HTML](./HTML.html)
-- [Org Mode](https://shynur.github.io/CheatSheets/Org.html) [源文件](https://github.com/shynur/.emacs.d/blob/main/docs/Org-quickstart.org)
+- [Org Mode](https://shynur.github.io/CheatSheets/Org.html) ([源文件](https://github.com/shynur/.emacs.d/blob/main/docs/Org-quickstart.org))
 - YAML
 
 ## License

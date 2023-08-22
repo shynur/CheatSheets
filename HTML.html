@@ -1,31 +1,150 @@
 <!DOCTYPE html>
 
 <html>
-
   <head>
+    <meta charset="utf-8" />
+
+    <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/98227472?s=16" type="image/x-icon" />
     <title>Title</title>
+
+    <!-- <link rel="stylesheet" href="styles.css" type="text/css" /> -->
+    <style type="text/css">
+      body {
+          color: RGB(86%, 100%, 82%);
+          background-color: RGB(31%, 35%, 55%);
+          border-color: RGB(95%, 95%, 95%);
+      }
+      h1, h2, h3, h4, h5, h6 {
+          text-decoration: underline;
+          font-weight: lighter;
+      }
+      p {line-height: 1.2em}
+
+      a:link    {}
+      a:visited {}
+      a:hover   {}
+      a:active  {}
+    </style>
   </head>
 
   <body>
+    <h4>引用</h4>
+    <blockquote cite="https://github.com/shynur/CheatSheets">
+      As he said,
+      <q cite="https://github.com/shynur/.emacs.d">当前正在阅读 <cite>GNU Emacs Lisp Reference Manual</cite>.</q>
+    </blockquote>
 
+    <h4>有序列表</h4>
     <ol style="list-tyle-type: decimal" start="0">
       <li>zero</li>
       <li value="2">two</li>
       <li style="list-style-type: lower-roman">three</li>
     </ol>
 
-    <ul style="list-style: outside disc URL()">
-      <li>example</li>
+    <h4>无序列表</h4>
+    <ul style="list-style: outside disc">
+      <li>list-style-type (here is <code>disc</code>):
+        <ul>
+          <li style="list-style-type: square">square</li>
+          <li style="list-style-type: circle">circle</li>
+        </ul>
+      </li>
+      <li style="list-style-image: URL(https://simpleicons.org/icons/taichilang.svg)">list-style-image</li>
     </ul>
 
-    <p><a href="#233">a</a></p>
-    <p id="233">p</p>
+    <h4 id="id-anchor">锚</h4>
+    <ul>
+      <li>
+        anc<a name="name-anchor"></a>hor
+        <br />
+        <a href="#id-anchor">goto id-anchor</a>
+        <a href="#name-anchor">goto name-anchor</a>
+      </li>
+      <li>
+        <a href="http://example.com" rel="nofollow">Irrelevant site; Don&rsquo;t count</a>
+      </li>
+    </ul>
+
+    <h4><!-- 部分 -->语义化标签</h4>
+    <ul>
+      <li><em>emphasis</em></li>
+      <li><strong>strong</strong></li>
+      <li><samp>sample (usually monospace)</samp></li>
+      <li><var>variable</var></li>
+      <li><dfn>defined (术语)</dfn></li>
+      <li><abbr>ABBR</abbr></li>
+    </ul>
+
+    <h4>物理样式<!-- (physical style) --></h4>
+    <ul>
+      <li><b>bold</b></li>
+      <li><i>italic</i></li>
+      <li><u>underline</u></li>
+      <li><small>small</small></li>
+      <li><sub>subscript</sub></li>
+      <li><sup>superscript</sup></li>
+    </ul>
+
+    <h4>Text Decoration</h4>
+    <ul>
+      <li style="text-decoration: underline">underline</li>
+      <li style="text-decoration: overline">overline</li>
+      <li style="text-decoration: line-through">line-through</li>
+      <li style="text-decoration: blink">blink</li>
+      <li style="text-decoration: none">none</li>
+    </ul>
+
+    <h3>Font</h3>
+    <h4>Font Weight</h4>
+    <ul>
+      <li>
+        <span style="font-weight: lighter">lighter</span>
+        <span style="font-weight: normal">normal</span>
+        <span style="font-weight: bold">bold</span>
+        <span style="font-weight: bolder">bolder</span>
+      </li>
+      <li>
+        <!-- 只能以_百_递增 (100-900)  -->
+        <span style="font-weight: 100">100</span>
+        <span style="font-weight: 200">200</span>
+        <span style="font-weight: 300">300</span>
+        <span style="font-weight: 400">400</span>
+        <span style="font-weight: 500">500</span>
+        <span style="font-weight: 600">600</span>
+        <span style="font-weight: 700">700</span>
+        <span style="font-weight: 800">800</span>
+        <span style="font-weight: 900">900</span>
+      </li>
+    </ul>
+
+    <h4>Font Family</h4>
+    <p>
+      <span style="font-family: serif">serif</span>
+      <span style="font-family: sans-serif">sans-serif</span>
+      <span style="font-family: cursive">cursive</span>
+      <span style="font-family: fantasy">fantasy</span>
+      <span style="font-family: Consolas, 'Courier New', monospace">monospace</span>
+    </p>
+
+    <h4>Font Variant</h4>
+    <p>
+      <span style="font-variant: normal">normal</span>
+      <span style="font-variant: small-caps">Small-Caps</span>
+    </p>
+
+    <!-- 主题分割 (thematic break) -->
+    <hr />
+
+    <!-- 落款, 通常位于网页末尾.
+         包含: 联系方式, 版权信息, 修改日期, 警告.  -->
+    <address style="font-size: 1px; font-style: normal">
+      <!-- ‘font-style’ 还可取 ‘italic’, ‘oblique’.  -->
+      Copyright &copy;  2023  谢骐 &lt;<a href="mailto:one.last.kiss@outlook.com?subject=Hello&cc=someone@example.com&bcc=another.one@example.com&body=This%20is%20a%20test%20mail.">one.last.kiss@outlook.com</a>&gt;.
+    </address>
 
   </body>
-
 </html>
 
 <!-- Local Variables: -->
 <!-- coding: utf-8-unix -->
-<!-- eval: (yas-minor-mode -1) -->
 <!-- End:  -->

@@ -6,6 +6,7 @@
                                   (add-file-local-variable 'coding 'utf-8-unix)))
                               delete-trailing-whitespace
                               t))))
+ (prog-mode . ((mode . electric-quote-local)))
  (org-mode . ((eval . (keymap-local-set "<f9>"
                                         "\N{ZERO WIDTH SPACE}"))
               ;; 链接🔗 保持原样渲染.
