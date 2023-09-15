@@ -1,11 +1,13 @@
 <!DOCTYPE html>
+<!-- 9.4.2 -->
 
-<html>
+<html lang="zh"> <!-- 浏览器文本翻译参考项 -->
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0" />
 
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/98227472?s=16" type="image/x-icon" />
-    <title>Title</title>
+    <title>𝚃𝚒𝚝𝚕𝚎</title>
 
     <!-- <link rel="stylesheet" href="styles.css" type="text/css" /> -->
     <style type="text/css">
@@ -18,12 +20,44 @@
           text-decoration: underline;
           font-weight: lighter;
       }
-      p {line-height: 1.2em}
 
-      a:link    {}
-      a:visited {}
-      a:hover   {}
-      a:active  {}
+      p {line-height: 1.2em}
+      p:first-letter {
+          /* 首字母下沉.  */
+
+          font-size: 3em;
+          font-weight: lighter;
+          margin: 0.1em 0;
+          float: left;
+      }
+      p:first-line {}
+
+      q::before {content: '“'}
+      q::after  {content: '”'}
+
+      a:link    {color: RGB(21%, 76%, 99%)}
+      a:hover   {color: RGBa(21%, 76%, 99%, .7)}
+      a:active  {color: RGBa(21%, 76%, 99%, .4)}
+      a:visited {color: HSL(270, 80%, 75%)}
+
+      blockquote {
+          border:        solid 2px RGBa(73%, 73%, 73%, .4);
+          border-right:  solid 1px RGBa(73%, 73%, 73%, .2);
+          border-bottom: solid 1px RGBa(73%, 73%, 73%, .2);
+      }
+
+      blockquote, address {
+          /* 必要时显示滚动条.  */
+          overflow: auto;
+      }
+
+      img {vertical-align: bottom}
+
+      body > hr + address.COPYING {
+          font-size: xx-small;
+          font-style: italic;
+          text-align: center;
+      }
     </style>
   </head>
 
@@ -137,8 +171,7 @@
 
     <!-- 落款, 通常位于网页末尾.
          包含: 联系方式, 版权信息, 修改日期, 警告.  -->
-    <address style="font-size: 1px; font-style: normal">
-      <!-- ‘font-style’ 还可取 ‘italic’, ‘oblique’.  -->
+    <address class="COPYING">
       Copyright &copy;  2023  谢骐 &lt;<a href="mailto:one.last.kiss@outlook.com?subject=Hello&cc=someone@example.com&bcc=another.one@example.com&body=This%20is%20a%20test%20mail.">one.last.kiss@outlook.com</a>&gt;.
     </address>
 

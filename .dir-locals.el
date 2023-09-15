@@ -7,6 +7,9 @@
                               delete-trailing-whitespace
                               t))))
  (prog-mode . ((mode . electric-quote-local)))
+ (mhtml-mode . ((eval . (browse-url-default-windows-browser (format "file:///%s"
+                                                                    (buffer-file-name))))
+                (eval . (browse-url-default-windows-browser "file:///D:/Desktop/ToRead/HTML+CSS+JavaScript.pdf"))))
  (org-mode . ((eval . (keymap-local-set "<f9>"
                                         "\N{ZERO WIDTH SPACE}"))
               ;; 链接🔗 保持原样渲染.
