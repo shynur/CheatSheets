@@ -10,6 +10,7 @@
  (mhtml-mode . (
                 ;; (eval . (browse-url-default-windows-browser (format "file:///%s" (buffer-file-name))))
                 ))
+ (sql-mode . ((mode . abbrev)))
  (org-mode . ((eval . (keymap-local-set "<f9>"
                                         "\N{ZERO WIDTH SPACE}"))
               ;; 链接🔗 保持原样渲染.

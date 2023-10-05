@@ -1,44 +1,36 @@
-While_Loop:
-
-# a[i]
-sll $t0, $s3, 2
-add $t0, $s6, $t0
-
-# a[i] == k
-lw $t0, 0($t0)
-bne $t0, $s5, Exit
-
-# i++
-addi $s3, $s3, 1
-
-j While_Loop
-
-Exit:
-
 li $s0, 0x1234ABCD
 # 上条伪指令被解释为:
 lui $s0, 0x1234
 ori $s0, 0xABCD
 
-#  8-15: $t0 - $t7
-# 16-23: $s0 - $s7
+#  2 -  3: $v0 - $v1
+#  4 -  7: $a0 - $a3
+#  8 - 15: $t0 - $t7
+# 16 - 23: $s0 - $s7
+# 24 - 25: $t8 - $t9
+# 26 - 27: $k0 - $k1
+#      28: $gp
+#      29: $sp
+#      30: $fp
+#      31: $ra
 
 # 运算
-add/sub dest, src1, src2           # R
-addi dest, src, imm                # I
-and/or/nor dest, src1, src2        # R
-ori dest, src, imm                 # I
-sll/srl dest, src, shift           # R
+add/sub dest, src1, src2     # R
+addi dest, src, imm          # I
+and/or/nor dest, src1, src2  # R
+ori dest, src, imm           # I
+sll/srl dest, src, shift     # R
 # 数据传送
-lw/sw reg, imm(reg)                # I
-lui reg, imm                       #
+lw/sw reg, imm(reg)          # I
+lui reg, imm                 # I
 # 决策指令
-beq/bne src1, src2, LABEL          # I
-slt, dest, src1, src2              #
-j LABEL                            #
+beq/bne src1, src2, .LABEL   # I
+slt dest, src1, src2         # R
+j .LABEL                     #
+jr dest                      # R
 # 伪指令
-blt/bgt/ble/bge src1, src2, LABEL  #
-move/li dest, src                  #
+blt/bgt/ble/bge src1, src2, .LABEL
+move/li dest, src
 
 # 32 位 MIPS 指令格式:
 # +------+-----+-----+-----+-----+------+

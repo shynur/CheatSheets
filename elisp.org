@@ -1,5 +1,0 @@
-#+title: 浅学 Emacs Lisp
-
-# Local Variables:
-# coding: utf-8-unix
-# End:

@@ -5,8 +5,11 @@
 !/README.md
 !/docs/
 
+!/AutoLISP.lsp
+!/ELisp.el
 !/HTML.html
-!/MIPS.asm
+!/JavaScript.js
+!/MIPS_32.asm
 !/SQL.sql
 !/YAML.yaml
 
