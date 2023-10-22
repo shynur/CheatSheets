@@ -1,6 +1,9 @@
 ((nil . ((indent-tabs-mode . nil)
          (delete-trailing-lines . t)
          (require-final-newline . t)
+
+         (mode . abbrev)
+
          (before-save-hook . ((lambda ()
                                 (save-excursion
                                   (add-file-local-variable 'coding 'utf-8-unix)))

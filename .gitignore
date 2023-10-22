@@ -3,9 +3,10 @@
 !/.gitignore
 !/COPYING.md
 !/README.md
-!/docs/
 
+!/ARM.asm
 !/AutoLISP.lsp
+!/BodyBuilding.org
 !/ELisp.el
 !/HTML.html
 !/JavaScript.js
