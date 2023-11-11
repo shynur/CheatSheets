@@ -59,9 +59,8 @@ my_obj.property_4 = 'new property', delete my_obj.property_4;
 // 另一种访问属性的办法:
 my_obj['property_1'];  // 更加灵活.
 
-// 书上的例子:
-
-
+/* DOM (Document Object Model) */
+document.getElementById("elem-id").innerHTML = "New text.";
 
 // Local Variables:
 // coding: utf-8-unix
