@@ -61,6 +61,10 @@
     </style>
     <script type="text/javascript">  // 若省略 ‘type’, 浏览器将假定使用的是 JS, 因此标准制定者也建议省略该属性.
       // 浏览器加载网页时先加载 ‘<head>’ 元素, 将 JS 代码内嵌于此会拖慢页面的渲染.
+      window.onload = function() {  // ‘window’ 是 JavaScript 内置对象, 表示浏览器窗口.
+          // 此时 DOM 还不完整!  所以想要操纵 DOM 必须通过 ‘window.onload’.
+          document.getElementById("elem-id")
+      }
     </script>
   </head>
 

@@ -1,0 +1,166 @@
+#+title: 简明 PostgreSQL
+#+language: zh-CN
+#+author: [[https://github.com/shynur][/谢骐/]]
+#+html_head: <style> table, th, td {border: 1px solid;} </style>
+
+* 使用 ~psql~
+** 打开 ~psql~
+
+在 shell 中运行安装时自带的 ~runpsql.bat~[fn:: 本文以 MS-Windows 为例.] 即可, e.g.,
+
+#+BEGIN_SRC shell
+PS C:\Users\shynur> bin/PostgreSQL/16/scripts/runpsql.bat
+#+END_SRC
+
+** 退出 ~psql~
+
+可直接叉掉窗口, 或
+
+#+BEGIN_SRC sql
+database_name=# \q
+#+END_SRC
+
+* SQL 概要
+** 三类语句
+*** DDL[fn:DDL: Data Definition Language]
+
+| ~CREATE~                | ~DROP~ | ~ALTER~ |
+|-------------------------+--------+---------|
+| *创建* 数据库, 表, etc. | *删除* | *修改*  |
+
+*** DML[fn:DML: Data Manipulation Language]
+
+| ~SELECT~           | ~INSERT~               | ~UPDATE~           | ~DELETE~           |
+|--------------------+------------------------+--------------------+--------------------|
+| *查询*​表中的数据 | 向表中​*插入*​新数据 | *更新*​表中的数据 | *删除*​表中的数据 |
+
+*** DCL[fn:DCL: Data Control Language]
+
+- 确认​/​取消对数据库中的数据进行的​*变更*
+  | ~COMMIT~ | ~ROLLBACK~ |
+  |----------+------------|
+  | *确认*   | *取消*     |
+- *设定* RDBMS 中​*用户*​操作数据库中的对象 (e.g., 表) 的​*权限*
+  | ~GRANT~            | ~REVOKE~ |
+  |--------------------+----------|
+  | *赋予*​用户操作权限 | *取消*   |
+
+** 基本书写规则
+
+- 语句以 分号 (‘​=;=​’) 结尾
+- /字符串/​&​/日期/​这两类常数须用 单引号 (‘​='=​’) 扩起
+
+** 命名约定
+
+- 数据库的名字, 表名, 和列名 只能使用:
+  - 字母
+  - 数字
+  - 下划线 (‘​=_=​’)
+- 名称必须​*以​_字母_​开头*
+- 数据库的名字只能使用​_小写字母_
+
+* 创建数据库与表
+** 数据库的创建
+
+#+BEGIN_SRC sql
+-- 创建名为 ‘shop’ 的数据库.
+CREATE DATABASE shop;
+#+END_SRC
+
+** 表的创建
+
+#+BEGIN_SRC sql
+-- 在数据库 ‘shop’ 中创建名为 ‘Products’ 的表.
+CREATE TABLE Products (
+  -- 列名        数据类型     [约束]
+  product_id        CHAR(4)   NOT NULL,
+  product_name   VARCHAR(100) NOT NULL,
+  product_type   VARCHAR(32)  NOT NULL,
+      sale_price INTEGER              ,
+  purchase_price INTEGER              ,
+  regist_date    DATE                 ,
+  -- 除了 ‘NOT NULL’, 其余约束可在末尾设置:
+  PRIMARY KEY (product_id)
+);
+#+END_SRC
+
+*** 数据类型
+**** INTEGER
+
+存储整数.
+
+**** CHAR
+
+存储​*定长字符串*, 用法: ~CHAR(最大长度)~.
+不同的 RDBMS 可能使用不同的长度单位 (e.g., 字符[fn:: 一个字符通常需要 1​-​3 bytes 来表示.]个数, 字节数).
+
+当要被存储的字符串长度小于最大长度时, 会使用​_空格_​补足.
+E.g., 向 ~CHAR(3)~ 类型的列中输入 ='ab'= 时, 实际存储的是 ='ab '=.
+
+**** VARCHAR[fn:: Oracle[fn:: 本文在介绍 PostgreSQL 的同时, 也会将其与 Oracle Database, SQL Server, DB2, 和 MySQL 进行对比.  若无特别声明, 前述的 4 个 RDBMS 以及 PostgreSQL 皆可正常执行文中的示例代码.] 中使用 VARCHAR2 型.  (Oracle 中也有 VARCHAR 型, 但并不推荐使用.)]
+
+存储​*变长字符串*, 和 [[CHAR][CHAR]] 型的区别是: *不会*​使用​_空格_​补足.
+E.g., 向 ~VARCHAR(3)~ 类型的列中输入 ='ab'= 时, 实际存储的还是它.
+
+**** DATE
+
+存储​_年月日_[fn:: Oracle 中的 DATE 型还包含​_时分秒_.].
+
+*** 约束
+**** ~NULL~
+
+能否输入空白.
+
+**** ~KEY~
+
+所谓键, 就是在指定特定数据时使用的列的组合.
+
+***** ~PRIMARY KEY~
+* 表的删除与更新
+** 删除表
+
+#+BEGIN_SRC sql
+-- 删除 ‘Products’ 表.
+DROP TABLE Products;
+#+END_SRC
+
+N.b., 删除的表是无法恢复的.
+只能重新创建, 然后重新插入数据.
+
+** 更新表的定义
+
+N.b., ~ALTER TABLE~ 语句和 [[删除表][~DROP TABLE~ 语句]]一样, 执行之后无法恢复.
+误添的列可以通过 ~ALTER TABLE~ 语句删除, 或者将表全部删除之后重新再创建.
+
+*** 添加列
+
+#+BEGIN_SRC sql
+-- 给 ‘Products’ 表添加一列, 表示商品名称的拼音.
+ALTER TABLE Products
+ADD COLUMN product_name_pinyin VARCHAR(100);
+#+END_SRC
+
+Oracle 中的写法[fn:Oracle增删单列: Oracle 可一次性增删多列.  当仅涉及 1 列的增删时, 可省略左右的括号.]:
+ : ALTER TABLE Products ADD (product_name_pinyin VARCHAR2(100), 更多的新列, ...);
+SQL Server 中的写法:
+ : ALTER TABLE Products ADD product_name_pinyin VARCHAR(100);
+它们都省略了 ~COLUMN~ 关键字.
+
+*** 删除列
+
+#+BEGIN_SRC sql
+-- 删除 ‘Products’ 表中的 ‘product_name_pinyin’ 列.
+ALTER TABLE Products
+DROP COLUMN product_name_pinyin;
+#+END_SRC
+
+Oracle 中的写法[fn:Oracle增删单列]:
+ : ALTER TABLE Products DROP (product_name_pinyin, 更多的旧列, ...);
+
+
+
+# Local Variables:
+# coding: utf-8-unix
+# eval: (progn (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/SQL基础教程.pdf") (w32-notification-close (w32-notification-notify :body " " :title "读到了第 59 页")))
+# eval: (start-process-shell-command "psql" nil "start D:/Progs/PostgreSQL/16/scripts/runpsql.bat")
+# End:

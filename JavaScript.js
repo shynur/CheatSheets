@@ -59,8 +59,21 @@ my_obj.property_4 = 'new property', delete my_obj.property_4;
 // 另一种访问属性的办法:
 my_obj['property_1'];  // 更加灵活.
 
-/* DOM (Document Object Model) */
-document.getElementById("elem-id").innerHTML = "New text.";
+/* DOM (Document Object Model) */  // 对象 ‘document’ 是浏览器提供的.
+var my_element = document.getElementById("element-id");  // 若 ID 不存在则返回 null.
+my_element.innerHTML, my_element.outerHTML;
+my_element.getAttribute("attr"),  // 若不存在则返回 null.
+my_element.setAttribute("attr", "val");  // 新增/修改 attribute.
+
+undefined == null, 0 == '';
+1 + 2  // ‘+’ 的 结合性 是 从左到右 的:
+    + '3' === '33',
+true + 1 === 2,
+true + 'STR' === 'trueSTR',
+'2.5' - 0 === 2.5;
+// 非 boolean 也可用在条件表达式中, 它们要么是 falsy 要么是 truthy.  下面是 falsy:
+undefined, null, 0, '', NaN;
+
 
 // Local Variables:
 // coding: utf-8-unix
