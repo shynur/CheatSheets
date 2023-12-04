@@ -1,0 +1,86 @@
+* 设置线程数量
+
+OpenMP 本质上由一组功能强大的编译指示组成, 帮用户省去了编写大量样本文件的工作.
+
+** 编译指示设定线程数量
+
+#+CAPTION: 在编译期根据硬件和 OS 的配置, 生成用来创建尽可能多的线程的代码.
+#+BEGIN_SRC C++
+  #include <omp.h>
+  #include <iostream>
+  int main() {
+  #pragma omp parallel
+      std::cout << 0 << 1;
+  }
+#+END_SRC
+
+#+CAPTION: 使用 ~num_threads~ 设定线程数量.
+#+BEGIN_SRC C++
+  #include <omp.h>
+  #include <iostream>
+  int main() {
+  #pragma omp parallel num_threads(3)
+      std::cout << 0 << 1;
+  }
+#+END_SRC
+
+** 运行时 API 调整线程数量
+
+#+BEGIN_SRC C++
+  #include <omp.h>
+  #include <iostream>
+  int main() {
+      omp_set_num_threads(5);
+  #pragma omp parallel
+      std::cout << 0 << 1;
+  }
+#+END_SRC
+
+** TODO 环境变量控制线程数量
+
+[[https://emacs.stackexchange.com/q/79678/39388]]
+
+** 注意事项
+
+同时使用 [[环境变量控制线程数量][环境变量]] 和 [[运行时 API 调整线程数量][运行时 API]] 时, 后者将获得更高的优先权.
+
+* 查询线程信息
+** TODO 获取线程数量
+** 获取线程编号
+
+#+BEGIN_SRC C++
+  #include <omp.h>
+  #include <iostream>
+  #include <sstream>
+  int main() {
+  #pragma omp parallel num_threads(5)
+      std::cout << omp_get_thread_num();
+  }
+#+END_SRC
+
+从结果看出, 它是从 0 编号的.
+
+* 分配 for-loop
+
+#+BEGIN_SRC C++
+  int main() {
+  #pragma omp parallel for num_threads(5)
+      for (auto i = 0; i < 15; ++i)
+          std::cout << omp_get_thread_num();
+  }
+#+END_SRC
+
+#+RESULTS:
+
+* COMMENT File Local Variables
+
+# Local Variables:
+# coding: utf-8-unix
+# eval: (abbrev-mode)
+# eval: (require 'ob-C)
+# org-babel-C++-compiler: "g++.exe  \
+#                           -std=c++20 -Wall -O0  \
+#                           -fopenmp "
+# org-babel-default-header-args:C: ((:includes . ("<iostream>" "<omp.h>")))
+# org-confirm-babel-evaluate: nil
+# End:

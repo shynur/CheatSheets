@@ -74,7 +74,22 @@ true + 'STR' === 'trueSTR',
 // 非 boolean 也可用在条件表达式中, 它们要么是 falsy 要么是 truthy.  下面是 falsy:
 undefined, null, 0, '', NaN;
 
+/* String */
+var my_dog = 'dog dog';  // 下列都是 string _方法_:
+my_dog.length === 7;
+my_dog.charAt(1) === 'o', my_dog.charAt(7) === '';
+my_dog.indexOf('dog') === 0,
+my_dog.indexOf('dog', 1) === my_dog.lastIndexOf('dog'),
+my_dog.indexOf('cat') === -1;
+my_dog.substring(0, 3) === my_dog.substring(4);
+'a-b-c'.split('-');  // 返回 “['a', 'b', 'c']”.
+// ‘toLowerCase’, ‘toUpperCase’, ‘trim’,
+// ‘replace’, ‘concat’, ‘match’ (regexp), ...
+
 
 // Local Variables:
 // coding: utf-8-unix
+// eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/JavaScript.pdf")
+// eval: (w32-notification-close (w32-notification-notify :title "读到了第 357 页" :body " "))
+// eval: (start-process-shell-command "Node.js" nil "start node.exe")
 // End:

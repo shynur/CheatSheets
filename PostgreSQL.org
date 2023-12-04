@@ -8,8 +8,8 @@
 
 在 shell 中运行安装时自带的 ~runpsql.bat~[fn:: 本文以 MS-Windows 为例.] 即可, e.g.,
 
-#+BEGIN_SRC shell
-PS C:\Users\shynur> bin/PostgreSQL/16/scripts/runpsql.bat
+#+BEGIN_SRC pwsh
+~shynur/bin/PostgreSQL/16/scripts/runpsql.bat
 #+END_SRC
 
 ** 退出 ~psql~
@@ -84,6 +84,22 @@ CREATE TABLE Products (
 );
 #+END_SRC
 
+执行以下代码[fn:Mick_Copyright: 摘编自 /Mick/ 的著作 /SQL 基础教程/ (ISBN 978-7-115-45502-4), 版权归 /Mick/.][fn:BEGIN_TRANSACTION: 对于 ~BEGIN TRANSACTION;~ 这行, 在 MySQL 中使用 ~START TRANSACTION;~; 在 Oracle 和 DB2 中不需要这句.]以插入本文使用的示例数据:
+
+#+NAME: CREATE TABLE Products
+#+BEGIN_SRC sql
+BEGIN TRANSACTION;
+INSERT INTO Products VALUES('0001', 'T恤衫'  , '衣服'    , 1000,  500, '2009-09-20');
+INSERT INTO Products VALUES('0002', '打孔器' , '办公用品',  500,  320, '2009-09-11');
+INSERT INTO Products VALUES('0003', '运动T恤', '衣服'    , 4000, 2800,         NULL);
+INSERT INTO Products VALUES('0004', '菜刀'   , '厨房用具', 3000, 2800, '2009-09-20');
+INSERT INTO Products VALUES('0005', '高压锅' , '厨房用具', 6800, 5000, '2009-01-15');
+INSERT INTO Products VALUES('0006', '叉子'   , '厨房用具',  500, NULL, '2009-09-20');
+INSERT INTO Products VALUES('0007', '擦菜板' , '厨房用具',  880,  790, '2008-04-28');
+INSERT INTO Products VALUES('0008', '圆珠笔' , '办公用品',  100, NULL, '2009-11-11');
+COMMIT;
+#+END_SRC
+
 *** 数据类型
 **** INTEGER
 
@@ -97,9 +113,9 @@ CREATE TABLE Products (
 当要被存储的字符串长度小于最大长度时, 会使用​_空格_​补足.
 E.g., 向 ~CHAR(3)~ 类型的列中输入 ='ab'= 时, 实际存储的是 ='ab '=.
 
-**** VARCHAR[fn:: Oracle[fn:: 本文在介绍 PostgreSQL 的同时, 也会将其与 Oracle Database, SQL Server, DB2, 和 MySQL 进行对比.  若无特别声明, 前述的 4 个 RDBMS 以及 PostgreSQL 皆可正常执行文中的示例代码.] 中使用 VARCHAR2 型.  (Oracle 中也有 VARCHAR 型, 但并不推荐使用.)]
+**** <<VARCHAR>>VARCHAR[fn:: Oracle[fn:: 本文在介绍 PostgreSQL 的同时, 也会将其与 Oracle Database, SQL Server, DB2, 和 MySQL 进行对比.  若无特别声明, 前述的 4 个 RDBMS 以及 PostgreSQL 皆可正常执行文中的示例代码.] 中使用 VARCHAR2 型.  (Oracle 中也有 VARCHAR 型, 但并不推荐使用.)]
 
-存储​*变长字符串*, 和 [[CHAR][CHAR]] 型的区别是: *不会*​使用​_空格_​补足.
+存储​*变长字符串*, 和 [[*CHAR][CHAR]] 型的区别是: *不会*​使用​_空格_​补足.
 E.g., 向 ~VARCHAR(3)~ 类型的列中输入 ='ab'= 时, 实际存储的还是它.
 
 **** DATE
@@ -129,8 +145,8 @@ N.b., 删除的表是无法恢复的.
 
 ** 更新表的定义
 
-N.b., ~ALTER TABLE~ 语句和 [[删除表][~DROP TABLE~ 语句]]一样, 执行之后无法恢复.
-误添的列可以通过 ~ALTER TABLE~ 语句删除, 或者将表全部删除之后重新再创建.
+N.b., ~ALTER TABLE~ 语句和 [[*删除表][~DROP TABLE~ 语句]]一样, 执行之后无法恢复.
+误添的列可以通过 ~ALTER TABLE~ 语句删除, 或者将表全部删除之后再重新创建.
 
 *** 添加列
 
@@ -157,10 +173,200 @@ DROP COLUMN product_name_pinyin;
 Oracle 中的写法[fn:Oracle增删单列]:
  : ALTER TABLE Products DROP (product_name_pinyin, 更多的旧列, ...);
 
+* 查询 (query)
+** 列的查询
+*** 查询指定的列
 
+基本的 ~SELECT~ 语句:
+
+#+BEGIN_SRC sql
+SELECT product_name,  -- 查询结果中 column 的顺序
+       sale_price     -- 与此处指定的顺序一致.
+FROM Products;
+#+END_SRC
+
+包含了 ~SELECT~ 和 ~FROM~ 两个子句 (clause).
+
+*** 查询所有列
+
+#+BEGIN_SRC sql
+SELECT * FROM Products;
+#+END_SRC
+
+但这样就无法设定列的显示顺序了, 这时就会按创建表时使用的 [[*表的创建][~CREATE TABLE~]] 对列进行排序.
+
+*** 为列取别名
+
+#+BEGIN_SRC sql
+  SELECT product_id     AS id,
+         product_name   AS "商品名",
+         purchase_price AS "价  格"
+  FROM Products;
+#+END_SRC
+
+使用双引号[fn:: N.b., 不是单引号.]可以包含空格, 取中文别名, etc.
+
+*** 常数的查询
+
+#+BEGIN_SRC sql
+  SELECT '商品'        -- 字符串常数
+           AS goods,
+         42            -- 数字常数
+           AS "the answer to the universe",
+         '2023-12-03'  -- 日期常数
+           AS "today’s date",
+         product_name
+  FROM Products;
+#+END_SRC
+
+使用​/字符串/​/​/日期/​常数时, 必须用单引号 (='=) 将其括起.
+
+** 筛选
+*** 去重
+
+#+BEGIN_SRC sql
+SELECT DISTINCT purchase_price
+FROM Products;
+#+END_SRC
+
+这个示例说明, 在使用 ~DISTINCT~ 时, ~NULL~ 也被视为一类数据.
+I.e., 当 ~NULL~ 存在于多行中时, 也会被合并为一条 ~NULL~ 数据.
+
+对单列的结果去重, 本质上是对多列组合的去重的特殊情形.
+
+#+BEGIN_SRC sql
+SELECT DISTINCT product_type,
+                regist_date
+FROM Products;
+#+END_SRC
+
+查询结果中的行与行之间, 如果​/各列数据都是重复的/, 那么就会被合并为一条.
+所以 /~DISTINCT~ 关键字只能用在第一个列名之前/.
+
+*** 过滤条件
+
+#+BEGIN_SRC sql
+SELECT product_name
+FROM Products
+WHERE product_type = '衣服';
+#+END_SRC
+
+*SQL 中子句的书写顺序是固定的!*
+~WHERE~ 子句必须​/紧跟/​在 ~FROM~ 子句之后.
+
+** 数学运算符
+*** 算术运算符
+
+可使用四则运算, e.g.,
+
+#+BEGIN_SRC sql
+  SELECT product_name,
+         (sale_price + 50) * 0.5 AS "近乎半价"
+  FROM Products;
+#+END_SRC
+
+**** 含 ~NULL~ 的计算
+
+*所有包含 ~NULL~ 的计算, 结果肯定是 ~NULL~.*
+E.g.,
+
+#+BEGIN_SRC sql
+  SELECT 1 + NULL,
+         1 * NULL,
+         1 / NULL,
+         NULL / 0;
+#+END_SRC
+
+通常情况下, 类似 ~1/0~ 这样除数为 0 会发生错误, 只有像上述示例代码[fn:: 实际上 ~FROM~ 子句在 ~SELECT~ 语句中并不是必不可少的, 可以只使用 ~SELECT~ 子句, 当成一个简陋的计算器.  但是, 在 Oracle 中, ~FROM~ 子句是必须的, 不过可以用 ~DUAL~ 这个临时表; 而在 DB2 中, 可以使用 ~SYSIBM.SYSDUMMY1~ 这个临时表.]这样用 0 除 ~NULL~ 不会发生错误.
+
+*** 比较运算符
+
+有 ~<~, ~<=~, ~=~, ~>=~, ~>~, 和 ~<>~[fn:: 有很多 RDBMS 把 ~!=~ 作为该运算符的同义词, 但这是不被标准 SQL 所承认的.] 这些.
+
+#+BEGIN_SRC sql
+  SELECT product_name
+  FROM Products
+  WHERE sale_price - purchase_price >= 500;
+#+END_SRC
+
+#+BEGIN_SRC sql
+  SELECT product_name, regist_date
+  FROM Products
+  -- 选取出登记日期_早于_ 2009 年 9 月 27 日的记录.
+  WHERE '2009-09-27' > regist_date;
+#+END_SRC
+
+N.b., 字符串类型[fn:: 该规则对[[*CHAR][定长字符串]]和[[VARCHAR][可变长字符串]]都适用.]的数据原则上按照字典顺序进行排序, 不能与数字​/​日期的大小顺序混淆.
+
+**** 含 ~NULL~ 的比较
+
+还记得 “叉子” 和 “圆珠笔” 的进货单价 (=purchase_price=) 是 ~NULL~ 吗?[fn:CREATE_TABLE_Products: 参见 [[CREATE TABLE Products][=Products= 的建表语句]].]
+我们来尝试根据 =purchase_price= 进行选取:
+
+#+BEGIN_SRC sql
+  SELECT product_name
+  FROM Products
+  -- 即使删去下面两行中的注释符, 还是不能选出进价为 NULL 的商品.
+  WHERE /* NOT ( */ purchase_price = 2800
+        OR purchase_price <> 2800 /* ) */;
+#+END_SRC
+
+执行结果中并没有 “叉子” 和 “圆珠笔”.
+因为这两件商品的进货单价不明 (~NULL~), 所以无法判定是不是指定的价格.[fn:: 更具体的分析, [[真值表][参见后文]]]
+不过, SQL 提供了专门用来判断是否为 ~NULL~ 的 ~IS NULL~ 和 ~IS NOT NULL~ 运算符, e.g.,
+
+#+BEGIN_SRC sql
+  SELECT product_name
+  FROM Products
+  WHERE purchase_price IS NULL;
+#+END_SRC
+
+*** 逻辑运算符
+
+有 ~AND~, ~OR~, 和 ~NOT~ 这些.
+N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
+
+[[*含 ~NULL~ 的比较][前文]]中介绍了查询 ~NULL~ 时不该使用 ~=~​/​~<>~; 实际上, 使用逻辑运算符时也需要特别对待 ~NULL~.
+因为 SQL 中与 ~NULL~ 比较的结果是不确定 (UNKNOWN), 所以:
+
+#+NAME: 真值表
+#+CAPTION: _三值逻辑_​中的 ~AND~ 和 ~OR~ 真值表
+| $P$     | $Q$     | ~AND~   | ~OR~    |
+|---------+---------+---------+---------|
+| 真      | 真      | 真      | 真      |
+| 真      | 假      | 假      | 真      |
+| 真      | unknown | unknown | 真      |
+| 假      | 假      | 假      | 假      |
+| 假      | unknown | 假      | unknown |
+| unknown | unknown | unknown | unknown |
+
+* COMMENT File Local Variables
 
-# Local Variables:
-# coding: utf-8-unix
-# eval: (progn (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/SQL基础教程.pdf") (w32-notification-close (w32-notification-notify :body " " :title "读到了第 59 页")))
-# eval: (start-process-shell-command "psql" nil "start D:/Progs/PostgreSQL/16/scripts/runpsql.bat")
-# End:
+Local Variables:
+coding: utf-8-unix
+eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/SQL基础教程.pdf")
+eval: (w32-notification-close (w32-notification-notify :body " " :title "读到了第 98 页"))
+eval: (find-file-noselect "D:/Desktop/ToRead/SQL基础教程-MICK/src_ans/Answer/")
+eval: (make-variable-buffer-local 'org-mode-abbrev-table)
+eval: (abbrev-table-put org-mode-abbrev-table :parents
+                        `(,sql-mode-abbrev-table
+                          ,@(abbrev-table-get org-mode-abbrev-table :parents)))
+                          eval: (define-abbrev org-mode-abbrev-table
+        "begsrc" "#+BEGIN_SRC sql\n#+END_SRC"
+        (lambda ()
+          (previous-line 1)
+          (end-of-line)))
+eval: (abbrev-mode)
+eval: (require 'ob-sql)
+org-confirm-babel-evaluate: nil
+sql-postgres-program: "D:/Progs/PostgreSQL/16/bin/psql.exe"
+org-babel-default-header-args:sql: ((:engine . "postgresql")
+                                    (:dbhost . "localhost")
+                                    (:dbport . 5432)
+                                    (:dbuser . "postgres")
+                                    (:database . "shop"))
+eval: (setenv "PGPASSWORD" " ")
+eval: (add-hook 'before-save-hook (lambda () (org-babel-remove-result-one-or-many t)) -99 "buffer local")
+eval: (company-mode -1)
+eval: (eldoc-mode -1)
+End:
