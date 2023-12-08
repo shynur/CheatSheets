@@ -1,7 +1,7 @@
-#+title: 简明 PostgreSQL
-#+language: zh-CN
-#+author: [[https://github.com/shynur][/谢骐/]]
-#+html_head: <style> table, th, td {border: 1px solid;} </style>
+#+TITLE: 简明 PostgreSQL
+#+LANGUAGE: zh-CN
+#+AUTHOR: [[https://github.com/shynur][/谢骐/]]
+#+HTML_HEAD: <style> table, th, td {border: 1px solid;} </style>
 
 * 使用 ~psql~
 ** 打开 ~psql~
@@ -340,23 +340,22 @@ N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
 | 假      | unknown | 假      | unknown |
 | unknown | unknown | unknown | unknown |
 
+* 聚合与分组
+** 聚合函数
+
+所谓​/聚合/, 就是将多行汇总为一行; 用于计算汇总的数据的函数称为​_聚合函数_.
+常用的有 ~AVG~, ~SUM~, ~MIN~, ~MAX~, 和 ~COUNT~ 这些.
+
+#+BEGIN_SRC sql
+  SELECT * FROM products;
+#+END_SRC
+
 * COMMENT File Local Variables
 
 Local Variables:
-coding: utf-8-unix
-eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/SQL基础教程.pdf")
-eval: (w32-notification-close (w32-notification-notify :body " " :title "读到了第 98 页"))
-eval: (find-file-noselect "D:/Desktop/ToRead/SQL基础教程-MICK/src_ans/Answer/")
-eval: (make-variable-buffer-local 'org-mode-abbrev-table)
-eval: (abbrev-table-put org-mode-abbrev-table :parents
-                        `(,sql-mode-abbrev-table
-                          ,@(abbrev-table-get org-mode-abbrev-table :parents)))
-                          eval: (define-abbrev org-mode-abbrev-table
-        "begsrc" "#+BEGIN_SRC sql\n#+END_SRC"
-        (lambda ()
-          (previous-line 1)
-          (end-of-line)))
-eval: (abbrev-mode)
+eval: (w32-notification-close
+       (w32-notification-notify :title "读到了第 100 页"
+                                :body " "))
 eval: (require 'ob-sql)
 org-confirm-babel-evaluate: nil
 sql-postgres-program: "D:/Progs/PostgreSQL/16/bin/psql.exe"
@@ -365,8 +364,17 @@ org-babel-default-header-args:sql: ((:engine . "postgresql")
                                     (:dbport . 5432)
                                     (:dbuser . "postgres")
                                     (:database . "shop"))
-eval: (setenv "PGPASSWORD" " ")
-eval: (add-hook 'before-save-hook (lambda () (org-babel-remove-result-one-or-many t)) -99 "buffer local")
-eval: (company-mode -1)
-eval: (eldoc-mode -1)
+eval: (setenv  ; and modify the definition of ‘org-babel-execute:sql’ if you use MS-Windows.
+       "PGPASSWORD"
+       " ")
+eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/SQL基础教程.pdf")
+eval: (find-file-noselect "D:/Desktop/ToRead/SQL基础教程-MICK/src_ans/Answer/")
+eval: (define-abbrev org-mode-abbrev-table
+        "begsql" "#+BEGIN_SRC sql\n#+END_SRC"
+        (lambda ()
+          (previous-line 1)
+          (end-of-line)))
+eval: (abbrev-mode)
+eval: (electric-quote-local-mode -1)
+coding: utf-8-unix
 End:

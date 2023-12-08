@@ -90,6 +90,7 @@ my_dog.substring(0, 3) === my_dog.substring(4);
 // Local Variables:
 // coding: utf-8-unix
 // eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/JavaScript.pdf")
-// eval: (w32-notification-close (w32-notification-notify :title "读到了第 357 页" :body " "))
+// eval: (w32-notification-close (w32-notification-notify :title "读到了第 367 页" :body " "))
 // eval: (start-process-shell-command "Node.js" nil "start node.exe")
+// eval: (find-file-noselect "D:/Desktop/ToRead/JavaScript/")
 // End:
