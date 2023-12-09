@@ -1,4 +1,4 @@
-#+TITLE: 简明 OpenMP: C++ 并行计算
+#+TITLE: 简明 OpenMP: 便捷的 C/C++ 并行计算
 #+LANGUAGE: zh-CN
 #+AUTHOR: [[https://github.com/shynur][/谢骐/]]
 #+HTML_HEAD: <style> table, th, td {border: 1px solid;} </style>
@@ -180,8 +180,7 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
 *** ~guided~ for-loop schedule
 
 刚开始给每个线程分配比较多的连续的 iteration.
-后来每次分配的 iteration 的数量逐渐递减至 ~CHUNK_SIZE~;
-省略该参数则降至 \(1\).
+后来每次分配的 iteration 的数量逐渐递减至 ~CHUNK_SIZE~, 省略该参数则降至 \(1\).
 
 #+BEGIN_SRC C++
   constexpr int number_of_threads = 2;
@@ -228,7 +227,7 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
   }
 #+END_SRC
 
-若不写 ~nowait~ 子句, 则其它线程会等待那个 正在执行 由 ~single~ 指令制导的语句 的线程 执行完成, 在一起执行后续的代码.  (也就是说, 存在一个隐式同步点.)
+若不写 ~nowait~ 子句, 则其它线程会等待那个 正在执行 由 ~single~ 指令制导的语句 的线程 执行完成, 在一起执行后续的代码.  (I.e., 存在一个隐式同步点.)
 
 * 附录
 ** TODO 预编译指令
@@ -321,19 +320,21 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
 *** [#B] 蒙特卡罗
 
 #+BEGIN_SRC C++
-  size_t in_circle = 0;
-  constexpr size_t total = 1'0000;
-
-  #pragma omp parallel for num_threads(16)
-  for (size_t i = 0; i < total; ++i)
+  int in_circle = 0;
+  constexpr int total = 10'0000;
+  srand(total);
+  #pragma omp parallel for
+  for (int i = 0; i < total; ++i)
       if (double x = rand() / static_cast<double>(RAND_MAX),
                  y = rand() / static_cast<double>(RAND_MAX);
           x * x + y * y < 1)
   #pragma omp critical
           ++in_circle;
-
   cout << (4.0 * in_circle / total);
 #+END_SRC
+
+#+RESULTS:
+: 3.11164
 
 * COMMENT File Local Variables
 
@@ -348,7 +349,8 @@ org-babel-default-header-args:C++: ((:includes   . ("<iostream>"
                                                     "<thread>"
                                                     "<cstdlib>"
                                                     "<omp.h>"))
-                                    (:namespaces . (std std::chrono_literals))
+                                    (:namespaces . (::std
+                                                    ::std::chrono_literals))
                                     (:main       . "自动包装到 main 函数中"))
 org-confirm-babel-evaluate: nil
 eval: (define-abbrev org-mode-abbrev-table
@@ -388,7 +390,6 @@ eval: (define-abbrev org-mode-abbrev-table
                                                 "default"))
                     ?\s))))
 eval: (abbrev-mode)
-eval: (eldoc-mode)
 eval: (electric-quote-local-mode -1)
 coding: utf-8-unix
 End:

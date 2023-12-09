@@ -1,7 +1,7 @@
 #+TITLE: 简明 PostgreSQL
 #+LANGUAGE: zh-CN
 #+AUTHOR: [[https://github.com/shynur][/谢骐/]]
-#+HTML_HEAD: <style> table, th, td {border: 1px solid;} </style>
+#+HTML_HEAD: <style> table, th, td {border: 1px solid;} code {box-sizing: border-box; display: inline-block; background-color: #F3F5F9; color: #0ABF5B} </style>
 
 * 使用 ~psql~
 ** 打开 ~psql~
@@ -88,7 +88,8 @@ CREATE TABLE Products (
 
 #+NAME: CREATE TABLE Products
 #+BEGIN_SRC sql
-BEGIN TRANSACTION;
+BEGIN TRANSACTION;     /* product_id         product_type    purchase_price
+                              |   product_name    |    sale_price  |   regist_date */
 INSERT INTO Products VALUES('0001', 'T恤衫'  , '衣服'    , 1000,  500, '2009-09-20');
 INSERT INTO Products VALUES('0002', '打孔器' , '办公用品',  500,  320, '2009-09-11');
 INSERT INTO Products VALUES('0003', '运动T恤', '衣服'    , 4000, 2800,         NULL);
@@ -113,7 +114,7 @@ COMMIT;
 当要被存储的字符串长度小于最大长度时, 会使用​_空格_​补足.
 E.g., 向 ~CHAR(3)~ 类型的列中输入 ='ab'= 时, 实际存储的是 ='ab '=.
 
-**** <<VARCHAR>>VARCHAR[fn:: Oracle[fn:: 本文在介绍 PostgreSQL 的同时, 也会将其与 Oracle Database, SQL Server, DB2, 和 MySQL 进行对比.  若无特别声明, 前述的 4 个 RDBMS 以及 PostgreSQL 皆可正常执行文中的示例代码.] 中使用 VARCHAR2 型.  (Oracle 中也有 VARCHAR 型, 但并不推荐使用.)]
+**** <<VARCHAR>>VARCHAR[fn:: Oracle[fn:: 本文在介绍 PostgreSQL 的同时, 也会将其与 Oracle Database, SQL Server, DB2, 和 MySQL 进行对比.  若无特别声明, 前述的 \(4\) 个 RDBMS 以及 PostgreSQL 皆可正常执行文中的示例代码.] 中使用 VARCHAR2 型.  (Oracle 中也有 VARCHAR 型, 但并不推荐使用.)]
 
 存储​*变长字符串*, 和 [[*CHAR][CHAR]] 型的区别是: *不会*​使用​_空格_​补足.
 E.g., 向 ~VARCHAR(3)~ 类型的列中输入 ='ab'= 时, 实际存储的还是它.
@@ -156,7 +157,7 @@ ALTER TABLE Products
 ADD COLUMN product_name_pinyin VARCHAR(100);
 #+END_SRC
 
-Oracle 中的写法[fn:Oracle增删单列: Oracle 可一次性增删多列.  当仅涉及 1 列的增删时, 可省略左右的括号.]:
+Oracle 中的写法[fn:Oracle增删单列: Oracle 可一次性增删多列.  当仅涉及 \(1\) 列的增删时, 可省略左右的括号.]:
  : ALTER TABLE Products ADD (product_name_pinyin VARCHAR2(100), 更多的新列, ...);
 SQL Server 中的写法:
  : ALTER TABLE Products ADD product_name_pinyin VARCHAR(100);
@@ -224,6 +225,7 @@ SELECT * FROM Products;
 ** 筛选
 *** 去重
 
+#+NAME: SELECT_DISTINCT的用法
 #+BEGIN_SRC sql
 SELECT DISTINCT purchase_price
 FROM Products;
@@ -251,8 +253,7 @@ FROM Products
 WHERE product_type = '衣服';
 #+END_SRC
 
-*SQL 中子句的书写顺序是固定的!*
-~WHERE~ 子句必须​/紧跟/​在 ~FROM~ 子句之后.
+N.b., ~WHERE~ 子句必须​/紧跟/​在 ~FROM~ 子句之后[fn:SQL书写顺序: *SQL 中子句的书写顺序是固定的!*].
 
 ** 数学运算符
 *** 算术运算符
@@ -277,7 +278,7 @@ E.g.,
          NULL / 0;
 #+END_SRC
 
-通常情况下, 类似 ~1/0~ 这样除数为 0 会发生错误, 只有像上述示例代码[fn:: 实际上 ~FROM~ 子句在 ~SELECT~ 语句中并不是必不可少的, 可以只使用 ~SELECT~ 子句, 当成一个简陋的计算器.  但是, 在 Oracle 中, ~FROM~ 子句是必须的, 不过可以用 ~DUAL~ 这个临时表; 而在 DB2 中, 可以使用 ~SYSIBM.SYSDUMMY1~ 这个临时表.]这样用 0 除 ~NULL~ 不会发生错误.
+通常情况下, 类似 ~1/0~ 这样除数为 \(0\) 会发生错误, 只有像上述示例代码[fn:: 实际上 ~FROM~ 子句在 ~SELECT~ 语句中并不是必不可少的, 可以只使用 ~SELECT~ 子句, 当成一个简陋的计算器.  但是, 在 Oracle 中, ~FROM~ 子句是必须的, 不过可以用 ~DUAL~ 这个临时表; 而在 DB2 中, 可以使用 ~SYSIBM.SYSDUMMY1~ 这个临时表.]这样用 \(0\) 除 ~NULL~ 不会发生错误.
 
 *** 比较运算符
 
@@ -344,17 +345,209 @@ N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
 ** 聚合函数
 
 所谓​/聚合/, 就是将多行汇总为一行; 用于计算汇总的数据的函数称为​_聚合函数_.
-常用的有 ~AVG~, ~SUM~, ~MIN~, ~MAX~, 和 ~COUNT~ 这些.
+
+*** 常用的聚合函数
+**** ~COUNT~ 函数
+
+*聚合函数通常会对 non-~NULL~ 的对象进行汇总*, 但是只有 _~COUNT(*)~_ 是例外.
+它可以查出包含 ~NULL~ 在内的全部数据的行数, e.g.,
 
 #+BEGIN_SRC sql
-  SELECT * FROM products;
+  SELECT COUNT(*) AS "表的行数",
+         COUNT(purchase_price) AS "进价列非空的行数"
+  FROM Products;
 #+END_SRC
+
+该特性是 ~COUNT~ 函数所特有的, *其它函数并不能将 =*= 作为参数!*
+
+**** ~SUM~ 函数
+
+#+BEGIN_SRC sql
+  SELECT SUM(sale_price),
+         SUM(purchase_price)  -- 该列含 NULL.
+  FROM Products;
+#+END_SRC
+
+注意 =purchase_price= 列中含 ~NULL~, 我们来看下 PostgreSQL 是如何计算 ~SUM(purchase_price)~ 的:
+
+| T恤衫 | 打孔器 | 运动T恤 | 菜刀 | 高压锅 | 叉子   | 擦菜板 | 圆珠笔 | 合计 |
+|-------+--------+---------+------+--------+--------+--------+--------+------|
+|   500 |    320 |    2800 | 2800 |   5000 | +NULL+ |    790 | +NULL+ |      |
+#+TBLFM: $9=$1+$2+$3+$4+$5+$7
+
+前文说过: “[[*含 ~NULL~ 的计算][所有包含 ~NULL~ 的计算, 结果肯定是 ~NULL~.]]”
+但我们看到, 这里的结果并非 ~NULL~, 这说明:
+
+#+BEGIN_CENTER
+所有的聚合函数, 如果以列名为参数, 那么在计算之前就已经把 ~NULL~ 排除在外了.
+因此, 无论有多少个 ~NULL~ 都会被无视.
+这与“等价为 \(0\)”并不相同.
+#+END_CENTER
+
+**** TODO [0%] ~AVG~ 函数
+
+#+BEGIN_SRC sql
+  SELECT AVG(purchase_price)
+  FROM Products;
+#+END_SRC
+
+计算时对待 ~NULL~ 的方式类似 [[*~SUM~ 函数]]:
+
+| T恤衫 | 打孔器 | 运动T恤 | 菜刀 | 高压锅 | 叉子   | 擦菜板 | 圆珠笔 | 合计 \div 6 |
+|-------+--------+---------+------+--------+--------+--------+--------+-------------|
+|   500 |    320 |    2800 | 2800 |   5000 | +NULL+ |    790 | +NULL+ |       2035. |
+#+TBLFM: $9=($1+$2+$3+$4+$5+$7)/6.0
+
+- [ ] 但是有时也想将 ~NULL~ 作为 \(0\) 进行计算:
+
+ | T恤衫 | 打孔器 | 运动T恤 | 菜刀 | 高压锅 | 叉子     | 擦菜板 | 圆珠笔   | 合计 \div 8 |
+ |-------+--------+---------+------+--------+----------+--------+----------+-------------|
+ |   500 |    320 |    2800 | 2800 |   5000 | +NULL+ 0 |    790 | +NULL+ 0 |     1526.25 |
+ #+TBLFM: $9=($1+$2+$3+$4+$5+$7)/8.0
+
+ 这是有办法做到的.
+
+**** TODO ~MIN~ 函数和 ~MAX~ 函数
+
+同样地, 这两个函数预先排除了 ~NULL~:
+
+#+BEGIN_SRC sql
+  SELECT MIN(sale_price),
+         MAX(purchase_price)
+  FROM Products;
+#+END_SRC
+
+N.b., ~MIN~​/​~MAX~ 函数 跟 ~AVG~​/​~SUM~ 函数 对参数类型有不同的要求:
+~AVG~​/​~SUM~ 函数只能对​_数值类型_​的列使用, 而 ~MIN~​/​~MAX~ 函数原则上可以用于​_任何数据类型_​的列.
+E.g.,
+
+# TODO 不知为何, 该代码块的结果没有被导出.
+#+BEGIN_SRC sql :exports both
+  SELECT MIN(regist_date),
+         MAX(regist_date)
+  FROM Products;
+#+END_SRC
+
+#+RESULTS:
+|        min |        max |
+|------------+------------|
+| 2008-04-28 | 2009-11-11 |
+
+只要是能够排序的数据, 就肯定有最值, 也就能够使用这俩函数.
+对日期来说, 平均值 和 合计值 并没有实际意义, 因此不能使用 ~AVG~​/​~SUM~ 函数.
+这个观点对于字符串类型的数据也适用.
+
+*** 向聚合函数传入互异的参数
+
+#+CAPTION: 计算去重后的数据行数
+#+BEGIN_SRC sql
+  SELECT COUNT(DISTINCT product_type) AS "品类数目"
+  FROM Products;
+#+END_SRC
+
+#+RESULTS:
+| 品类数目 |
+|------------|
+| 3        |
+
+这里 ~DISTINCT~ 写在括号中, 是因为必须要在计算行数之前删除 =product_type= 列中的重复数据.
+如果像[[SELECT_DISTINCT的用法][~SELECT DISTINCT~ 语句]]那样写在括号外的话, 就会先计算出数据行数, 再删除重复数据, 最终得到的是 =product_type= 列的所有行数:
+
+#+CAPTION: 先计算行数, 再删除重复的结果
+#+BEGIN_SRC sql
+  SELECT DISTINCT COUNT(product_type)
+  FROM Products;
+#+END_SRC
+
+#+RESULTS:
+| count |
+|-------|
+|     8 |
+
+** 对表进行分组
+
+我们可以用 ~GROUP BY~ 子句像这样:
+
+#+CAPTION: 根据品类对商品进行分组
+#+BEGIN_EXAMPLE
+| (厨房用具) |   (衣服)   |
+|            |    T恤衫   |
+|   菜刀     |   运动T恤  |
+|   高压锅   +------------|
+|   叉子     | (办公用品) |
+|   擦菜板   |   打孔器   |
+|            |   圆珠笔   |
+#+END_EXAMPLE
+
+对表进行切分, e.g.,
+
+#+BEGIN_SRC sql
+  SELECT product_type,
+         COUNT(*) AS "该品类含有多少种商品"
+  FROM Products
+  GROUP BY product_type;
+#+END_SRC
+
+#+RESULTS:
+| product_type | 该品类含有多少种商品 |
+|--------------+------------------------|
+| 衣服         | 2                    |
+| 办公用品     | 2                    |
+| 厨房用具     | 4                    |
+
+在 ~GROUP BY~ 子句中指定的列称为​_聚合键_​/​_分组列_.
+和 ~SELECT~ 子句一样, <<~GROUP BY~ 多列>> 可以通过逗号分隔以指定多列, 这些列的组合决定分组的方式.
+
+N.b., ~GROUP BY~ 子句一定要写在 ~FROM~ (and if existing ~WHERE~) 子句之后[fn:SQL书写顺序].
+
+*** 聚合键是 ~NULL~ 的情况
+
+#+BEGIN_SRC sql :exports both
+  SELECT regist_date /* 含 NULL */,
+         COUNT(*) AS "该日登记的商品数目"
+  FROM Products
+  GROUP BY regist_date;
+#+END_SRC
+
+#+RESULTS:
+| regist_date | 该日登记的商品数目 |
+|-------------+----------------------|
+|             | 1                  |
+|  2009-11-11 | 1                  |
+|  2009-09-20 | 3                  |
+|  2009-09-11 | 1                  |
+|  2009-01-15 | 1                  |
+|  2008-04-28 | 1                  |
+
+从结果可以看出, 当聚合键中包含 ~NULL~ 时, 也会将其作为一组特定的数据[fn:: 其实这是容易推理出来的, [[~GROUP BY~ 多列][前文]]说过, ~GROUP BY~ 子句可以指定多个分组列.  如果这些列的某一种组合中包含一个 ~NULL~ 列, 从情理上讲, 我们当然不应该舍弃这种组合; 而按照单列进行分组, 不过是按照多列的组合来进行分组的一种特例.].
+
+*** 先过滤再分组
+
+有 ~WHERE~ 子句时, 会先根据它指定的条件进行过滤, 然后再进行汇总.
+E.g.,
+
+#+BEGIN_SRC sql
+  SELECT purchase_price,
+         COUNT(*)
+  FROM Products
+  WHERE product_type = '衣服'
+  GROUP BY purchase_price;
+#+END_SRC
+
+#+RESULTS:
+| purchase_price | count |
+|----------------+-------|
+|            500 |     1 |
+|           2800 |     1 |
+
+总结一下上述 SQL 语句的执行顺序[fn:: 这与语法所规定的书写顺序并不相同.  就是这样的, 书写顺序 和 RDBMS 内部的执行顺序并不相同.]:
+~FROM~ \to ~WHERE~ \to ~GROUP BY~ \to ~SELECT~.
 
 * COMMENT File Local Variables
 
 Local Variables:
 eval: (w32-notification-close
-       (w32-notification-notify :title "读到了第 100 页"
+       (w32-notification-notify :title "读到了第 115 页"
                                 :body " "))
 eval: (require 'ob-sql)
 org-confirm-babel-evaluate: nil
@@ -364,10 +557,15 @@ org-babel-default-header-args:sql: ((:engine . "postgresql")
                                     (:dbport . 5432)
                                     (:dbuser . "postgres")
                                     (:database . "shop"))
-eval: (setenv  ; and modify the definition of ‘org-babel-execute:sql’ if you use MS-Windows.
-       "PGPASSWORD"
-       " ")
-eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/SQL基础教程.pdf")
+eval: (advice-add 'org-babel-execute:sql  ; and modify its definition when on MS-Windows.
+                  :around (let ((my/PostgreSQL.org (current-buffer)))
+                            (lambda (fn &rest args)
+                              (with-environment-variables (("PGPASSWORD" (getenv "PGPASSWORD")))
+                                (when (eq (current-buffer) my/PostgreSQL.org)
+                                  (setenv "PGPASSWORD" " "))
+                                (apply fn args))))
+                  '((name . "~shynur/Documents/CheatSheets/PostgreSQL.org")))
+eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/TextBook.pdf")
 eval: (find-file-noselect "D:/Desktop/ToRead/SQL基础教程-MICK/src_ans/Answer/")
 eval: (define-abbrev org-mode-abbrev-table
         "begsql" "#+BEGIN_SRC sql\n#+END_SRC"
@@ -376,5 +574,17 @@ eval: (define-abbrev org-mode-abbrev-table
           (end-of-line)))
 eval: (abbrev-mode)
 eval: (electric-quote-local-mode -1)
+eval: (advice-add 'org-html-export-to-html :around
+                  (let ((my/PostgreSQL.org (current-buffer)))
+                    (lambda (fn &rest args)
+                      (if (eq my/PostgreSQL.org (current-buffer))
+                          (let ((using-light-theme? (memq 'modus-operandi custom-enabled-themes)))
+                            (unless using-light-theme?
+                              (load-theme 'modus-operandi))
+                            (prog1 (apply fn args)
+                              (unless using-light-theme?
+                                (disable-theme 'modus-operandi))))
+                        (apply fn args))))
+                  '((name . "~shynur/Documents/CheatSheets/PostgreSQL.org")))
 coding: utf-8-unix
 End:
