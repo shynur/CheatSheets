@@ -1,7 +1,7 @@
 #+TITLE: 简明 OpenMP: 便捷的 C/C++ 并行计算
 #+LANGUAGE: zh-CN
 #+AUTHOR: [[https://github.com/shynur][/谢骐/]]
-#+HTML_HEAD: <style> table, th, td {border: 1px solid;} </style>
+#+HTML_HEAD: <style> table, th, td {border: 1px solid;} code {box-sizing: border-box; display: inline-block; background-color: #F3F5F9; color: #0ABF5B} </style>
 
 本文使用的 OpenMP 版本为 \(4.5\), 机器的处理器个数为 \(16\).
 
@@ -30,11 +30,11 @@ OpenMP 就是关于
 
 ** 语句的书写
 
-OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一条 directive 的格式如下:
- : #pragma omp 指令 子句, 子句, ...
-指令可以单独出现, 子句必须出现在指令之后.
+OpenMP 通过 pragma 语句的书写来指导程序进行并行计算, 格式如下:
+ : #pragma omp DIRECTIVE [CLAUSE [[, ] CLAUSE] ...]
+指令 (directive) 可以单独出现, 子句 (clause) 必须出现在指令之后.
 
-每条 directive 仅指导下一句代码的执行方式.
+每条 pragma 仅指导下一句代码的执行方式.
 
 ** 并行域
 
@@ -64,7 +64,7 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
 
 ** 环境变量控制线程数量
 
-#+BEGIN_SRC C++ :results none
+#+BEGIN_SRC C++  :results none
   #pragma omp parallel
       cout << 1 << 2;
 #+END_SRC
@@ -76,7 +76,7 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
       (org-babel-execute-src-block)))
 #+END_SRC
 
-** TODO 注意事项
+** TODO Priority of Various Methods for Setting Thread Count[fn:: 中文在此处不太能准确地表达.]
 
 同时使用 [[环境变量控制线程数量][环境变量]] 和 [[运行时 API 调整线程数量][运行时 API]] 时, 后者将获得更高的优先权 (吗).
 
@@ -93,10 +93,13 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
 
 ** 获取线程编号
 
-#+BEGIN_SRC C++ :results verbatim
+#+BEGIN_SRC C++  :exports both  :results verbatim
   #pragma omp parallel num_threads(5)
       cout << omp_get_thread_num();
 #+END_SRC
+
+#+RESULTS:
+: 34021
 
 从结果看出, 它是从 _0_ 编号的.
 
@@ -124,11 +127,14 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
 
 *** 为 for-loop 单独创建并行域
 
-#+BEGIN_SRC C++ :results verbatim
+#+BEGIN_SRC C++  :results verbatim
   #pragma omp parallel for
   for (int i = 0; i < 10; ++i)
       cout << omp_get_thread_num();
 #+END_SRC
+
+#+RESULTS:
+: 6372914580
 
 这种写法更加方便, 但是在并行域中创建的线程会在离开 for-loop 后被立刻销毁.
 这对性能有影响.
@@ -142,7 +148,7 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
 #+BEGIN_SRC C++
   constexpr int number_of_threads = 3;
   array<vector<int>, number_of_threads> their_vectors;
-  #pragma omp parallel for schedule(static) num_threads(number_of_threads)
+  #pragma omp parallel for schedule(static), num_threads(number_of_threads)
   for (int i = 0; i < 20; ++i)
       their_vectors[omp_get_thread_num()].push_back(i);
   for (const auto& its_vec : their_vectors) {
@@ -151,6 +157,11 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
       cout << endl;
    }
 #+END_SRC
+
+#+RESULTS:
+|  0 |  1 |  2 |  3 |  4 |  5 |  6 |
+|  7 |  8 |  9 | 10 | 11 | 12 | 13 |
+| 14 | 15 | 16 | 17 | 18 | 19 |    |
 
 众线程按照次序, 每次取 ~CHUNK_SIZE~ 个 连续的 iteration.
 省略 ~CHUNK_SIZE~ 则表示, 每次取尽可能多的 iteration, 且尽量平均分配.
@@ -164,7 +175,7 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
 #+BEGIN_SRC C++
   constexpr int number_of_threads = 3;
   array<vector<int>, number_of_threads> their_vectors;
-  #pragma omp parallel for schedule(dynamic, 4) num_threads(number_of_threads)
+  #pragma omp parallel for schedule(dynamic, 4), num_threads(number_of_threads)
   for (int i = 0; i < 24; ++i)
       this_thread::sleep_for(1us * rand()),
         their_vectors[omp_get_thread_num()].push_back(i);
@@ -185,7 +196,7 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
 #+BEGIN_SRC C++
   constexpr int number_of_threads = 2;
   array<vector<int>, number_of_threads> their_vectors;
-  #pragma omp parallel for schedule(guided) num_threads(number_of_threads)
+  #pragma omp parallel for schedule(guided), num_threads(number_of_threads)
   for (int i = 0; i < 25; ++i)
       this_thread::sleep_for(1us * rand()),
         their_vectors[omp_get_thread_num()].push_back(i);
@@ -197,12 +208,41 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
 #+END_SRC
 
 *** TODO ~runtime~ for-loop schedule
+** 串行执行 ~parallel for~ 中的某段代码
+
+以下这段代码要求众线程串行地打印各自 iteration 中的 ~i~:
+
+#+BEGIN_SRC C++  :exports both verbatim
+  constexpr int num_of_threads = 4;
+  #pragma omp parallel for ordered, schedule(static, 1), num_threads(num_of_threads)
+  for (int i = 0; i < num_of_threads; ++i) {
+      this_thread::sleep_for(50ms * i);
+      cout << '(';
+  #pragma omp ordered
+      {
+          cout << i;
+          this_thread::sleep_for(50ms * i);
+          cout << i;
+      }
+      cout << ')';
+   }
+#+END_SRC
+
+#+RESULTS:
+: (00)(1(1)2(2)33)
+
+可以看到, 结果是一个 S-表达式[fn:: I.e., 括号是匹配的.]; 删除括号之后 (=00112233=), 数字按​*顺序*​出现, 且 相同数字之间​*无间隔*.
+这些是 串行 的特征.
+
+而结果中的 =(=​/​=)= 并没有连续出现, 这说明 ~#pragma omp ordered~ 的前后并没有隐式同步点.
+它只是保证: 在 当前 iteration 执行完 被 ~#pragma omp ordered~ 制导的代码 之前, 下一个 iteration 不会 开始执行 当前 iteration 正在 执行的 那段代码.
+
 * 词法地划分并行域
 ** 并行域中任一代码仅由一个线程执行
 
 使用 ~section~ 指令, 对 由 ~parallel sections~ 指令制导的并行域 中的代码文本进行划分, 分配给众线程, 划分的区域只会被执行一次.
 
-#+BEGIN_SRC C++ :results verbatim
+#+BEGIN_SRC C++  :results verbatim
   #pragma omp parallel sections num_threads(10)
   {
   #pragma omp section
@@ -214,7 +254,10 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
   }
 #+END_SRC
 
+#+RESULTS:
+
 ** 并行域中某段代码仅由一个线程执行
+*** 并行域中某段代码由任意一个线程执行
 
 #+BEGIN_SRC C++
   #pragma omp parallel num_threads(10)
@@ -227,12 +270,74 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
   }
 #+END_SRC
 
+#+RESULTS:
+: ..153869470...2
+
 若不写 ~nowait~ 子句, 则其它线程会等待那个 正在执行 由 ~single~ 指令制导的语句 的线程 执行完成, 在一起执行后续的代码.  (I.e., 存在一个隐式同步点.)
 
+*** 并行域中某段代码仅由​/主线程/​执行
+
+指令 ~master~ 和 ~single~ 相似, 区别在于 ~master~ 制导的代码块只能由主线程执行, 而且 *~master~ 指令在代码块结束时没有隐式同步, /不能/​指定 ~nowait~ 子句.*
+
+#+BEGIN_SRC C++
+  #pragma omp parallel
+  {
+  #pragma omp master /* nowait */
+      cout << omp_get_thread_num();
+      cout << '.';
+  }
+#+END_SRC
+
+#+RESULTS:
+: ..............0..
+
+* 同步
+** 路障
+
+当遇到 ~barrier~ 指令时, 线程必须停下来等待, 直到所有的线程都执行到了这一点, 才能继续往后执行.
+E.g.,
+
+#+BEGIN_SRC C++
+  #pragma omp parallel
+  {
+      this_thread::sleep_for(1us * rand());
+      cout << 1;
+  #pragma omp barrier
+      cout << 2;
+  }
+#+END_SRC
+
+#+RESULTS:
+: 88888888888888882222222222222222
+
+** 取消隐式同步
+
+容易猜到, *在 ~parallel~​&​~for~​&​~sections~​&​~single~ 指令之后都有一个隐式的同步点.*
+我们可以添加 ~nowait~ 子句以取消这类隐式路障, e.g.,
+
+#+BEGIN_SRC C++
+  constexpr int num_of_threads = 18;
+  #pragma omp parallel num_threads(num_of_threads)
+  {
+  #pragma omp for nowait
+      for (int i = 0; i < num_of_threads / 2; ++i)
+          cout << '^';
+  #pragma omp for
+      for (int i = 0; i < num_of_threads / 2; ++i)
+          cout << '.';
+  }
+#+END_SRC
+
+#+RESULTS:
+: ^^^^...^^...^^^...
+
 * 附录
+
+参考: [[https://www.openmp.org/resources/refguides/]].
+
 ** TODO 预编译指令
 
-#+CAPTION: \(12\) 个指令
+#+CAPTION: directives (不完整)
 | ~parallel~          | 制导并行域                                                                  |
 | ~for~               | 用在​_并行域中的 ~for~ 语句_​之前, for-loop 的迭代将会被分配给若干线程去执行 |
 | ~parallel for~      | ~parallel~ 和 ~for~ 的组合, 制导 ~for~ 语句                                 |
@@ -246,23 +351,23 @@ OpenMP 通过 directive 语句的书写来指导程序进行并行计算, 每一
 | ~master~            | 只由主线程执行                                                              |
 | ~threadprivate~     | 指定若干变量为线程专有                                                      |
 
-#+CAPTION: \(12\) 个子句
-| ~private~                    | 指定若干变量在各线程中都有自己的私有副本                                                                                |
-| ~firstprivate~               | 同 ~private~; 在变量进入 并行域​/​任务分担域 时, 继承主线程的同名变量作为初值                                            |
+#+CAPTION: clauses (不完整)
+| ~private~                    | 指定若干变量在各线程中都有自己的私有副本                                    |
+| ~firstprivate~               | 同 ~private~; 在变量进入 并行域​/​任务分担域 时, 继承主线程的同名变量作为初值 |
 | ~lastprivate~                | 指定若干私有变量的值在并行处理之后复制到主线程的同名变量中, 负责拷贝的线程是 ~for~​/​~sections~ 任务分担中的最后一个线程 |
-| ~reduction~                  | 指定若干变量是私有的, 并且在并行处理完这些变量后指定要规约的操作                                                        |
-| ~nowait~                     | 指出并发线程可以忽略其它制导指令暗含的路障同步                                                                          |
-| ~num~                        | _threads	指定并行域内的线程数目                                                                                      |
-| ~schedule(type, chunk_size)~ | 指定 ~for~ 任务当中任务分配调度的类型                                                                                   |
-| ~shared~                     | 指定若干变量为线程间的共享变量                                                                                          |
-| ~ordered~                    | 按照串行循环次序执行 ~for~ 任务分担域内指定的代码                                                                       |
-| ~copyprivate~                | 配合 ~single~ 指令, 将指定线程的专有变量广播到并行域内其它线程的同名变量中                                              |
-| ~copyin~                     | 指定一个 ~threadprivate~ 类型的变量需要用主线程的同名变量进行初始化                                                     |
-| ~default~                    | 并行域内变量的使用方式, 默认为 ~shared~                                                                                 |
+| ~reduction~                  | 指定若干变量是私有的, 并且在并行处理完这些变量后指定要规约的操作            |
+| ~nowait~                     | 指出并发线程可以忽略其它制导指令暗含的路障同步                              |
+| ~num_threads~                | 指定并行域内的线程数目                                                      |
+| ~schedule(type, chunk_size)~ | 指定 ~for~ 任务当中任务分配调度的类型                                       |
+| ~shared~                     | 指定若干变量为线程间的共享变量                                              |
+| ~ordered~                    | 按照串行循环次序执行 ~for~ 任务分担域内指定的代码                           |
+| ~copyprivate~                | 配合 ~single~ 指令, 将指定线程的专有变量广播到并行域内其它线程的同名变量中  |
+| ~copyin~                     | 指定一个 ~threadprivate~ 类型的变量需要用主线程的同名变量进行初始化         |
+| ~default~                    | 并行域内变量的使用方式, 默认为 ~shared~                                     |
 
 ** TODO API 函数
 
-#+CAPTION: \(17\) 个函数
+#+CAPTION: 运行时 API (不完整)
 | ~omp_in_paralled~         | 处于并行域?                |
 | ~omp_get_thread_num~      | 线程号                     |
 | ~omp_set_num_threads~     | 设置后续的并行域的线程个数 |
@@ -358,38 +463,20 @@ eval: (define-abbrev org-mode-abbrev-table
         (lambda ()
           (previous-line 1)
           (end-of-line)))
-eval: (define-abbrev org-mode-abbrev-table
-        "pragmaomp" "#pragma omp "
-        (lambda ()
-          (insert (completing-read "#pragma omp "
-                                   '("parallel"
-                                     "for"
-                                     "parallel for"
-                                     "sections"
-                                     "parallel sections"
-                                     "single"
-                                     "critical"
-                                     "flush"
-                                     "barrier"
-                                     "atomic"
-                                     "master"
-                                     "threadprivate"))
-                  ?\s)
-          (while t
-            (insert (completing-read "子句: " '("private"
-                                                "firstprivate"
-                                                "lastprivate"
-                                                "reduction"
-                                                "nowait"
-                                                "num"
-                                                "schedule()"
-                                                "shared"
-                                                "ordered"
-                                                "copyprivate"
-                                                "copyin"
-                                                "default"))
-                    ?\s))))
 eval: (abbrev-mode)
 eval: (electric-quote-local-mode -1)
+eval: (advice-add 'org-html-export-to-html :around
+                  (let ((my/OpenMP.org (current-buffer)))
+                    (lambda (fn &rest args)
+                      (if (eq my/OpenMP.org (current-buffer))
+                          (let ((inhibit-redisplay t)
+                                (using-light-theme? (memq 'modus-operandi custom-enabled-themes)))
+                            (unless using-light-theme?
+                              (load-theme 'modus-operandi))
+                            (prog1 (apply fn args)
+                              (unless using-light-theme?
+                                (disable-theme 'modus-operandi))))
+                        (apply fn args))))
+                  '((name . "~shynur/Documents/CheatSheets/OpenMP.org")))
 coding: utf-8-unix
 End:

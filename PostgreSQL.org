@@ -1,22 +1,22 @@
 #+TITLE: 简明 PostgreSQL
 #+LANGUAGE: zh-CN
 #+AUTHOR: [[https://github.com/shynur][/谢骐/]]
-#+HTML_HEAD: <style> table, th, td {border: 1px solid;} code {box-sizing: border-box; display: inline-block; background-color: #F3F5F9; color: #0ABF5B} </style>
+#+HTML_HEAD: <style> table, th, td {border: 1px solid;} code {box-sizing: border-box; background-color: #F3F5F9; color: #0ABF5B;} .tag {color: #9370db;} </style>
 
 * 使用 ~psql~
 ** 打开 ~psql~
 
 在 shell 中运行安装时自带的 ~runpsql.bat~[fn:: 本文以 MS-Windows 为例.] 即可, e.g.,
 
-#+BEGIN_SRC pwsh
-~shynur/bin/PostgreSQL/16/scripts/runpsql.bat
+#+BEGIN_SRC pwsh  :eval never
+PS C:/Users/shynur> ./bin/PostgreSQL/16/scripts/runpsql.bat
 #+END_SRC
 
 ** 退出 ~psql~
 
 可直接叉掉窗口, 或
 
-#+BEGIN_SRC sql
+#+BEGIN_SRC psql  :eval never
 database_name=# \q
 #+END_SRC
 
@@ -30,8 +30,8 @@ database_name=# \q
 
 *** DML[fn:DML: Data Manipulation Language]
 
-| ~SELECT~           | ~INSERT~               | ~UPDATE~           | ~DELETE~           |
-|--------------------+------------------------+--------------------+--------------------|
+| ~SELECT~         | ~INSERT~            | ~UPDATE~         | ~DELETE~         |
+|------------------+---------------------+------------------+------------------|
 | *查询*​表中的数据 | 向表中​*插入*​新数据 | *更新*​表中的数据 | *删除*​表中的数据 |
 
 *** DCL[fn:DCL: Data Control Language]
@@ -60,14 +60,14 @@ database_name=# \q
 - 数据库的名字只能使用​_小写字母_
 
 * 创建数据库与表
-** 数据库的创建
+** 数据库的创建                            :CRAETE_DATABASE:
 
 #+BEGIN_SRC sql
 -- 创建名为 ‘shop’ 的数据库.
 CREATE DATABASE shop;
 #+END_SRC
 
-** 表的创建
+** 表的创建                       :CREATE_TABLE:INSERT_INTO:
 
 #+BEGIN_SRC sql
 -- 在数据库 ‘shop’ 中创建名为 ‘Products’ 的表.
@@ -134,7 +134,7 @@ E.g., 向 ~VARCHAR(3)~ 类型的列中输入 ='ab'= 时, 实际存储的还是�
 
 ***** ~PRIMARY KEY~
 * 表的删除与更新
-** 删除表
+** 删除表                                       :DROP_TABLE:
 
 #+BEGIN_SRC sql
 -- 删除 ‘Products’ 表.
@@ -144,12 +144,12 @@ DROP TABLE Products;
 N.b., 删除的表是无法恢复的.
 只能重新创建, 然后重新插入数据.
 
-** 更新表的定义
+** 更新表的定义                                :ALTER_TABLE:
 
 N.b., ~ALTER TABLE~ 语句和 [[*删除表][~DROP TABLE~ 语句]]一样, 执行之后无法恢复.
 误添的列可以通过 ~ALTER TABLE~ 语句删除, 或者将表全部删除之后再重新创建.
 
-*** 添加列
+*** 添加列                                      :ADD_COLUMN:
 
 #+BEGIN_SRC sql
 -- 给 ‘Products’ 表添加一列, 表示商品名称的拼音.
@@ -163,7 +163,7 @@ SQL Server 中的写法:
  : ALTER TABLE Products ADD product_name_pinyin VARCHAR(100);
 它们都省略了 ~COLUMN~ 关键字.
 
-*** 删除列
+*** 删除列                                     :DROP_COLUMN:
 
 #+BEGIN_SRC sql
 -- 删除 ‘Products’ 表中的 ‘product_name_pinyin’ 列.
@@ -174,7 +174,7 @@ DROP COLUMN product_name_pinyin;
 Oracle 中的写法[fn:Oracle增删单列]:
  : ALTER TABLE Products DROP (product_name_pinyin, 更多的旧列, ...);
 
-* 查询 (query)
+* 查询 (query)                                      :SELECT:
 ** 列的查询
 *** 查询指定的列
 
@@ -196,7 +196,7 @@ SELECT * FROM Products;
 
 但这样就无法设定列的显示顺序了, 这时就会按创建表时使用的 [[*表的创建][~CREATE TABLE~]] 对列进行排序.
 
-*** 为列取别名
+*** 为列取别名                                          :AS:
 
 #+BEGIN_SRC sql
   SELECT product_id     AS id,
@@ -223,9 +223,9 @@ SELECT * FROM Products;
 使用​/字符串/​/​/日期/​常数时, 必须用单引号 (='=) 将其括起.
 
 ** 筛选
-*** 去重
+*** 去重                                   :SELECT_DISTINCT:
 
-#+NAME: SELECT_DISTINCT的用法
+#+NAME: ~SELECT DISTINCT~ 的用法
 #+BEGIN_SRC sql
 SELECT DISTINCT purchase_price
 FROM Products;
@@ -245,7 +245,7 @@ FROM Products;
 查询结果中的行与行之间, 如果​/各列数据都是重复的/, 那么就会被合并为一条.
 所以 /~DISTINCT~ 关键字只能用在第一个列名之前/.
 
-*** 过滤条件
+*** 过滤条件                                         :WHERE:
 
 #+BEGIN_SRC sql
 SELECT product_name
@@ -299,7 +299,7 @@ E.g.,
 
 N.b., 字符串类型[fn:: 该规则对[[*CHAR][定长字符串]]和[[VARCHAR][可变长字符串]]都适用.]的数据原则上按照字典顺序进行排序, 不能与数字​/​日期的大小顺序混淆.
 
-**** 含 ~NULL~ 的比较
+**** 含 ~NULL~ 的比较                  :IS_NULL:IS_NOT_NULL:
 
 还记得 “叉子” 和 “圆珠笔” 的进货单价 (=purchase_price=) 是 ~NULL~ 吗?[fn:CREATE_TABLE_Products: 参见 [[CREATE TABLE Products][=Products= 的建表语句]].]
 我们来尝试根据 =purchase_price= 进行选取:
@@ -322,7 +322,7 @@ N.b., 字符串类型[fn:: 该规则对[[*CHAR][定长字符串]]和[[VARCHAR][�
   WHERE purchase_price IS NULL;
 #+END_SRC
 
-*** 逻辑运算符
+*** 逻辑运算符                                  :AND:OR:NOT:
 
 有 ~AND~, ~OR~, 和 ~NOT~ 这些.
 N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
@@ -332,7 +332,7 @@ N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
 
 #+NAME: 真值表
 #+CAPTION: _三值逻辑_​中的 ~AND~ 和 ~OR~ 真值表
-| $P$     | $Q$     | ~AND~   | ~OR~    |
+| \(P\)   | \(Q\)   | ~AND~   | ~OR~    |
 |---------+---------+---------+---------|
 | 真      | 真      | 真      | 真      |
 | 真      | 假      | 假      | 真      |
@@ -341,13 +341,13 @@ N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
 | 假      | unknown | 假      | unknown |
 | unknown | unknown | unknown | unknown |
 
-* 聚合与分组
+* 分组与聚合
 ** 聚合函数
 
 所谓​/聚合/, 就是将多行汇总为一行; 用于计算汇总的数据的函数称为​_聚合函数_.
 
 *** 常用的聚合函数
-**** ~COUNT~ 函数
+**** ~COUNT~ 函数                                    :COUNT:
 
 *聚合函数通常会对 non-~NULL~ 的对象进行汇总*, 但是只有 _~COUNT(*)~_ 是例外.
 它可以查出包含 ~NULL~ 在内的全部数据的行数, e.g.,
@@ -360,7 +360,7 @@ N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
 
 该特性是 ~COUNT~ 函数所特有的, *其它函数并不能将 =*= 作为参数!*
 
-**** ~SUM~ 函数
+**** ~SUM~ 函数                                        :SUM:
 
 #+BEGIN_SRC sql
   SELECT SUM(sale_price),
@@ -384,7 +384,7 @@ N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
 这与“等价为 \(0\)”并不相同.
 #+END_CENTER
 
-**** TODO [0%] ~AVG~ 函数
+**** TODO ~AVG~ 函数                                   :AVG:
 
 #+BEGIN_SRC sql
   SELECT AVG(purchase_price)
@@ -407,7 +407,7 @@ N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
 
  这是有办法做到的.
 
-**** TODO ~MIN~ 函数和 ~MAX~ 函数
+**** ~MIN~ 函数和 ~MAX~ 函数                       :MIN:MAX:
 
 同样地, 这两个函数预先排除了 ~NULL~:
 
@@ -421,8 +421,7 @@ N.b., ~MIN~​/​~MAX~ 函数 跟 ~AVG~​/​~SUM~ 函数 对参数类型有�
 ~AVG~​/​~SUM~ 函数只能对​_数值类型_​的列使用, 而 ~MIN~​/​~MAX~ 函数原则上可以用于​_任何数据类型_​的列.
 E.g.,
 
-# TODO 不知为何, 该代码块的结果没有被导出.
-#+BEGIN_SRC sql :exports both
+#+BEGIN_SRC sql  :exports both table
   SELECT MIN(regist_date),
          MAX(regist_date)
   FROM Products;
@@ -437,7 +436,7 @@ E.g.,
 对日期来说, 平均值 和 合计值 并没有实际意义, 因此不能使用 ~AVG~​/​~SUM~ 函数.
 这个观点对于字符串类型的数据也适用.
 
-*** 向聚合函数传入互异的参数
+*** 向聚合函数传入互异的参数                      :DISTINCT:
 
 #+CAPTION: 计算去重后的数据行数
 #+BEGIN_SRC sql
@@ -451,7 +450,7 @@ E.g.,
 | 3        |
 
 这里 ~DISTINCT~ 写在括号中, 是因为必须要在计算行数之前删除 =product_type= 列中的重复数据.
-如果像[[SELECT_DISTINCT的用法][~SELECT DISTINCT~ 语句]]那样写在括号外的话, 就会先计算出数据行数, 再删除重复数据, 最终得到的是 =product_type= 列的所有行数:
+如果像[[~SELECT DISTINCT~ 的用法][~SELECT DISTINCT~ 语句]]那样写在括号外的话, 就会先计算出数据行数, 再删除重复数据, 最终得到的是 =product_type= 列的所有行数:
 
 #+CAPTION: 先计算行数, 再删除重复的结果
 #+BEGIN_SRC sql
@@ -464,10 +463,32 @@ E.g.,
 |-------|
 |     8 |
 
-** 对表进行分组
+*** 不要在 ~WHERE~ 子句中使用聚合函数
+
+E.g.[fn:: 正确的写法见[[*使用 ~HAVING~ 子句过滤分组]].],
+
+#+BEGIN_SRC sql  :eval query
+ SELECT product_type AS "含有两种商品的品类"
+ FROM Products
+ WHERE COUNT(*) = 2
+ GROUP BY product_type;
+#+END_SRC
+
+道理类似 [[*不要在 ~GROUP BY~ 子句中包含列的别名]]; 再者, ~WHERE~ 是用来对​*行* (而不是 *分组*) 进行过滤的.
+实际上, 只有在
+
+- ~SELECT~
+- [[*为聚合结果指定条件][~HAVING~]]
+- ~ORDER BY~
+
+这 \(3\) 条子句中能使用 聚合函数.
+
+** 对表进行分组                                   :GROUP_BY:
+*** 使用 ~GROUP BY~ 子句按列汇总数据
 
 我们可以用 ~GROUP BY~ 子句像这样:
 
+#+NAME: 根据品类对商品进行分组
 #+CAPTION: 根据品类对商品进行分组
 #+BEGIN_EXAMPLE
 | (厨房用具) |   (衣服)   |
@@ -481,7 +502,7 @@ E.g.,
 
 对表进行切分, e.g.,
 
-#+BEGIN_SRC sql
+#+BEGIN_SRC sql  :exports both table
   SELECT product_type,
          COUNT(*) AS "该品类含有多少种商品"
   FROM Products
@@ -496,13 +517,54 @@ E.g.,
 | 厨房用具     | 4                    |
 
 在 ~GROUP BY~ 子句中指定的列称为​_聚合键_​/​_分组列_.
-和 ~SELECT~ 子句一样, <<~GROUP BY~ 多列>> 可以通过逗号分隔以指定多列, 这些列的组合决定分组的方式.
+和 ~SELECT~ 子句一样, <<~GROUP BY~ 多列>> 可以通过逗号分隔以指定多列, 这些列的组合决定分组的方式.  [fn:: 当指定单分组列时, 从结果上看, ~SELECT regist_date FROM Products GROUP BY regist_date;~ 与 ~SELECT DISTINCT regist_date FROM Products;~ 是一样的 (包括它们对待 ~NULL~ 的方式), 甚至执行速度[fn:: 它们都是数据的内部处理, 都是通过排序处理来实现的.]也差不多.  但是它们的​/语义/​不一样, 注意根据实际意义选择合适的写法, 不要本末倒置.]
 
 N.b., ~GROUP BY~ 子句一定要写在 ~FROM~ (and if existing ~WHERE~) 子句之后[fn:SQL书写顺序].
 
+**** 不要在 ~SELECT~ 子句中包含非聚合键的列
+
+在对数据进行分组时, ~SELECT~ 子句中只能包含 <<有 ~GROUP BY~ 时, ~SELECT~​/​~HAVING~ 后可以包含哪些要素>>
+
+- 常数 (e.g., ~123~, ~'测试'~)
+- 聚合函数
+- _聚合键_
+
+这 \(3\) 类.
+常见错误是将 非聚合键 写在 ~SELECT~ 子句中[fn:: 不过, MySQL 倒是认同这种写法, 在多列候补中只要有一列满足查询要求即可.], e.g.,
+
+#+BEGIN_SRC sql  :eval query
+  SELECT product_name /* <-- 不应该包含该列 */ ,
+         123, '测试', product_type, COUNT(*)
+  FROM Products
+  GROUP BY product_type;
+#+END_SRC
+
+其实很容易理解为什么说它是错误.
+通过 聚合键 将表分组后, 结果中的一行数据就​/代表/ \(1\) 组.
+上述代码的问题就出在这里, 它的 聚合键 \(\not\leftrightarrow\) 商品名, 所以从情理上讲, 你也不知道该怎么画查询结果的表格.
+
+**** 不要在 ~GROUP BY~ 子句中包含列的别名
+
+#+BEGIN_SRC sql  :eval query
+  SELECT product_type AS "品类",
+         COUNT(*)
+  FROM Products
+  GROUP BY "品类" /* <-- 应该换成“product_type” */ ;
+#+END_SRC
+
+#+RESULTS:
+| 品类     | count |
+|----------+---------|
+| 衣服     | 2     |
+| 办公用品 | 2     |
+| 厨房用具 | 4     |
+
+上述错误[fn:: 不过, 这样的写法在 PostgreSQL 和 MySQL 中倒是不会发生执行错误.]的原因在于 SQL 语句的执行顺序:
+RDBMS 在执行 ~SELECT~ 子句前, 先执行 ~GROUP BY~ 子句, 而此时 RDBMS 还不知道有什么别名.
+
 *** 聚合键是 ~NULL~ 的情况
 
-#+BEGIN_SRC sql :exports both
+#+BEGIN_SRC sql  :exports both table
   SELECT regist_date /* 含 NULL */,
          COUNT(*) AS "该日登记的商品数目"
   FROM Products
@@ -540,22 +602,64 @@ E.g.,
 |            500 |     1 |
 |           2800 |     1 |
 
-总结一下上述 SQL 语句的执行顺序[fn:: 这与语法所规定的书写顺序并不相同.  就是这样的, 书写顺序 和 RDBMS 内部的执行顺序并不相同.]:
+总结一下上述 SQL 语句的执行顺序[fn:: 这与语法所规定的书写顺序并不相同.  就是这样的, SQL 的书写顺序 和 RDBMS 内部的执行顺序并不相同.]:
 ~FROM~ \to ~WHERE~ \to ~GROUP BY~ \to ~SELECT~.
+
+*** 为聚合结果指定条件                              :HAVING:
+**** 使用 ~HAVING~ 子句过滤分组
+
+在[[*对表进行分组][前文]]的[[根据品类对商品进行分组][例子]]中, 如果我们只想取出 含有两种商品 的品类, 请用 ~HAVING~ 子句, e.g.,
+
+#+BEGIN_SRC sql
+ SELECT product_type AS "含有两种商品的品类",
+        AVG(sale_price)
+ FROM Products
+ GROUP BY product_type
+ HAVING COUNT(*) = 2;
+#+END_SRC
+
+#+RESULTS:
+| 含有两种商品的品类 |                   avg |
+|--------------------+-----------------------|
+| 衣服               | 2500.0000000000000000 |
+| 办公用品           |  300.0000000000000000 |
+
+~HAVING~ 子句必须写在 ~GROUP BY~ 子句之后, 其在 RDBMS 内部的执行顺序也排在 ~GROUP BY~ 子句之后.
+
+**** 书写 ~HAVING~ 子句的限制
+
+~HAVING~ 子句和[[*不要在 ~SELECT~ 子句中包含非聚合键的列][后接 ~GROUP BY~ 子句的 ~SELECT~ 子句]]一样, 能够使用的要素也有限制, 而且限制内容也[[有 ~GROUP BY~ 时, ~SELECT~​/​~HAVING~ 后可以包含哪些要素][完全相同]].
+道理是相同的, 但在此提供另一种理解的角度:
+
+有以下错误的代码:
+
+#+BEGIN_SRC sql  :eval query
+ SELECT product_type,
+        COUNT(*)
+ FROM Products
+ GROUP BY product_type
+ -- 该注释以上的部分, 看作是 汇总结果;
+ -- 以下的部分, 是对 汇总结果 进行筛选.
+ HAVING product_name = '圆珠笔';
+#+END_SRC
+
+我们可以认为, 汇总后的结果是 ~HAVING~ 子句能看到的数据, 而这里的汇总结果, i.e.,
+ : SELECT product_type, COUNT(*) FROM Products GROUP BY product_type;
+中, 并没有名为 =product_name= 的列 供 ~HAVING~ 子句进行筛选.
 
 * COMMENT File Local Variables
 
 Local Variables:
 eval: (w32-notification-close
-       (w32-notification-notify :title "读到了第 115 页"
+       (w32-notification-notify :title "读到了第 124 页"
                                 :body " "))
 eval: (require 'ob-sql)
 org-confirm-babel-evaluate: nil
 sql-postgres-program: "D:/Progs/PostgreSQL/16/bin/psql.exe"
-org-babel-default-header-args:sql: ((:engine . "postgresql")
-                                    (:dbhost . "localhost")
-                                    (:dbport . 5432)
-                                    (:dbuser . "postgres")
+org-babel-default-header-args:sql: ((:engine   . "postgresql")
+                                    (:dbhost   . "localhost")
+                                    (:dbport   . 5432)
+                                    (:dbuser   . "postgres")
                                     (:database . "shop"))
 eval: (advice-add 'org-babel-execute:sql  ; and modify its definition when on MS-Windows.
                   :around (let ((my/PostgreSQL.org (current-buffer)))
