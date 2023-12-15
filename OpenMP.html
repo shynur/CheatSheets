@@ -1,0 +1,1064 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+<!-- 2023-12-15 周五 23:58 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>简明 OpenMP: C/C++ 并行计算</title>
+<meta name="author" content="[[https://github.com/shynur][/谢骐/]]" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<style> table, th, td {border: 1px solid;} code {box-sizing: border-box; display: inline-block; background-color: #F3F5F9; color: #0ABF5B} </style>
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">简明 OpenMP: C/C++ 并行计算</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgc29314d">1. 简介</a>
+<ul>
+<li><a href="#orgc712b8f">1.1. 执行方式</a></li>
+<li><a href="#orged89618">1.2. 语句的书写</a></li>
+<li><a href="#orgd54cb3b">1.3. 并行域</a></li>
+</ul>
+</li>
+<li><a href="#org1febe02">2. 设置线程数量</a>
+<ul>
+<li><a href="#org506c3d8">2.1. 在 pragma 中设定线程数量</a></li>
+<li><a href="#orgd002e84">2.2. 运行时 API 调整线程数量</a></li>
+<li><a href="#org483f42a">2.3. 环境变量控制线程数量</a></li>
+<li><a href="#org2b21c83">2.4. <span class="todo TODO">TODO</span> Priority of Various Methods for Setting Thread Count</a></li>
+</ul>
+</li>
+<li><a href="#org74c80dd">3. 查询线程信息</a>
+<ul>
+<li><a href="#orgf8da217">3.1. 获取线程数量</a></li>
+<li><a href="#org5831ea6">3.2. 获取线程编号</a></li>
+</ul>
+</li>
+<li><a href="#org046930c">4. 分配 for-loop</a>
+<ul>
+<li><a href="#orgba952f3">4.1. 并行域中的 for-loop</a>
+<ul>
+<li><a href="#orgaf3dc54">4.1.1. 在并行域中包含 for-loop 和其它代码</a></li>
+<li><a href="#org81e860d">4.1.2. 为 for-loop 单独创建并行域</a></li>
+</ul>
+</li>
+<li><a href="#org9b6b051">4.2. for-loop 的分配策略</a>
+<ul>
+<li><a href="#org1a0b25d">4.2.1. <code>static</code> for-loop schedule</a></li>
+<li><a href="#org4a0bdf1">4.2.2. <code>dynamic</code> for-loop schedule</a></li>
+<li><a href="#org4b4cd9c">4.2.3. <code>guided</code> for-loop schedule</a></li>
+<li><a href="#org952e032">4.2.4. <span class="todo TODO">TODO</span> <code>runtime</code> for-loop schedule</a></li>
+</ul>
+</li>
+<li><a href="#orgf237b8c">4.3. 串行执行 <code>parallel for</code> 中的某段代码</a></li>
+</ul>
+</li>
+<li><a href="#org850c0ec">5. 词法地划分并行域</a>
+<ul>
+<li><a href="#orgfd6a973">5.1. 并行域中任一代码仅由一个线程执行</a></li>
+<li><a href="#org58a6f1a">5.2. 并行域中某段代码仅由一个线程执行</a>
+<ul>
+<li><a href="#orgea19247">5.2.1. 并行域中某段代码由任意一个线程执行</a></li>
+<li><a href="#org0d64f29">5.2.2. 并行域中某段代码仅由​<i>主线程</i>​执行</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org789d7fc">6. 同步</a>
+<ul>
+<li><a href="#org4677c96">6.1. 路障</a></li>
+<li><a href="#org47fff52">6.2. 取消隐式同步</a></li>
+</ul>
+</li>
+<li><a href="#org4477388">7. 附录</a>
+<ul>
+<li><a href="#org5c1f40d">7.1. <span class="todo TODO">TODO</span> 预编译指令</a></li>
+<li><a href="#org6e134af">7.2. <span class="todo TODO">TODO</span> API 函数</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+本文使用的 OpenMP 版本为 \(4.5\), 机器的处理器个数为 \(16\).
+</p>
+
+<div id="outline-container-orgc29314d" class="outline-2">
+<h2 id="orgc29314d"><span class="section-number-2">1.</span> 简介</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgc712b8f" class="outline-3">
+<h3 id="orgc712b8f"><span class="section-number-3">1.1.</span> 执行方式</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+OpenMP 采用 fork-join 的方式进行并行运算:
+</p>
+
+<pre class="example" id="orgee85d94">
+             __    __
+            / _ 并 _ \
+           / /      \ \
+------&gt; FORK -- 行 -- JOIN --&gt;
+主线程     \ \_    _/ /
+            \__ 域 __/
+</pre>
+
+<p>
+在这个模型中, 一开始只有一个主线程, 然后主线程遇到相关的命令就会创建多个线程.
+</p>
+
+<p>
+OpenMP 就是关于
+</p>
+<ul class="org-ul">
+<li>如何控制并行域</li>
+<li>并行域中的任务该如何分配</li>
+<li>设置集合点控制各个线程</li>
+<li>线程之间如何 访问​/​修改 数据</li>
+</ul>
+<p>
+的一种机制.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orged89618" class="outline-3">
+<h3 id="orged89618"><span class="section-number-3">1.2.</span> 语句的书写</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+OpenMP 通过 pragma 语句的书写来指导程序进行并行计算, 格式如下:
+</p>
+<pre class="example">
+#pragma omp DIRECTIVE [CLAUSE [[, ] CLAUSE] ...]
+</pre>
+
+<p>
+指令 (directive) 可以单独出现, 子句 (clause) 必须出现在指令之后.
+</p>
+
+<p>
+每条 pragma 仅指导下一句代码的执行方式.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd54cb3b" class="outline-3">
+<h3 id="orgd54cb3b"><span class="section-number-3">1.3.</span> 并行域</h3>
+<div class="outline-text-3" id="text-1-3">
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;1&nbsp; </span>根据硬件和环境的配置, 生成用来创建尽可能多的线程的代码.</label><pre class="src src-C++"><span style="color: #a0132f;">#pragma</span> omp parallel
+cout &lt;&lt; 1 &lt;&lt; 2;
+</pre>
+</div>
+
+<p>
+以上在并行域中调用 <code>std::cout.operator&lt;&lt;</code>, 默认有处理器数量个线程执行了这句代码.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1febe02" class="outline-2">
+<h2 id="org1febe02"><span class="section-number-2">2.</span> 设置线程数量</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org506c3d8" class="outline-3">
+<h3 id="org506c3d8"><span class="section-number-3">2.1.</span> 在 pragma 中设定线程数量</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #a0132f;">#pragma</span> omp parallel num_threads<span style="color: #000000;">(</span>3<span style="color: #000000;">)</span>
+cout &lt;&lt; 1 &lt;&lt; 2;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd002e84" class="outline-3">
+<h3 id="orgd002e84"><span class="section-number-3">2.2.</span> 运行时 API 调整线程数量</h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+<pre class="src src-C++">omp_set_num_threads<span style="color: #000000;">(</span>5<span style="color: #000000;">)</span>;
+<span style="color: #a0132f;">#pragma</span> omp parallel
+cout &lt;&lt; 1 &lt;&lt; 2;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org483f42a" class="outline-3">
+<h3 id="org483f42a"><span class="section-number-3">2.3.</span> 环境变量控制线程数量</h3>
+<div class="outline-text-3" id="text-2-3">
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #a0132f;">#pragma</span> omp parallel
+    cout &lt;&lt; 1 &lt;&lt; 2;
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #000000;">(</span><span style="color: #5317ac;">save-excursion</span>
+  <span style="color: #a8007f;">(</span>org-previous-block 1<span style="color: #a8007f;">)</span>
+  <span style="color: #a8007f;">(</span><span style="color: #5317ac;">with-environment-variables</span> <span style="color: #005f88;">(</span><span style="color: #904200;">(</span><span style="color: #2544bb;">"OMP_NUM_THREADS"</span> <span style="color: #2544bb;">"3"</span><span style="color: #904200;">)</span><span style="color: #005f88;">)</span>
+    <span style="color: #005f88;">(</span>org-babel-execute-src-block<span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2b21c83" class="outline-3">
+<h3 id="org2b21c83"><span class="section-number-3">2.4.</span> <span class="todo TODO">TODO</span> Priority of Various Methods for Setting Thread Count<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup></h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+同时使用 <a href="#org483f42a">环境变量</a> 和 <a href="#orgd002e84">运行时 API</a> 时, 后者将获得更高的优先权 (吗).
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org74c80dd" class="outline-2">
+<h2 id="org74c80dd"><span class="section-number-2">3.</span> 查询线程信息</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgf8da217" class="outline-3">
+<h3 id="orgf8da217"><span class="section-number-3">3.1.</span> 获取线程数量</h3>
+<div class="outline-text-3" id="text-3-1">
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">n</span> = 100, <span style="color: #00538b;">dest</span> = rand<span style="color: #000000;">()</span> % n;
+<span style="color: #a0132f;">#pragma</span> omp parallel <span style="color: #5317ac;">for</span>
+<span style="color: #5317ac;">for</span> <span style="color: #000000;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span> = 0; i &lt; n; ++i<span style="color: #000000;">)</span>
+    <span style="color: #5317ac;">if</span> <span style="color: #000000;">(</span>i == dest<span style="color: #000000;">)</span>
+        cout &lt;&lt; omp_get_num_threads<span style="color: #000000;">()</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5831ea6" class="outline-3">
+<h3 id="org5831ea6"><span class="section-number-3">3.2.</span> 获取线程编号</h3>
+<div class="outline-text-3" id="text-3-2">
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #a0132f;">#pragma</span> omp parallel num_threads<span style="color: #000000;">(</span>5<span style="color: #000000;">)</span>
+    cout &lt;&lt; omp_get_thread_num<span style="color: #000000;">()</span>;
+</pre>
+</div>
+
+<pre class="example">
+12043
+</pre>
+
+
+<p>
+从结果看出, 它是从 <span class="underline">0</span> 编号的.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org046930c" class="outline-2">
+<h2 id="org046930c"><span class="section-number-2">4.</span> 分配 for-loop</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgba952f3" class="outline-3">
+<h3 id="orgba952f3"><span class="section-number-3">4.1.</span> 并行域中的 for-loop</h3>
+<div class="outline-text-3" id="text-4-1">
+</div>
+<div id="outline-container-orgaf3dc54" class="outline-4">
+<h4 id="orgaf3dc54"><span class="section-number-4">4.1.1.</span> 在并行域中包含 for-loop 和其它代码</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<p>
+我们先来看下并非是单独为 for-loop 创建的并行域, 以和后文作对比.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #a0132f;">#pragma</span> omp parallel
+<span style="color: #000000;">{</span>
+    cout &lt;&lt; <span style="color: #2544bb;">'.'</span>;
+<span style="color: #a0132f;">    #pragma</span> omp <span style="color: #5317ac;">for</span>
+    <span style="color: #5317ac;">for</span> <span style="color: #a8007f;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span> = 0; i &lt; 10; ++i<span style="color: #a8007f;">)</span>  <span style="color: #505050;">// </span><span style="color: #505050;">&#26631;&#20934;&#20889;&#27861;, &#19981;&#24314;&#35758;&#20889;&#25104;&#20854;&#23427;&#24418;&#24335;.</span>
+        cout &lt;&lt; i;
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+上述并行域中, 众线程首先打印了各自的 <code>'.'</code>.
+之后, (从结果可以看出) 都停下来等待, 直到所有线程准备就绪, 才开始执行下一句由
+</p>
+<pre class="example">
+#pragma omp for
+</pre>
+
+<p>
+制导的 for-loop.
+这个 for-loop 根据默认的策略, 被分配给了若干线程, i.e., 所有 iteration 都被 不重复 不遗漏 地执行了.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org81e860d" class="outline-4">
+<h4 id="org81e860d"><span class="section-number-4">4.1.2.</span> 为 for-loop 单独创建并行域</h4>
+<div class="outline-text-4" id="text-4-1-2">
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #a0132f;">#pragma</span> omp parallel <span style="color: #5317ac;">for</span>
+<span style="color: #5317ac;">for</span> <span style="color: #000000;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span> = 0; i &lt; 10; ++i<span style="color: #000000;">)</span>
+    cout &lt;&lt; omp_get_thread_num<span style="color: #000000;">()</span>;
+</pre>
+</div>
+
+<p>
+这种写法更加方便, 但是在并行域中创建的线程会在离开 for-loop 后被立刻销毁.
+这对性能有影响.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9b6b051" class="outline-3">
+<h3 id="org9b6b051"><span class="section-number-3">4.2.</span> for-loop 的分配策略</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+我们可以使用 <code>schedule(TYPE, CHUNK_SIZE)</code> 子句设置 OpenMP 分配 for-loop 时使用的策略.
+</p>
+</div>
+
+<div id="outline-container-org1a0b25d" class="outline-4">
+<h4 id="org1a0b25d"><span class="section-number-4">4.2.1.</span> <code>static</code> for-loop schedule</h4>
+<div class="outline-text-4" id="text-4-2-1">
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5317ac;">constexpr</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">number_of_threads</span> = 3;
+<span style="color: #005a5f;">array</span><span style="color: #000000;">&lt;</span><span style="color: #005a5f;">vector</span><span style="color: #a8007f;">&lt;</span><span style="color: #005a5f;">int</span><span style="color: #a8007f;">&gt;</span>, number_of_threads<span style="color: #000000;">&gt;</span> <span style="color: #00538b;">their_vectors</span>;
+<span style="color: #a0132f;">#pragma</span> omp parallel <span style="color: #5317ac;">for</span> schedule<span style="color: #000000;">(</span><span style="color: #5317ac;">static</span><span style="color: #000000;">)</span>, num_threads<span style="color: #000000;">(</span>number_of_threads<span style="color: #000000;">)</span>
+<span style="color: #5317ac;">for</span> <span style="color: #000000;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span> = 0; i &lt; 20; ++i<span style="color: #000000;">)</span>
+    their_vectors<span style="color: #000000;">[</span>omp_get_thread_num<span style="color: #a8007f;">()</span><span style="color: #000000;">]</span>.push_back<span style="color: #000000;">(</span>i<span style="color: #000000;">)</span>;
+<span style="color: #5317ac;">for</span> <span style="color: #000000;">(</span><span style="color: #5317ac;">const</span> <span style="color: #5317ac;">auto</span>&amp; <span style="color: #00538b;">its_vec</span> : their_vectors<span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">for</span> <span style="color: #a8007f;">(</span><span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span> : its_vec<span style="color: #a8007f;">)</span>
+        cout &lt;&lt; i &lt;&lt; <span style="color: #2544bb;">' '</span>;
+    cout &lt;&lt; endl;
+ <span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+众线程按照次序, 每次取 <code>CHUNK_SIZE</code> 个 连续的 iteration.
+省略 <code>CHUNK_SIZE</code> 则表示, 每次取尽可能多的 iteration, 且尽量平均分配.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4a0bdf1" class="outline-4">
+<h4 id="org4a0bdf1"><span class="section-number-4">4.2.2.</span> <code>dynamic</code> for-loop schedule</h4>
+<div class="outline-text-4" id="text-4-2-2">
+<p>
+先到先得的方式进行任务分配.
+一次性分配 <code>CHUNK_SIZE</code> 个连续的 iteration, 先把任务干完的线程先取下一段任务, 而不是一开始就分配固定的任务数;
+<code>CHUNK_SIZE</code> 默认为 \(1\).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5317ac;">constexpr</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">number_of_threads</span> = 3;
+<span style="color: #005a5f;">array</span><span style="color: #000000;">&lt;</span><span style="color: #005a5f;">vector</span><span style="color: #a8007f;">&lt;</span><span style="color: #005a5f;">int</span><span style="color: #a8007f;">&gt;</span>, number_of_threads<span style="color: #000000;">&gt;</span> <span style="color: #00538b;">their_vectors</span>;
+<span style="color: #a0132f;">#pragma</span> omp parallel <span style="color: #5317ac;">for</span> schedule<span style="color: #000000;">(</span>dynamic, 4<span style="color: #000000;">)</span>, num_threads<span style="color: #000000;">(</span>number_of_threads<span style="color: #000000;">)</span>
+<span style="color: #5317ac;">for</span> <span style="color: #000000;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span> = 0; i &lt; 24; ++i<span style="color: #000000;">)</span>
+    <span style="color: #0000c0;">this_thread</span>::sleep_for<span style="color: #000000;">(</span>1us * rand<span style="color: #a8007f;">()</span><span style="color: #000000;">)</span>,
+      their_vectors<span style="color: #000000;">[</span>omp_get_thread_num<span style="color: #a8007f;">()</span><span style="color: #000000;">]</span>.push_back<span style="color: #000000;">(</span>i<span style="color: #000000;">)</span>;
+<span style="color: #5317ac;">for</span> <span style="color: #000000;">(</span><span style="color: #5317ac;">const</span> <span style="color: #5317ac;">auto</span>&amp; <span style="color: #00538b;">its_vec</span> : their_vectors<span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">for</span> <span style="color: #a8007f;">(</span><span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span> : its_vec<span style="color: #a8007f;">)</span>
+        cout &lt;&lt; i &lt;&lt; <span style="color: #2544bb;">' '</span>;
+    cout &lt;&lt; endl;
+ <span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+在任务难度不均衡的时候适合用 <code>dynamic</code>; 其余情况下则不推荐, 毕竟频繁的动态的任务申请会造成较大的开销.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4b4cd9c" class="outline-4">
+<h4 id="org4b4cd9c"><span class="section-number-4">4.2.3.</span> <code>guided</code> for-loop schedule</h4>
+<div class="outline-text-4" id="text-4-2-3">
+<p>
+刚开始给每个线程分配比较多的连续的 iteration.
+后来每次分配的 iteration 的数量逐渐递减至 <code>CHUNK_SIZE</code>, 省略该参数则降至 \(1\).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5317ac;">constexpr</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">number_of_threads</span> = 2;
+<span style="color: #005a5f;">array</span><span style="color: #000000;">&lt;</span><span style="color: #005a5f;">vector</span><span style="color: #a8007f;">&lt;</span><span style="color: #005a5f;">int</span><span style="color: #a8007f;">&gt;</span>, number_of_threads<span style="color: #000000;">&gt;</span> <span style="color: #00538b;">their_vectors</span>;
+<span style="color: #a0132f;">#pragma</span> omp parallel <span style="color: #5317ac;">for</span> schedule<span style="color: #000000;">(</span>guided<span style="color: #000000;">)</span>, num_threads<span style="color: #000000;">(</span>number_of_threads<span style="color: #000000;">)</span>
+<span style="color: #5317ac;">for</span> <span style="color: #000000;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span> = 0; i &lt; 25; ++i<span style="color: #000000;">)</span>
+    <span style="color: #0000c0;">this_thread</span>::sleep_for<span style="color: #000000;">(</span>1us * rand<span style="color: #a8007f;">()</span><span style="color: #000000;">)</span>,
+      their_vectors<span style="color: #000000;">[</span>omp_get_thread_num<span style="color: #a8007f;">()</span><span style="color: #000000;">]</span>.push_back<span style="color: #000000;">(</span>i<span style="color: #000000;">)</span>;
+<span style="color: #5317ac;">for</span> <span style="color: #000000;">(</span><span style="color: #5317ac;">const</span> <span style="color: #5317ac;">auto</span>&amp; <span style="color: #00538b;">its_vec</span> : their_vectors<span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    <span style="color: #5317ac;">for</span> <span style="color: #a8007f;">(</span><span style="color: #5317ac;">const</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span> : its_vec<span style="color: #a8007f;">)</span>
+        cout &lt;&lt; i &lt;&lt; <span style="color: #2544bb;">' '</span>;
+    cout &lt;&lt; endl;
+ <span style="color: #000000;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org952e032" class="outline-4">
+<h4 id="org952e032"><span class="section-number-4">4.2.4.</span> <span class="todo TODO">TODO</span> <code>runtime</code> for-loop schedule</h4>
+</div>
+</div>
+<div id="outline-container-orgf237b8c" class="outline-3">
+<h3 id="orgf237b8c"><span class="section-number-3">4.3.</span> 串行执行 <code>parallel for</code> 中的某段代码</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+以下这段代码要求众线程串行地打印各自 iteration 中的 <code>i</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5317ac;">constexpr</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">num_of_threads</span> = 4;
+<span style="color: #a0132f;">#pragma</span> omp parallel <span style="color: #5317ac;">for</span> ordered, schedule<span style="color: #000000;">(</span><span style="color: #5317ac;">static</span>, 1<span style="color: #000000;">)</span>, num_threads<span style="color: #000000;">(</span>num_of_threads<span style="color: #000000;">)</span>
+<span style="color: #5317ac;">for</span> <span style="color: #000000;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span> = 0; i &lt; num_of_threads; ++i<span style="color: #000000;">)</span> <span style="color: #000000;">{</span>
+    <span style="color: #0000c0;">this_thread</span>::sleep_for<span style="color: #a8007f;">(</span>50ms * i<span style="color: #a8007f;">)</span>;
+    cout &lt;&lt; <span style="color: #2544bb;">'('</span>;
+<span style="color: #a0132f;">#pragma</span> omp ordered
+    <span style="color: #a8007f;">{</span>
+        cout &lt;&lt; i;
+        <span style="color: #0000c0;">this_thread</span>::sleep_for<span style="color: #005f88;">(</span>50ms * i<span style="color: #005f88;">)</span>;
+        cout &lt;&lt; i;
+    <span style="color: #a8007f;">}</span>
+    cout &lt;&lt; <span style="color: #2544bb;">')'</span>;
+ <span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<pre class="example">
+(00)(1(1)2(2)33)
+</pre>
+
+
+<p>
+可以看到, 结果是一个 S-表达式<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>; 删除括号之后 (<code>00112233</code>), 数字按​<b>顺序</b>​出现, 且 相同数字之间​<b>无间隔</b>.
+这些是 串行 的特征.
+</p>
+
+<p>
+而结果中的 <code>(</code>​/​<code>)</code> 并没有连续出现, 这说明 <code>#pragma omp ordered</code> 的前后并没有隐式同步点.
+它只是保证: 在 当前 iteration 执行完 被 <code>#pragma omp ordered</code> 制导的代码 之前, 下一个 iteration 不会 开始执行 当前 iteration 正在 执行的 那段代码.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org850c0ec" class="outline-2">
+<h2 id="org850c0ec"><span class="section-number-2">5.</span> 词法地划分并行域</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orgfd6a973" class="outline-3">
+<h3 id="orgfd6a973"><span class="section-number-3">5.1.</span> 并行域中任一代码仅由一个线程执行</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+使用 <code>section</code> 指令, 对 由 <code>parallel sections</code> 指令制导的并行域 中的代码文本进行划分, 分配给众线程, 划分的区域只会被执行一次.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #a0132f;">#pragma</span> omp parallel sections num_threads<span style="color: #000000;">(</span>10<span style="color: #000000;">)</span>
+<span style="color: #000000;">{</span>
+<span style="color: #a0132f;">#pragma</span> omp section
+    cout &lt;&lt; omp_get_thread_num<span style="color: #a8007f;">()</span>;
+<span style="color: #a0132f;">#pragma</span> omp section
+    cout &lt;&lt; omp_get_thread_num<span style="color: #a8007f;">()</span>;
+<span style="color: #a0132f;">#pragma</span> omp section
+    cout &lt;&lt; omp_get_thread_num<span style="color: #a8007f;">()</span>;
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org58a6f1a" class="outline-3">
+<h3 id="org58a6f1a"><span class="section-number-3">5.2.</span> 并行域中某段代码仅由一个线程执行</h3>
+<div class="outline-text-3" id="text-5-2">
+</div>
+<div id="outline-container-orgea19247" class="outline-4">
+<h4 id="orgea19247"><span class="section-number-4">5.2.1.</span> 并行域中某段代码由任意一个线程执行</h4>
+<div class="outline-text-4" id="text-5-2-1">
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #a0132f;">#pragma</span> omp parallel num_threads<span style="color: #000000;">(</span>10<span style="color: #000000;">)</span>
+<span style="color: #000000;">{</span>
+<span style="color: #a0132f;">#pragma</span> omp single nowait
+    <span style="color: #5317ac;">for</span> <span style="color: #a8007f;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span> = 0; i &lt; 5; <span style="color: #0000c0;">this_thread</span>::sleep_for<span style="color: #005f88;">(</span>4ms<span style="color: #005f88;">)</span>, ++i<span style="color: #a8007f;">)</span>
+        cout &lt;&lt; <span style="color: #2544bb;">'.'</span>;
+    <span style="color: #0000c0;">this_thread</span>::sleep_for<span style="color: #a8007f;">(</span>5ms<span style="color: #a8007f;">)</span>;
+    cout &lt;&lt; omp_get_thread_num<span style="color: #a8007f;">()</span>;
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+
+<p>
+若不写 <code>nowait</code> 子句, 则其它线程会等待那个 正在执行 由 <code>single</code> 指令制导的语句 的线程 执行完成, 在一起执行后续的代码.  (I.e., 存在一个隐式同步点.)
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0d64f29" class="outline-4">
+<h4 id="org0d64f29"><span class="section-number-4">5.2.2.</span> 并行域中某段代码仅由​<i>主线程</i>​执行</h4>
+<div class="outline-text-4" id="text-5-2-2">
+<p>
+指令 <code>master</code> 和 <code>single</code> 相似, 区别在于 <code>master</code> 制导的代码块只能由主线程执行, 而且 <b><code>master</code> 指令在代码块结束时没有隐式同步, <i>不能</i>​指定 <code>nowait</code> 子句.</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #a0132f;">#pragma</span> omp parallel
+<span style="color: #000000;">{</span>
+<span style="color: #a0132f;">#pragma</span> omp master <span style="color: #505050;">/* </span><span style="color: #505050;">nowait</span><span style="color: #505050;"> */</span>
+    cout &lt;&lt; omp_get_thread_num<span style="color: #a8007f;">()</span>;
+    cout &lt;&lt; <span style="color: #2544bb;">'.'</span>;
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org789d7fc" class="outline-2">
+<h2 id="org789d7fc"><span class="section-number-2">6.</span> 同步</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org4677c96" class="outline-3">
+<h3 id="org4677c96"><span class="section-number-3">6.1.</span> 路障</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+当遇到 <code>barrier</code> 指令时, 线程必须停下来等待, 直到所有的线程都执行到了这一点, 才能继续往后执行.
+E.g.,
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #a0132f;">#pragma</span> omp parallel
+<span style="color: #000000;">{</span>
+    <span style="color: #0000c0;">this_thread</span>::sleep_for<span style="color: #a8007f;">(</span>1us * rand<span style="color: #005f88;">()</span><span style="color: #a8007f;">)</span>;
+    cout &lt;&lt; 1;
+<span style="color: #a0132f;">#pragma</span> omp barrier
+    cout &lt;&lt; 2;
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org47fff52" class="outline-3">
+<h3 id="org47fff52"><span class="section-number-3">6.2.</span> 取消隐式同步</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+容易猜到, <b>在 <code>parallel</code>​&amp;​<code>for</code>​&amp;​<code>sections</code>​&amp;​<code>single</code> 指令之后都有一个隐式的同步点.</b>
+我们可以添加 <code>nowait</code> 子句以取消这类隐式路障, e.g.,
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5317ac;">constexpr</span> <span style="color: #005a5f;">int</span> <span style="color: #00538b;">num_of_threads</span> = 18;
+<span style="color: #a0132f;">#pragma</span> omp parallel num_threads<span style="color: #000000;">(</span>num_of_threads<span style="color: #000000;">)</span>
+<span style="color: #000000;">{</span>
+<span style="color: #a0132f;">#pragma</span> omp <span style="color: #5317ac;">for</span> nowait
+    <span style="color: #5317ac;">for</span> <span style="color: #a8007f;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span> = 0; i &lt; num_of_threads / 2; ++i<span style="color: #a8007f;">)</span>
+        cout &lt;&lt; <span style="color: #2544bb;">'^'</span>;
+<span style="color: #a0132f;">#pragma</span> omp <span style="color: #5317ac;">for</span>
+    <span style="color: #5317ac;">for</span> <span style="color: #a8007f;">(</span><span style="color: #005a5f;">int</span> <span style="color: #00538b;">i</span> = 0; i &lt; num_of_threads / 2; ++i<span style="color: #a8007f;">)</span>
+        cout &lt;&lt; <span style="color: #2544bb;">'.'</span>;
+<span style="color: #000000;">}</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4477388" class="outline-2">
+<h2 id="org4477388"><span class="section-number-2">7.</span> 附录</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+参考: <a href="https://www.openmp.org/resources/refguides/">https://www.openmp.org/resources/refguides/</a>.
+</p>
+</div>
+
+<div id="outline-container-org5c1f40d" class="outline-3">
+<h3 id="org5c1f40d"><span class="section-number-3">7.1.</span> <span class="todo TODO">TODO</span> 预编译指令</h3>
+<div class="outline-text-3" id="text-7-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">&#34920;1&nbsp;</span> directives (不完整)</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>parallel</code></td>
+<td class="org-left">制导并行域</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>for</code></td>
+<td class="org-left">用在​<span class="underline">并行域中的 <code>for</code> 语句</span>​之前, for-loop 的迭代将会被分配给若干线程去执行</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>parallel for</code></td>
+<td class="org-left"><code>parallel</code> 和 <code>for</code> 的组合, 制导 <code>for</code> 语句</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>sections</code></td>
+<td class="org-left">作用域中, 每一个由 <code>section</code> 子句 制导的代码块 将会被若干线程执行</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>parallel sections</code></td>
+<td class="org-left"><code>parallel</code> 和 <code>sections</code> 的组合</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>single</code></td>
+<td class="org-left">用在并行域内, 标注的代码块将只被单个线程执行</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>critical</code></td>
+<td class="org-left">互斥域</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>flush</code></td>
+<td class="org-left">保证线程内数据影响的一致性</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>barrier</code></td>
+<td class="org-left">使并行域内的线程同步</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>atomic</code></td>
+<td class="org-left">原子地执行</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>master</code></td>
+<td class="org-left">只由主线程执行</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>threadprivate</code></td>
+<td class="org-left">指定若干变量为线程专有</td>
+</tr>
+</tbody>
+</table>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">&#34920;2&nbsp;</span> clauses (不完整)</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>private</code></td>
+<td class="org-left">指定若干变量在各线程中都有自己的私有副本</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>firstprivate</code></td>
+<td class="org-left">同 <code>private</code>; 在变量进入 并行域​/​任务分担域 时, 继承主线程的同名变量作为初值</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>lastprivate</code></td>
+<td class="org-left">指定若干私有变量的值在并行处理之后复制到主线程的同名变量中, 负责拷贝的线程是 <code>for</code>​/​<code>sections</code> 任务分担中的最后一个线程</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>reduction</code></td>
+<td class="org-left">指定若干变量是私有的, 并且在并行处理完这些变量后指定要规约的操作</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>nowait</code></td>
+<td class="org-left">指出并发线程可以忽略其它制导指令暗含的路障同步</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>num_threads</code></td>
+<td class="org-left">指定并行域内的线程数目</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>schedule(type, chunk_size)</code></td>
+<td class="org-left">指定 <code>for</code> 任务当中任务分配调度的类型</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>shared</code></td>
+<td class="org-left">指定若干变量为线程间的共享变量</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>ordered</code></td>
+<td class="org-left">按照串行循环次序执行 <code>for</code> 任务分担域内指定的代码</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>copyprivate</code></td>
+<td class="org-left">配合 <code>single</code> 指令, 将指定线程的专有变量广播到并行域内其它线程的同名变量中</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>copyin</code></td>
+<td class="org-left">指定一个 <code>threadprivate</code> 类型的变量需要用主线程的同名变量进行初始化</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>default</code></td>
+<td class="org-left">并行域内变量的使用方式, 默认为 <code>shared</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org6e134af" class="outline-3">
+<h3 id="org6e134af"><span class="section-number-3">7.2.</span> <span class="todo TODO">TODO</span> API 函数</h3>
+<div class="outline-text-3" id="text-7-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">&#34920;3&nbsp;</span> 运行时 API (不完整)</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>omp_in_paralled</code></td>
+<td class="org-left">处于并行域?</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_get_thread_num</code></td>
+<td class="org-left">线程号</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_set_num_threads</code></td>
+<td class="org-left">设置后续的并行域的线程个数</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_get_num_threads</code></td>
+<td class="org-left">当前并行域中的线程个数</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_get_max_threads</code></td>
+<td class="org-left">并行域中可用的最大线程数目</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_get_num_procs</code></td>
+<td class="org-left">处理器的个数</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_get_dynamic</code></td>
+<td class="org-left">支持动态改变线程数目?</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_set_dynamic</code></td>
+<td class="org-left">设置线程数目动态改变的功能</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_get_nested</code></td>
+<td class="org-left">系统支持并行嵌套?</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_set_nested</code></td>
+<td class="org-left">设置并行嵌套的功能</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_init(_nest)_lock</code></td>
+<td class="org-left">初始化 (嵌套) 锁</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_destroy(_nest)_lock</code></td>
+<td class="org-left">销毁 (嵌套) 锁</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_set(_nest)_lock</code></td>
+<td class="org-left">设置 (嵌套) 锁</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_unset(_nest)_lock</code></td>
+<td class="org-left">(嵌套) 解锁操作</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_test(_nest)_lock</code></td>
+<td class="org-left">非阻塞的 (嵌套) 加锁</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_get_wtime</code></td>
+<td class="org-left">获取 wall time</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>omp_set_wtime</code></td>
+<td class="org-left">设置 wall time</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">&#33050;&#27880;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">中文在此处不太能准确地表达.</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">I.e., 括号是匹配的.</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="author">&#20316;&#32773;: <a href="https://github.com/shynur"><i>谢骐</i></a></p>
+<p class="date">Created: 2023-12-15 周五 23:58</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
