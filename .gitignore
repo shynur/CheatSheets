@@ -2,24 +2,31 @@
 !/.gitignore
 !/index.org
 
+!/BodyBuilding/
 /BodyBuilding/*
 !/Bodybuilding/Bodybuilding.org
 
+!/HTML/
 /HTML/*
 !/HTML/HTML.html
 
+!/JavaScript/
 /JavaScript/*
 !/JavaScript/JavaScript.js
 
+!/MIPS/
 /MIPS/*
 !/MIPS/MIPS-32.asm
 
+!/OpenMP/
 /OpenMP/*
 !/OpenMP/OpenMP.org
 
+!/SQL/
 /SQL/*
 !/SQL/SQL.sql
 !/SQL/PostgreSQL.org
 
+!/OrgMode/
 /OrgMode/*
 !/OrgMode/Org.org

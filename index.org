@@ -1,10 +1,14 @@
 #+TITLE: Some Tutorials
+#+LANGUAGE: en-US
 
 I wrote them very carefully; hope you like.
 
 - [[file:SQL]]
+  mainly about ISO SQL
 - [[file:OpenMP]]
+  how to write parallel programs in C​/​C\plus\plus
 - [[file:OrgMode]]
+  about ~org-mode~ for GNU Emacs
 
 * COMMENT File Local Variables:
 
