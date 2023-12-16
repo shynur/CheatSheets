@@ -1,24 +1,25 @@
 /*
-!/.dir-locals.el
 !/.gitignore
-!/COPYING.md
-!/README.md
+!/index.org
 
-!/ARM.asm
-!/AutoLISP.lsp
-!/BodyBuilding.org
-!/ELisp.el
-!/HTML.html
-!/JavaScript.js
-!/MIPS_32.asm
-!/OpenMP.org
-!/PostgreSQL.org
-!/SQL.sql
-!/YAML.yaml
+/BodyBuilding/*
+!/Bodybuilding/Bodybuilding.org
 
-/docs/*
-!/docs/?*.html
+/HTML/*
+!/HTML/HTML.html
 
-# Local Variables:
-# coding: utf-8-unix
-# End:
+/JavaScript/*
+!/JavaScript/JavaScript.js
+
+/MIPS/*
+!/MIPS/MIPS-32.asm
+
+/OpenMP/*
+!/OpenMP/OpenMP.org
+
+/SQL/*
+!/SQL/SQL.sql
+!/SQL/PostgreSQL.org
+
+/OrgMode/*
+!/OrgMode/Org.org

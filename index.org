@@ -1,0 +1,14 @@
+#+TITLE: Some Tutorials
+
+I wrote them very carefully; hope you like.
+
+- [[file:SQL]]
+- [[file:OpenMP]]
+- [[file:OrgMode]]
+
+* COMMENT File Local Variables:
+
+Local Variables:
+coding: utf-8-unix
+org-confirm-babel-evaluate: nil
+End:
