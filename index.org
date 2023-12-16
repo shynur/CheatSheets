@@ -1,5 +1,6 @@
 #+TITLE: Some Tutorials
 #+LANGUAGE: en-US
+#+AUTHOR: =shynur=
 
 I wrote them very carefully; hope you like.
 
@@ -14,5 +15,4 @@ I wrote them very carefully; hope you like.
 
 Local Variables:
 coding: utf-8-unix
-org-confirm-babel-evaluate: nil
 End:

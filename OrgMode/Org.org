@@ -1,6 +1,6 @@
-#+title: 快速入门 Org Mode
-#+language: zh-CN
-#+options: html-postamble:nil
+#+TITLE: 快速入门 Org Mode
+#+LANGUAGE: zh-CN
+#+AUTHOR: [[https://github.com/shynur][/谢骐/]]
 #+HTML_HEAD: <style type="text/css"> table, th, td {border: 1px solid} </style>
 
 * 关于文档自身
