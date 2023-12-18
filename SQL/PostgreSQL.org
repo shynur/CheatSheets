@@ -3,7 +3,7 @@
 #+LANGUAGE: zh-CN
 #+AUTHOR: [[https://github.com/shynur][/谢骐/]]
 #+HTML_HEAD: <style> table, th, td {border: 1px solid;} code {box-sizing: border-box; background-color: #F3F5F9; color: #0ABF5B;} .tag {color: #9370db;} </style>
-
+
 * 使用 ~psql~
 ** 打开 ~psql~
 
@@ -60,26 +60,50 @@ database_name=# \q
 - 名称必须​*以​_字母_​开头*
 - 数据库的名字只能使用​_小写字母_
 
+** 注释
+
+名副其实, 注释对 SQL 的执行没有任何影响.
+
+*** 行尾注释
+
+该类注释以 =--= 打头[fn:: MySQL 中需要在 =--= 之后加空格, 否则不会被认为是注释.], e.g.,
+
+#+BEGIN_SRC sql
+ SELECT --1;
+          3;
+#+END_SRC
+
+*** 块注释
+
+该类注释被成对的 =/*=​&​=*/= 包裹, e.g.,
+
+#+BEGIN_SRC sql
+ SELECT /* what? */
+        1 /*
+ FROM
+          where? */;
+#+END_SRC
+
 * 创建数据库与表
 ** 数据库的创建                            :CRAETE_DATABASE:
 
-#+BEGIN_SRC sql
--- 创建名为 ‘shop’ 的数据库.
+#+CAPTION: 创建名为“shop”的数据库.
+#+BEGIN_SRC sql  :eval query
 CREATE DATABASE shop;
 #+END_SRC
 
 ** 表的创建                       :CREATE_TABLE:INSERT_INTO:
 
-#+BEGIN_SRC sql
--- 在数据库 ‘shop’ 中创建名为 ‘Products’ 的表.
+#+CAPTION: 在数据库“shop”中创建名为“Products”的表.
+#+BEGIN_SRC sql  :eval query
 CREATE TABLE Products (
-  -- 列名        数据类型     [约束]
-  product_id        CHAR(4)   NOT NULL,
-  product_name   VARCHAR(100) NOT NULL,
-  product_type   VARCHAR(32)  NOT NULL,
-      sale_price INTEGER              ,
-  purchase_price INTEGER              ,
-  regist_date    DATE                 ,
+  -- 列名       数据类型     [约束]
+  product_id      CHAR(4)   NOT NULL,
+  product_name VARCHAR(100) NOT NULL,
+  product_type VARCHAR(32)  NOT NULL,
+      sale_price INTEGER            ,
+  purchase_price INTEGER            ,
+  regist_date    DATE               ,
   -- 除了 ‘NOT NULL’, 其余约束可在末尾设置:
   PRIMARY KEY (product_id)
 );
@@ -87,7 +111,7 @@ CREATE TABLE Products (
 
 执行以下代码[fn:Mick_Copyright: 摘编自 /Mick/ 的著作 /SQL 基础教程/ (ISBN 978-7-115-45502-4), 版权归 /Mick/.][fn:BEGIN_TRANSACTION: 对于 ~BEGIN TRANSACTION;~ 这行, 在 MySQL 中使用 ~START TRANSACTION;~; 在 Oracle 和 DB2 中不需要这句.]以插入本文使用的示例数据:
 
-#+NAME: CREATE TABLE Products
+#+NAME: 填充“Products”表
 #+BEGIN_SRC sql
 BEGIN TRANSACTION;     /* product_id         product_type    purchase_price
                               |   product_name    |    sale_price  |   regist_date */
@@ -115,7 +139,7 @@ COMMIT;
 当要被存储的字符串长度小于最大长度时, 会使用​_空格_​补足.
 E.g., 向 ~CHAR(3)~ 类型的列中输入 ='ab'= 时, 实际存储的是 ='ab '=.
 
-**** <<VARCHAR>>VARCHAR[fn:: Oracle[fn:: 本文在介绍 PostgreSQL 的同时, 也会将其与 Oracle Database, SQL Server, DB2, 和 MySQL 进行对比.  若无特别声明, 前述的 \(4\) 个 RDBMS 以及 PostgreSQL 皆可正常执行文中的示例代码.] 中使用 VARCHAR2 型.  (Oracle 中也有 VARCHAR 型, 但并不推荐使用.)]
+**** <<VARCHAR>>VARCHAR[fn:: Oracle[fn:: 本文在介绍 PostgreSQL 的同时, 也会将其与 Oracle Database, SQL Server, DB2, 和 MySQL 进行对比.  若无特别声明, 前述的 \( 4 \) 个 RDBMS 以及 PostgreSQL 皆可正常执行文中的示例代码.] 中使用 VARCHAR2 型.  (Oracle 中也有 VARCHAR 型, 但并不推荐使用.)]
 
 存储​*变长字符串*, 和 [[*CHAR][CHAR]] 型的区别是: *不会*​使用​_空格_​补足.
 E.g., 向 ~VARCHAR(3)~ 类型的列中输入 ='ab'= 时, 实际存储的还是它.
@@ -134,11 +158,10 @@ E.g., 向 ~VARCHAR(3)~ 类型的列中输入 ='ab'= 时, 实际存储的还是�
 所谓键, 就是在指定特定数据时使用的列的组合.
 
 ***** ~PRIMARY KEY~
-* 表的删除与更新
 ** 删除表                                       :DROP_TABLE:
 
-#+BEGIN_SRC sql
--- 删除 ‘Products’ 表.
+#+CAPTION: 删除“Products”表
+#+BEGIN_SRC sql  :eval never
 DROP TABLE Products;
 #+END_SRC
 
@@ -158,8 +181,8 @@ ALTER TABLE Products
 ADD COLUMN product_name_pinyin VARCHAR(100);
 #+END_SRC
 
-Oracle 中的写法[fn:Oracle增删单列: Oracle 可一次性增删多列.  当仅涉及 \(1\) 列的增删时, 可省略左右的括号.]:
- : ALTER TABLE Products ADD (product_name_pinyin VARCHAR2(100), 更多的新列, ...);
+Oracle 中的写法[fn:Oracle增删单列: Oracle 可一次性增删多列.  当仅涉及 \( 1 \) 列的增删时, 可省略左右的括号.]:
+ : ALTER TABLE Products ADD (product_name_pinyin VARCHAR2(100), 更多的新列, …);
 SQL Server 中的写法:
  : ALTER TABLE Products ADD product_name_pinyin VARCHAR(100);
 它们都省略了 ~COLUMN~ 关键字.
@@ -173,7 +196,7 @@ DROP COLUMN product_name_pinyin;
 #+END_SRC
 
 Oracle 中的写法[fn:Oracle增删单列]:
- : ALTER TABLE Products DROP (product_name_pinyin, 更多的旧列, ...);
+ : ALTER TABLE Products DROP (product_name_pinyin, 更多的旧列, …);
 
 * 查询 (query)                                      :SELECT:
 ** 列的查询
@@ -267,7 +290,7 @@ N.b., ~WHERE~ 子句必须​/紧跟/​在 ~FROM~ 子句之后[fn:SQL书写顺�
   FROM Products;
 #+END_SRC
 
-**** 含 ~NULL~ 的计算
+**** 含 ~NULL~ 的计算                                 :NULL:
 
 *所有包含 ~NULL~ 的计算, 结果肯定是 ~NULL~.*
 E.g.,
@@ -279,7 +302,7 @@ E.g.,
          NULL / 0;
 #+END_SRC
 
-通常情况下, 类似 ~1/0~ 这样除数为 \(0\) 会发生错误, 只有像上述示例代码[fn:: 实际上 ~FROM~ 子句在 ~SELECT~ 语句中并不是必不可少的, 可以只使用 ~SELECT~ 子句, 当成一个简陋的计算器.  但是, 在 Oracle 中, ~FROM~ 子句是必须的, 不过可以用 ~DUAL~ 这个临时表; 而在 DB2 中, 可以使用 ~SYSIBM.SYSDUMMY1~ 这个临时表.]这样用 \(0\) 除 ~NULL~ 不会发生错误.
+通常情况下, 类似 ~1/0~ 这样除数为 \( 0 \) 会发生错误, 只有像上述示例代码[fn:: 实际上 ~FROM~ 子句在 ~SELECT~ 语句中并不是必不可少的, 可以只使用 ~SELECT~ 子句, 当成一个简陋的计算器.  但是, 在 Oracle 中, ~FROM~ 子句是必须的, 不过可以用 ~DUAL~ 这个临时表; 而在 DB2 中, 可以使用 ~SYSIBM.SYSDUMMY1~ 这个临时表.]这样用 \( 0 \) 除 ~NULL~ 不会发生错误.
 
 *** 比较运算符
 
@@ -300,9 +323,9 @@ E.g.,
 
 N.b., 字符串类型[fn:: 该规则对[[*CHAR][定长字符串]]和[[VARCHAR][可变长字符串]]都适用.]的数据原则上按照字典顺序进行排序, 不能与数字​/​日期的大小顺序混淆.
 
-**** 含 ~NULL~ 的比较                  :IS_NULL:IS_NOT_NULL:
+**** 含 ~NULL~ 的比较             :IS_NULL:IS_NOT_NULL:NULL:
 
-还记得 “叉子” 和 “圆珠笔” 的进货单价 (=purchase_price=) 是 ~NULL~ 吗?[fn:CREATE_TABLE_Products: 参见 [[CREATE TABLE Products][=Products= 的建表语句]].]
+还记得“叉子”和“圆珠笔”的进货单价 (=purchase_price=) 是 ~NULL~ 吗?[fn:填充Products表: 参见 [[填充“Products”表][=Products= 的建表语句]].]
 我们来尝试根据 =purchase_price= 进行选取:
 
 #+BEGIN_SRC sql
@@ -313,7 +336,7 @@ N.b., 字符串类型[fn:: 该规则对[[*CHAR][定长字符串]]和[[VARCHAR][�
         OR purchase_price <> 2800 /* ) */;
 #+END_SRC
 
-执行结果中并没有 “叉子” 和 “圆珠笔”.
+执行结果中并没有“叉子”和“圆珠笔”.
 因为这两件商品的进货单价不明 (~NULL~), 所以无法判定是不是指定的价格.[fn:: 更具体的分析, [[真值表][参见后文]]]
 不过, SQL 提供了专门用来判断是否为 ~NULL~ 的 ~IS NULL~ 和 ~IS NOT NULL~ 运算符, e.g.,
 
@@ -333,7 +356,7 @@ N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
 
 #+NAME: 真值表
 #+CAPTION: _三值逻辑_​中的 ~AND~ 和 ~OR~ 真值表
-| \(P\)   | \(Q\)   | ~AND~   | ~OR~    |
+| \( P \) | \( Q \) | ~AND~   | ~OR~    |
 |---------+---------+---------+---------|
 | 真      | 真      | 真      | 真      |
 | 真      | 假      | 假      | 真      |
@@ -382,7 +405,7 @@ N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
 #+BEGIN_CENTER
 所有的聚合函数, 如果以列名为参数, 那么在计算之前就已经把 ~NULL~ 排除在外了.
 因此, 无论有多少个 ~NULL~ 都会被无视.
-这与“等价为 \(0\)”并不相同.
+这与“等价为 \( 0 \)”并不相同.
 #+END_CENTER
 
 **** TODO ~AVG~ 函数                                   :AVG:
@@ -399,7 +422,7 @@ N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
 |   500 |    320 |    2800 | 2800 |   5000 | +NULL+ |    790 | +NULL+ |       2035. |
 #+TBLFM: $9=($1+$2+$3+$4+$5+$7)/6.0
 
-- [ ] 但是有时也想将 ~NULL~ 作为 \(0\) 进行计算:
+- [ ] 但是有时也想将 ~NULL~ 作为 \( 0 \) 进行计算:
 
  | T恤衫 | 打孔器 | 运动T恤 | 菜刀 | 高压锅 | 叉子     | 擦菜板 | 圆珠笔   | 合计 \div 8 |
  |-------+--------+---------+------+--------+----------+--------+----------+-------------|
@@ -428,11 +451,6 @@ E.g.,
   FROM Products;
 #+END_SRC
 
-#+RESULTS:
-|        min |        max |
-|------------+------------|
-| 2008-04-28 | 2009-11-11 |
-
 只要是能够排序的数据, 就肯定有最值, 也就能够使用这俩函数.
 对日期来说, 平均值 和 合计值 并没有实际意义, 因此不能使用 ~AVG~​/​~SUM~ 函数.
 这个观点对于字符串类型的数据也适用.
@@ -445,11 +463,6 @@ E.g.,
   FROM Products;
 #+END_SRC
 
-#+RESULTS:
-| 品类数目 |
-|------------|
-| 3        |
-
 这里 ~DISTINCT~ 写在括号中, 是因为必须要在计算行数之前删除 =product_type= 列中的重复数据.
 如果像[[~SELECT DISTINCT~ 的用法][~SELECT DISTINCT~ 语句]]那样写在括号外的话, 就会先计算出数据行数, 再删除重复数据, 最终得到的是 =product_type= 列的所有行数:
 
@@ -458,11 +471,6 @@ E.g.,
   SELECT DISTINCT COUNT(product_type)
   FROM Products;
 #+END_SRC
-
-#+RESULTS:
-| count |
-|-------|
-|     8 |
 
 *** 不要在 ~WHERE~ 子句中使用聚合函数
 
@@ -482,7 +490,7 @@ E.g.[fn:: 正确的写法见[[*使用 ~HAVING~ 子句过滤分组]].],
 - [[*为聚合结果指定条件][~HAVING~]]
 - ~ORDER BY~
 
-这 \(3\) 条子句中能使用 聚合函数.
+这 \( 3 \) 条子句中能使用 聚合函数.
 
 ** 对表进行分组                                   :GROUP_BY:
 *** 使用 ~GROUP BY~ 子句按列汇总数据
@@ -510,13 +518,6 @@ E.g.[fn:: 正确的写法见[[*使用 ~HAVING~ 子句过滤分组]].],
   GROUP BY product_type;
 #+END_SRC
 
-#+RESULTS:
-| product_type | 该品类含有多少种商品 |
-|--------------+------------------------|
-| 衣服         | 2                    |
-| 办公用品     | 2                    |
-| 厨房用具     | 4                    |
-
 在 ~GROUP BY~ 子句中指定的列称为​_聚合键_​/​_分组列_.
 和 ~SELECT~ 子句一样, <<~GROUP BY~ 多列>> 可以通过逗号分隔以指定多列, 这些列的组合决定分组的方式.  [fn:: 当指定单分组列时, 从结果上看, ~SELECT regist_date FROM Products GROUP BY regist_date;~ 与 ~SELECT DISTINCT regist_date FROM Products;~ 是一样的 (包括它们对待 ~NULL~ 的方式), 甚至执行速度[fn:: 它们都是数据的内部处理, 都是通过排序处理来实现的.]也差不多.  但是它们的​/语义/​不一样, 注意根据实际意义选择合适的写法, 不要本末倒置.]
 
@@ -530,7 +531,7 @@ N.b., ~GROUP BY~ 子句一定要写在 ~FROM~ (and if existing ~WHERE~) 子句�
 - 聚合函数
 - _聚合键_
 
-这 \(3\) 类.
+这 \( 3 \) 类.
 常见错误是将 非聚合键 写在 ~SELECT~ 子句中[fn:: 不过, MySQL 倒是认同这种写法, 在多列候补中只要有一列满足查询要求即可.], e.g.,
 
 #+BEGIN_SRC sql  :eval query
@@ -541,8 +542,8 @@ N.b., ~GROUP BY~ 子句一定要写在 ~FROM~ (and if existing ~WHERE~) 子句�
 #+END_SRC
 
 其实很容易理解为什么说它是错误.
-通过 聚合键 将表分组后, 结果中的一行数据就​/代表/ \(1\) 组.
-上述代码的问题就出在这里, 它的 聚合键 \(\not\leftrightarrow\) 商品名, 所以从情理上讲, 你也不知道该怎么画查询结果的表格.
+通过 聚合键 将表分组后, 结果中的一行数据就​/代表/ \( 1 \) 组.
+上述代码的问题就出在这里, 它的 聚合键 \( \not \leftrightarrow \) 商品名, 所以从情理上讲, 你也不知道该怎么画查询结果的表格.
 
 **** 不要在 ~GROUP BY~ 子句中包含列的别名
 
@@ -553,14 +554,7 @@ N.b., ~GROUP BY~ 子句一定要写在 ~FROM~ (and if existing ~WHERE~) 子句�
   GROUP BY "品类" /* <-- 应该换成“product_type” */ ;
 #+END_SRC
 
-#+RESULTS:
-| 品类     | count |
-|----------+---------|
-| 衣服     | 2     |
-| 办公用品 | 2     |
-| 厨房用具 | 4     |
-
-上述错误[fn:: 不过, 这样的写法在 PostgreSQL 和 MySQL 中倒是不会发生执行错误.]的原因在于 SQL 语句的执行顺序:
+上述错误[fn:: 不过, 这样的写法在 PostgreSQL 和 MySQL 中倒是不会发生执行错误.]的原因在于 SQL 语句的执行顺序[fn:SELECT语句的执行顺序: ~FROM~ \to ~WHERE~ \to ~GROUP BY~ \to ~HAVING~ \to ~SELECT~ \to ~ORDER BY~]:
 RDBMS 在执行 ~SELECT~ 子句前, 先执行 ~GROUP BY~ 子句, 而此时 RDBMS 还不知道有什么别名.
 
 *** 聚合键是 ~NULL~ 的情况
@@ -571,16 +565,6 @@ RDBMS 在执行 ~SELECT~ 子句前, 先执行 ~GROUP BY~ 子句, 而此时 RDBMS
   FROM Products
   GROUP BY regist_date;
 #+END_SRC
-
-#+RESULTS:
-| regist_date | 该日登记的商品数目 |
-|-------------+----------------------|
-|             | 1                  |
-|  2009-11-11 | 1                  |
-|  2009-09-20 | 3                  |
-|  2009-09-11 | 1                  |
-|  2009-01-15 | 1                  |
-|  2008-04-28 | 1                  |
 
 从结果可以看出, 当聚合键中包含 ~NULL~ 时, 也会将其作为一组特定的数据[fn:: 其实这是容易推理出来的, [[~GROUP BY~ 多列][前文]]说过, ~GROUP BY~ 子句可以指定多个分组列.  如果这些列的某一种组合中包含一个 ~NULL~ 列, 从情理上讲, 我们当然不应该舍弃这种组合; 而按照单列进行分组, 不过是按照多列的组合来进行分组的一种特例.].
 
@@ -597,12 +581,6 @@ E.g.,
   GROUP BY purchase_price;
 #+END_SRC
 
-#+RESULTS:
-| purchase_price | count |
-|----------------+-------|
-|            500 |     1 |
-|           2800 |     1 |
-
 总结一下上述 SQL 语句的执行顺序[fn:: 这与语法所规定的书写顺序并不相同.  就是这样的, SQL 的书写顺序 和 RDBMS 内部的执行顺序并不相同.]:
 ~FROM~ \to ~WHERE~ \to ~GROUP BY~ \to ~SELECT~.
 
@@ -618,12 +596,6 @@ E.g.,
  GROUP BY product_type
  HAVING COUNT(*) = 2;
 #+END_SRC
-
-#+RESULTS:
-| 含有两种商品的品类 |                   avg |
-|--------------------+-----------------------|
-| 衣服               | 2500.0000000000000000 |
-| 办公用品           |  300.0000000000000000 |
 
 ~HAVING~ 子句必须写在 ~GROUP BY~ 子句之后, 其在 RDBMS 内部的执行顺序也排在 ~GROUP BY~ 子句之后.
 
@@ -654,7 +626,7 @@ E.g.,
 我们可以通过在 ~SELECT~ 语句末尾添加 ~ORDER BY~ 子句来明确指定排列顺序, e.g.,
 
 #+NAME: 按照销售单价升序排列
-#+CAPTION: 按照 销售单价 升序 排列
+#+CAPTION: 按照销售单价升序排列
 #+BEGIN_SRC sql  :exports both table
   SELECT product_id,
          product_name,
@@ -675,7 +647,7 @@ E.g.,
 想要按照 =sale_price= 降序 (descendent) 排列时, 在列名后面使用 ~DESC~ 关键字, i.e.,
 
 #+NAME: 按照销售单价降序排列
-#+CAPTION: 按照 销售单价 降序 排列
+#+CAPTION: 按照销售单价降序排列
 #+BEGIN_SRC sql  :exports both table
   SELECT product_id,
          product_name,
@@ -684,21 +656,10 @@ E.g.,
   ORDER BY sale_price DESC;
 #+END_SRC
 
-#+RESULTS:
-| product_id | product_name | sale_price |
-|------------+--------------+------------|
-|       0005 | 高压锅       |       6800 |
-|       0003 | 运动T恤      |       4000 |
-|       0004 | 菜刀         |       3000 |
-|       0001 | T恤衫        |       1000 |
-|       0007 | 擦菜板       |        880 |
-|       0002 | 打孔器       |        500 |
-|       0006 | 叉子         |        500 |
-|       0008 | 圆珠笔       |        100 |
-
 ** 指定多个排序键
 
-如[[按照销售单价升序排列][代码\ldquo​按照销售单价升序排列\rdquo]]和[[按照销售单价升序排列][代码\ldquo​按照销售单价升序排列\rdquo]]所示
+如[[按照销售单价升序排列][代码\ldquo​按照销售单价升序排列\rdquo]]和[[按照销售单价降序排列][代码\ldquo​按照销售单价降序排列\rdquo]]所示, “打孔器”和“叉子”的先后顺序是随机的, 因为它们的销售单价都是 \( 500 \).
+我们可以指定多个排序键以实现更细致的排序, e.g.,
 
 #+BEGIN_SRC sql
   SELECT product_id,
@@ -709,61 +670,384 @@ E.g.,
            product_id ASC;
 #+END_SRC
 
-#+RESULTS:
-| product_id | product_name | sale_price |
-|------------+--------------+------------|
-|       0008 | 圆珠笔       |        100 |
-|       0002 | 打孔器       |        500 |
-|       0006 | 叉子         |        500 |
-|       0007 | 擦菜板       |        880 |
-|       0001 | T恤衫        |       1000 |
-|       0004 | 菜刀         |       3000 |
-|       0003 | 运动T恤      |       4000 |
-|       0005 | 高压锅       |       6800 |
+规则是优先使用 1st 排序键, 如果该列存在相同值的话, 再接着参考下一个排序键.
 
-* COMMENT File Local Variables
+** ~NULL~ 的顺序                                      :NULL:
+
+“叉子”和“圆珠笔”的进价都是 ~NULL~, 究竟 ~NULL~ 会排在哪里?
+是最大还是最小呢?
+
+#+BEGIN_SRC sql
+   SELECT product_name,
+          purchase_price
+   FROM Products
+   ORDER BY purchase_price;
+#+END_SRC
+
+[[*含 ~NULL~ 的比较][前文]]说过, 含 ~NULL~ 的比较结果是 unknown, 因此干脆把 ~NULL~ 显示在开头​/​末尾.
+究竟是在开头显示还是在末尾, 并没有特殊规定[fn:: 某些 RDBMS 提供了强制 ~NULL~ 在开头​/​末尾显示的选项.].
+
+** 哪些要素可以作为排序键
+*** 使用别名作为排序键                                  :AS:
+
+第[[*不要在 ~GROUP BY~ 子句中包含列的别名]]节说过, ~GROUP BY~ 子句中不能使用 ~SELECT~ 子句中定义的别名.
+但在 ~ORDER BY~ 子句中是允许使用别名的, e.g.,
+
+#+CAPTION: 按字典序列出商品名
+#+BEGIN_SRC sql
+ SELECT product_name AS "商品名"
+ FROM Products
+ ORDER BY "商品名";
+#+END_SRC
+
+*** ~SELECT~ 子句中未包含的列作为排序键
+
+E.g.,
+ : SELECT product_name FROM Products ORDER BY product_id;
+
+*** 使用聚合函数作为排序键                        :GROUP_BY:
+
+#+BEGIN_SRC sql
+ SELECT product_type,
+        COUNT(*) AS "该品类含有多少种商品"
+ FROM Products
+ GROUP BY product_type
+ ORDER BY COUNT(*) /* 当然也可以用第二行定义的别名 */ ;
+#+END_SRC
+
+*** 不要使用列编号
+
+在 SQL-92[fn:SQL-92: 1992 年制定的 SQL 标准.] 中已明确指出该排序功能将来会被删除.
+
+* 数据更新
+** 插入新行                                    :INSERT:INTO:
+*** 插入时指定各列的值                              :VALUES:
+
+新建示例用表“ProductsInsert”:
+
+#+NAME: CREATE TABLE ProductsInsert
+#+CAPTION: 用来学习 ~INSERT INTO … VALUES~ 语句的示例用表
+#+BEGIN_SRC sql  :eval query
+ CREATE TABLE ProductsInsert (
+   product_id      CHAR(4)   NOT NULL PRIMARY KEY,
+   product_name VARCHAR(100) NOT NULL            ,
+   product_type VARCHAR(32)  NOT NULL            ,
+       sale_price INTEGER   DEFAULT 0            ,
+   purchase_price INTEGER                        ,
+   regist_date    DATE    -- 注意不能有多余的逗号!
+ );
+#+END_SRC
+
+在插入新行时手动指定各列的值, 使用
+ : INSERT INTO <表名> [(列清单…)] VALUES (值清单…);
+原则上[fn:: 但也仅仅是原则而已, 其实很多 RDBMS 都支持一次性插入多行数据, 这样的功能称为“multi row ~INSERT~”.  See [[*插入多行]].], 执行一次上述 ~INSERT~ 语句仅会插入一行数据, 因此插入多行通常需要循环执行相应的次数.
+
+**** 按照列清单指定各列的值
+
+例如, 我们要插入
+
+| =product_id= | =product_name= | =product_type= | =sale_price= | =purchase_price= | =regist_date= |
+| (商品编号)   | (商品名称)     | (商品种类)     | (销售单价)   | (进货单价)       | (登记日期)    |
+|--------------+----------------+----------------+--------------+------------------+---------------|
+| 0001         | T恤衫          | 衣服           | 1000         | 500              | 2009-09-20    |
+
+这样一条数据, 可以使用:
+
+#+BEGIN_SRC sql  :eval query
+ INSERT INTO ProductsInsert /* 列清单 */ (
+   product_id,   product_name, product_type,
+   sale_price, purchase_price,  regist_date
+ ) VALUES /* 值清单 */ (
+       '0001',        'T恤衫',       '衣服',
+         1000,            500, '2009-09-20'
+ );
+#+END_SRC
+
+注意​/值清单/​与​/列清单/​是​*一一对应的*.
+
+**** 按照表定义指定各列的值
+
+对表进行全列 ~INSERT~ 时, 可以省略列清单.
+这时​/值清单/​与​/表定义中的列/​是​*一一对应的*.
+E.g., 下面两段代码执行相同的操作:
+
+#+CAPTION: 手写列清单
+#+BEGIN_SRC sql  :eval never
+ INSERT INTO ProductsInsert (
+   product_id,   product_name, product_type,
+   sale_price, purchase_price,  regist_date
+ ) VALUES (
+       '0005',       '高压锅',   '厨房用具',
+         6800,           5000, '2009-01-15'
+ );
+#+END_SRC
+
+#+CAPTION: 参考表定义以省略列清单
+#+BEGIN_SRC sql  :eval query
+ INSERT INTO ProductsInsert VALUES (
+   '0005', '高压锅', '厨房用具', 6800, 5000, '2009-01-15'
+ );
+#+END_SRC
+
+**** 插入多行
+
+按照 ISO SQL 书写的下列语句
+
+#+CAPTION: 一句插入一行
+#+BEGIN_SRC sql  :eval never
+ INSERT INTO ProductsInsert VALUES (
+   '0002',  '打孔器', '办公用品',  500,  320, '2009-09-11'
+ ); INSERT INTO ProductsInsert VALUES (
+   '0003', '运动T恤',     '衣服', 4000, 2800,         NULL
+ ); INSERT INTO ProductsInsert VALUES (
+   '0004',    '菜刀', '厨房用具', 3000, 2800, '2009-09-20'
+ );
+#+END_SRC
+
+在一些方言中可以写在一条语句中, i.e.,
+
+#+CAPTION: 一句插入多行
+#+BEGIN_SRC sql  :eval query
+ INSERT INTO ProductsInsert VALUES
+ ('0002',  '打孔器', '办公用品',  500,  320, '2009-09-11'),
+ ('0003', '运动T恤',     '衣服', 4000, 2800,         NULL),
+ ('0004',    '菜刀', '厨房用具', 3000, 2800, '2009-09-20');
+#+END_SRC
+
+毕竟是方言, 该语法并不适用于所有 RDBMS.
+(DB2, SQL, SQL Server, PostgreSQL, 和 MySQL 支持它.)
+在 Oracle 中需要这样写:
+
+#+CAPTION: Oracle 中的 multi row ~INSERT~
+#+BEGIN_SRC sql  :eval never
+ INSERT ALL INTO ProductsInsert VALUES (
+   '0002',  '打孔器', '办公用品',  500,  320, '2009-09-11'
+ )          INTO ProductsInsert VALUES (
+   '0003', '运动T恤',     '衣服', 4000, 2800,         NULL
+ )          INTO ProductsInsert VALUES (
+   '0004',    '菜刀', '厨房用具', 3000, 2800, '2009-09-20'
+ ) SELECT * FROM DUAL;
+#+END_SRC
+
+其中 =DUAL= 是 Oracle 特有的一种临时表[fn:: 在书写没有参照表的 ~SELECT~ 语句时, 写在 ~FROM~ 子句中的表并没有实际意义.  它不保存任何数据, 不能作为 ~INSERT~​/​~UPDATE~ 的宾语.] (安装时的必选项), 因此 ~SELECT * FROM DUAL~ 部分也只是临时性的, 并没有实际意义.
+
+**** 插入 ~NULL~                                      :NULL:
+
+直接书写即可, e.g.,
+
+#+BEGIN_SRC sql  :eval query
+ INSERT INTO ProductsInsert (
+   product_id, product_name  , product_type,
+   sale_price, purchase_price, regist_date
+ ) VALUES (
+       '0006',         '叉子',   '厨房用具',
+          500,           NULL, '2009-09-20'
+ );                   -- ^^^^
+#+END_SRC
+
+注意, 设置了 ~NOT NULL~ 约束的列是不能插入 ~NULL~ 的, 硬要执行相应的 ~INSERT~ 语句会导致插入失败[fn:SQL语句执行失败时不会对原有数据造成影响: SQL 语句执行失败时不会对表中原有的数据造成影响].
+
+**** 插入默认值                                    :DEFAULT:
+
+我们在创建“ProductsInsert”表时, 对 =sale_price= 列设置了 ~DEFAULT~ 约束:
+
+# TODO: 有没有办法只引用某一行呢?
+#+BEGIN_SRC sql  :noweb strip-tangle  :eval never
+<<CREATE TABLE ProductsInsert>>
+#+END_SRC
+
+所以插入新行时, 也可以直接给该列赋默认值 (此处是 \( 0 \)).
+
+***** 显式地插入默认值
+
+#+NAME: 显式地插入 7 号商品的默认值
+#+BEGIN_SRC sql  :eval query
+ INSERT INTO ProductsInsert (
+   product_id,   product_name, product_type,
+   sale_price, purchase_price,  regist_date
+ ) VALUES (
+       '0007',       '擦菜板',   '厨房用具',
+      DEFAULT,            790, '2009-04-28'
+ );/* ^^^^^^^ */
+#+END_SRC
+
+检查一下:
+
+#+NAME: 检查“ProductsInsert”表中的 7 号商品
+#+BEGIN_SRC sql
+ SELECT *
+ FROM ProductsInsert
+ WHERE product_id = '0007';
+#+END_SRC
+
+***** 插入时省略对应的列以使用缺省值
+
+先将[[显式地插入 7 号商品的默认值][刚刚插入的 =0007= 号商品]]从“ProductsInsert”表中删除:
+
+#+BEGIN_SRC sql  :eval query
+ DELETE FROM ProductsInsert
+ WHERE product_id = '0007';
+#+END_SRC
+
+再重新插入:
+
+#+BEGIN_SRC sql  :eval query
+ INSERT INTO ProductsInsert (
+    product_id,     product_name, product_type,
+ /* sale_price */ purchase_price,  regist_date
+ ) VALUES (
+        '0007',         '擦菜板',   '厨房用具',
+ /*     0      */            790, '2009-04-28'
+ );
+#+END_SRC
+
+检查一下:
+
+#+BEGIN_SRC sql  :noweb strip-tangle
+<<检查“ProductsInsert”表中的 7 号商品>>
+#+END_SRC
+
+-----
+
+说到省略列名, 有一点要注意一下.
+_如果省略了没有 ~DEFAULT~ 约束的列, 则该列的值就会被设定为 ~NULL~._
+(因此, 如果省略的是设置了 ~NOT NULL~ 约束的列 (e.g., “ProductsInsert”表中的 =product_name= 列), 则会出错.)
+E.g.,
+
+#+BEGIN_SRC sql  :eval query
+ INSERT INTO ProductsInsert (
+   product_id,    product_name,    product_type,
+   sale_price, /* purchase_price */ regist_date
+ ) VALUES (
+       '0008',        '圆珠笔',      '办公用品',
+          100, /*    DEFAULT     */ '2009-11-11'
+ );
+#+END_SRC
+
+#+CAPTION: 检查一下“ProductsInsert”表中 8 号商品的插入结果
+#+BEGIN_SRC sql
+ SELECT *
+ FROM ProductsInsert
+ WHERE product_id = '0008';
+#+END_SRC
+
+*** 复制给定表中的行                                :SELECT:
+
+新建示例用表“ProductsCopy”:
+
+#+CAPTION: 用来学习 ~INSERT INTO … SELECT~ 语句的示例用表
+#+BEGIN_SRC sql  :eval query
+ CREATE TABLE ProductsCopy (
+   product_id      CHAR(4)   NOT NULL PRIMARY KEY,
+   product_name VARCHAR(100) NOT NULL            ,
+   product_type VARCHAR(32)  NOT NULL            ,
+       sale_price INTEGER                        ,
+   purchase_price INTEGER                        ,
+   regist_date    DATE
+ );
+#+END_SRC
+
+将“Products”表的数据备份过来:
+
+#+BEGIN_SRC sql  :eval query
+ INSERT INTO ProductsCopy
+ SELECT *
+ FROM Products;
+#+END_SRC
+
+检查一下:
+
+#+BEGIN_SRC sql
+ SELECT *
+ FROM ProductsCopy;
+#+END_SRC
+
+-----
+
+实际上 ~INSERT INTO … SELECT~ 中的 ~SELECT~ 子句的书写同 ~SELECT~ 语句的书写, ~SELECT~ 语句中的各种子句都可以使用[fn:: 虽说如此, 但使用 ~ORDER BY~ 是没有意义的, 因为无法保证表内部记录的顺序与插入顺序是一致的.].
+E.g.,
+
+新建示例用表“ProductsType”:
+
+#+CAPTION: 根据商品种类进行汇总的表
+#+BEGIN_SRC sql  :eval query
+ CREATE TABLE ProductsType (
+   product_type   VARCHAR(32) NOT NULL PRIMARY KEY,
+       sum_sale_price INTEGER                     ,
+   sum_purchase_price INTEGER
+ );
+#+END_SRC
+
+插入汇总后的数据:
+
+#+BEGIN_SRC sql  :eval query
+ INSERT INTO ProductsType (
+   product_type,
+   sum_sale_price,
+   sum_purchase_price
+ ) SELECT product_type,
+          SUM(sale_price),
+          SUM(purchase_price)
+ FROM Products
+ GROUP BY product_type;
+#+END_SRC
+
+检查一下:
+
+#+BEGIN_SRC sql
+ SELECT *
+ FROM ProductsType;
+#+END_SRC
+
+** 删除旧行
+** 修改旧行
 
-Local Variables:
-eval: (w32-notification-close
-       (w32-notification-notify :title "读到了第 130 页"
-                                :body " "))
-eval: (require 'ob-sql)
-org-confirm-babel-evaluate: nil
-sql-postgres-program: "D:/Progs/PostgreSQL/16/bin/psql.exe"
-org-babel-default-header-args:sql: ((:engine   . "postgresql")
-                                    (:dbhost   . "localhost")
-                                    (:dbport   . 5432)
-                                    (:dbuser   . "postgres")
-                                    (:database . "shop"))
-eval: (advice-add 'org-babel-execute:sql  ; and modify its definition when on MS-Windows.
-                  :around (let ((my/PostgreSQL.org (current-buffer)))
-                            (lambda (fn &rest args)
-                              (with-environment-variables (("PGPASSWORD" (getenv "PGPASSWORD")))
-                                (when (eq (current-buffer) my/PostgreSQL.org)
-                                  (setenv "PGPASSWORD" " "))
-                                (apply fn args))))
-                  '((name . "~shynur/Documents/CheatSheets/PostgreSQL.org")))
-eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/TextBook.pdf")
-eval: (find-file-noselect "D:/Desktop/ToRead/SQL基础教程-MICK/src_ans/Answer/")
-eval: (define-abbrev org-mode-abbrev-table
-        "begsql" "#+BEGIN_SRC sql\n#+END_SRC"
-        (lambda ()
-          (previous-line 1)
-          (end-of-line)))
-eval: (abbrev-mode)
-eval: (electric-quote-local-mode -1)
-eval: (advice-add 'org-html-export-to-html :around
-                  (let ((my/PostgreSQL.org (current-buffer)))
-                    (lambda (fn &rest args)
-                      (if (eq my/PostgreSQL.org (current-buffer))
-                          (let ((using-light-theme? (memq 'modus-operandi custom-enabled-themes)))
-                            (unless using-light-theme?
-                              (load-theme 'modus-operandi))
-                            (unwind-protect
-                                (apply fn args)
-                               (unless using-light-theme?
-                                 (disable-theme 'modus-operandi))))
-                        (apply fn args))))
-                  '((name . "~shynur/Documents/CheatSheets/PostgreSQL.org")))
-coding: utf-8-unix
-End:
+#+CAPTION: File Local Variables (如果你不使用 Emacs, 请忽略它.)
+#+BEGIN_SRC emacs-lisp  :eval never
+  Local Variables:
+  eval: (w32-notification-close
+         (w32-notification-notify :title "读到了第 148 页"
+                                  :body " "))
+  eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/TextBook.pdf")
+  eval: (find-file-noselect "D:/Desktop/ToRead/SQL基础教程-MICK/src_ans/Answer/")
+  eval: (require 'ob-sql)
+  org-confirm-babel-evaluate: nil
+  sql-postgres-program: "D:/Progs/PostgreSQL/16/bin/psql.exe"
+  org-babel-default-header-args:sql: ((:engine   . "postgresql")
+                                      (:dbhost   . "localhost")
+                                      (:dbport   . 5432)
+                                      (:dbuser   . "postgres")
+                                      (:database . "shop"))
+  eval: (advice-add 'org-babel-execute:sql  ; and modify its definition when on MS-Windows.
+                    :around (let ((my/PostgreSQL.org (current-buffer)))
+                              (lambda (fn &rest args)
+                                "类似“$env:PGPASSWORD=' '”."
+                                (with-environment-variables (("PGPASSWORD" (getenv "PGPASSWORD")))
+                                  (when (eq (current-buffer) my/PostgreSQL.org)
+                                    (setenv "PGPASSWORD" " "))
+                                  (apply fn args))))
+                    '((name . "~shynur/Documents/CheatSheets/PostgreSQL.org")))
+  eval: (define-abbrev org-mode-abbrev-table
+          "begsql" "#+BEGIN_SRC sql\n#+END_SRC"
+          (lambda ()
+            (previous-line 1)
+            (end-of-line)))
+  eval: (abbrev-mode)
+  eval: (electric-quote-local-mode)
+  eval: (advice-add 'org-html-export-to-html :around
+                    (let ((my/PostgreSQL.org (current-buffer)))
+                      (lambda (fn &rest args)
+                        "导出时采用浅色主题的配色, 以适应 PDF 的背景色."
+                        (if (eq (current-buffer) my/PostgreSQL.org)
+                            (let ((using-light-theme? (memq 'modus-operandi custom-enabled-themes))
+                                  (inhibit-redisplay t))
+                              (unless using-light-theme?
+                                (load-theme 'modus-operandi))
+                              (unwind-protect
+                                  (apply fn args)
+                                 (unless using-light-theme?
+                                   (disable-theme 'modus-operandi))))
+                          (apply fn args))))
+                    '((name . "~shynur/Documents/CheatSheets/PostgreSQL.org")))
+  End:
+#+END_SRC
