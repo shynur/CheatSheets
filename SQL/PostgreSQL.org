@@ -7,8 +7,7 @@
 * 使用 ~psql~
 ** 打开 ~psql~
 
-在 shell 中运行安装时自带的 ~runpsql.bat~[fn:: 本文以 MS-Windows 为例.] 即可, e.g.,
-
+#+CAPTION: 运行安装时自带的 ~runpsql.bat~ (以 MS-Windows 为例)
 #+BEGIN_SRC pwsh  :eval never
 PS C:/Users/shynur> ./bin/PostgreSQL/16/scripts/runpsql.bat
 #+END_SRC
@@ -38,10 +37,13 @@ database_name=# \q
 *** DCL[fn:DCL: Data Control Language]
 
 - 确认​/​取消对数据库中的数据进行的​*变更*
+
   | ~COMMIT~ | ~ROLLBACK~ |
   |----------+------------|
   | *确认*   | *取消*     |
+
 - *设定* RDBMS 中​*用户*​操作数据库中的对象 (e.g., 表) 的​*权限*
+
   | ~GRANT~            | ~REVOKE~ |
   |--------------------+----------|
   | *赋予*​用户操作权限 | *取消*   |
@@ -85,14 +87,14 @@ database_name=# \q
 #+END_SRC
 
 * 创建数据库与表
-** 数据库的创建                            :CRAETE_DATABASE:
+** 数据库的创建                            :CRAETE:DATABASE:
 
 #+CAPTION: 创建名为“shop”的数据库.
 #+BEGIN_SRC sql  :eval query
 CREATE DATABASE shop;
 #+END_SRC
 
-** 表的创建                       :CREATE_TABLE:INSERT_INTO:
+** 表的创建                                   :CREATE:TABLE:
 
 #+CAPTION: 在数据库“shop”中创建名为“Products”的表.
 #+BEGIN_SRC sql  :eval query
@@ -109,7 +111,7 @@ CREATE TABLE Products (
 );
 #+END_SRC
 
-执行以下代码[fn:Mick_Copyright: 摘编自 /Mick/ 的著作 /SQL 基础教程/ (ISBN 978-7-115-45502-4), 版权归 /Mick/.][fn:BEGIN_TRANSACTION: 对于 ~BEGIN TRANSACTION;~ 这行, 在 MySQL 中使用 ~START TRANSACTION;~; 在 Oracle 和 DB2 中不需要这句.]以插入本文使用的示例数据:
+执行以下代码[fn:Mick_Copyright: 摘编自 /Mick/ 的著作 /SQL 基础教程/ (ISBN 978-7-115-45502-4), 版权归 /Mick/.][fn:BEGIN_TRANSACTION: 对于 ~BEGIN TRANSACTION;~ 这行, 在 MySQL 中使用 ~START TRANSACTION;~; 在 Oracle 和 DB2 中不需要这句.  见[[*Transaction]].]以插入本文使用的示例数据:
 
 #+NAME: 填充“Products”表
 #+BEGIN_SRC sql
@@ -158,7 +160,7 @@ E.g., 向 ~VARCHAR(3)~ 类型的列中输入 ='ab'= 时, 实际存储的还是�
 所谓键, 就是在指定特定数据时使用的列的组合.
 
 ***** ~PRIMARY KEY~
-** 删除表                                       :DROP_TABLE:
+** 删除表                                       :DROP:TABLE:
 
 #+CAPTION: 删除“Products”表
 #+BEGIN_SRC sql  :eval never
@@ -168,12 +170,12 @@ DROP TABLE Products;
 N.b., 删除的表是无法恢复的.
 只能重新创建, 然后重新插入数据.
 
-** 更新表的定义                                :ALTER_TABLE:
+** 更新表的定义                                :ALTER:TABLE:
 
 N.b., ~ALTER TABLE~ 语句和 [[*删除表][~DROP TABLE~ 语句]]一样, 执行之后无法恢复.
 误添的列可以通过 ~ALTER TABLE~ 语句删除, 或者将表全部删除之后再重新创建.
 
-*** 添加列                                      :ADD_COLUMN:
+*** 添加列                                      :ADD:COLUMN:
 
 #+BEGIN_SRC sql
 -- 给 ‘Products’ 表添加一列, 表示商品名称的拼音.
@@ -187,10 +189,10 @@ SQL Server 中的写法:
  : ALTER TABLE Products ADD product_name_pinyin VARCHAR(100);
 它们都省略了 ~COLUMN~ 关键字.
 
-*** 删除列                                     :DROP_COLUMN:
+*** 删除列                                     :DROP:COLUMN:
 
+#+CAPTION: 删除“Products”表中的“product_name_pinyin”列.
 #+BEGIN_SRC sql
--- 删除 ‘Products’ 表中的 ‘product_name_pinyin’ 列.
 ALTER TABLE Products
 DROP COLUMN product_name_pinyin;
 #+END_SRC
@@ -247,7 +249,7 @@ SELECT * FROM Products;
 使用​/字符串/​/​/日期/​常数时, 必须用单引号 (='=) 将其括起.
 
 ** 筛选
-*** 去重                                   :SELECT_DISTINCT:
+*** 去重                                          :DISTINCT:
 
 #+NAME: ~SELECT DISTINCT~ 的用法
 #+BEGIN_SRC sql
@@ -323,7 +325,7 @@ E.g.,
 
 N.b., 字符串类型[fn:: 该规则对[[*CHAR][定长字符串]]和[[VARCHAR][可变长字符串]]都适用.]的数据原则上按照字典顺序进行排序, 不能与数字​/​日期的大小顺序混淆.
 
-**** 含 ~NULL~ 的比较             :IS_NULL:IS_NOT_NULL:NULL:
+**** 含 ~NULL~ 的比较                          :IS:NOT:NULL:
 
 还记得“叉子”和“圆珠笔”的进货单价 (=purchase_price=) 是 ~NULL~ 吗?[fn:填充Products表: 参见 [[填充“Products”表][=Products= 的建表语句]].]
 我们来尝试根据 =purchase_price= 进行选取:
@@ -492,7 +494,7 @@ E.g.[fn:: 正确的写法见[[*使用 ~HAVING~ 子句过滤分组]].],
 
 这 \( 3 \) 条子句中能使用 聚合函数.
 
-** 对表进行分组                                   :GROUP_BY:
+** 对表进行分组                                   :GROUP:BY:
 *** 使用 ~GROUP BY~ 子句按列汇总数据
 
 我们可以用 ~GROUP BY~ 子句像这样:
@@ -620,7 +622,7 @@ E.g.,
  : SELECT product_type, COUNT(*) FROM Products GROUP BY product_type;
 中, 并没有名为 =product_name= 的列 供 ~HAVING~ 子句进行筛选.
 
-* 排序                                            :ORDER_BY:
+* 排序                                            :ORDER:BY:
 
 通常从表中抽取数据时, 如果没有特别指定顺序, 最终排列顺序便无从得知.  [fn:: 即使是同一条 ~SELECT~ 语句, 每次执行时排列顺序很可能发生改变.]
 我们可以通过在 ~SELECT~ 语句末尾添加 ~ORDER BY~ 子句来明确指定排列顺序, e.g.,
@@ -705,7 +707,7 @@ E.g.,
 E.g.,
  : SELECT product_name FROM Products ORDER BY product_id;
 
-*** 使用聚合函数作为排序键                        :GROUP_BY:
+*** 使用聚合函数作为排序键                        :GROUP:BY:
 
 #+BEGIN_SRC sql
  SELECT product_type,
@@ -999,14 +1001,158 @@ E.g.,
  FROM ProductsType;
 #+END_SRC
 
-** 删除旧行
-** 修改旧行
+** 删除旧行[fn:: 若要将整个表连同数据都删除, 参见[[*删除表]].] :DELETE:
+
+语句格式[fn:: 与 ~SELECT~ 语句不同的是, ~DELETE~ 语句中不能使用 ~GROUP BY~, ~HAVING~, 和 ~ORDER BY~ 三类子句, 而只能使用 ~WHERE~ 子句.  因为 ~GROUP BY~ 和 ~HAVING~ 是用来改变查询时的数据抽取形式的, ~ORDER BY~ 是用来指定取得的结果的显示顺序的, 而在删除旧行时, 这些子句都起不到什么作用.]为
+ : DELETE FROM <表名> [WHERE …];
+- 省略掉 ~WHERE~ 子句会删除​*所有*​行.[fn:TRUNCATE: ISO SQL 中只有 ~DELETE~ 语句可以删除表中的旧行, 但很多 RDBMS (including Oracle, SQL Server, PostgreSQL, MySQL, and DB2) 还提供了标准之外的 ~TRUNCATE~ 语句[fn:: 书写格式为 ~TRUNCATE <表名>;~.  它只能用来删除表中的​*所有*​行, IOW 无法使用 ~WHERE~ 子句来过滤出要删除的行.  正因为它不能具体地控制每一行的删除与否, 所以执行速度比 ~DELETE~ 要快得多.][fn:: 尽管 ~TRUNCATE~ 语句比 ~DELETE~ 语句的性能[fn:: 实际上, ~DELETE~ 语句的耗时在 DML 中确实算比较久的.]要好很多, 但使用时需要多加注意.  E.g., 在 Oracle 上, ~TRUNCATE~ 语句被定义为是 DDL 而不是 DML, 因此在执行 ~TRUNCATE~ 语句时会默认执行 ~COMMIT~, 导致无法 ~ROLLBACK~. ].]
+- 根据 ~WHERE~ 子句过滤出[fn:WHERE子句的语法: See [[*过滤条件]] for ~WHERE~ 子句的语法.]要删除的行.  这种语句的正式称呼是“搜索型 ~DELETE~​”.
+
+以“Products”表为例,
+
+#+CAPTION: 删除 “销售单价”\ge4000 的商品
+#+BEGIN_SRC sql
+ DELETE FROM Products
+ WHERE sale_price >= 4000;
+#+END_SRC
+
+#+CAPTION: 检查一下是否真的删除了
+#+BEGIN_SRC sql
+ SELECT *
+ FROM Products;
+#+END_SRC
+
+** 修改旧行                                     :UPDATE:SET:
+
+语句格式为
+ : UPDATE <表名>  SET <列名> = <表达式>[, …]   [WHERE …];
+- 省略掉 ~WHERE~ 子句会修改​*所有*​行.  \\
+  E.g.,
+
+  #+CAPTION: 将登记日期全部更新为“2009-10-10”
+  #+BEGIN_SRC sql  :eval query
+   UPDATE Products
+   SET regist_date = '2009-10-10';
+  #+END_SRC
+
+- 根据 ~WHERE~ 子句过滤出[fn:WHERE子句的语法: See [[*过滤条件]] for ~WHERE~ 子句的语法.]要修改的行.  这种语句的正式称呼是“搜索型 ~UPDATE~​”.  \\
+  E.g.,
+
+  #+BEGIN_SRC sql  :eval query
+   UPDATE Products
+   SET sale_price = sale_price * 10
+   WHERE product_type = '厨房用具';
+  #+END_SRC
+
+*** ~NULL~ 清空                                       :NULL:
+
+#+CAPTION: 将编号为 8 的登记日期清空
+#+BEGIN_SRC sql  :eval query
+ UPDATE Products
+ SET regist_date = NULL
+ WHERE product_id = '0008';
+#+END_SRC
+
+#+RESULTS:
+| UPDATE 1 |
+|----------|
+
+注意, 只有未设置 ~NOT NULL~ 约束和 ~PRIMARY KEY~ 约束的列才可以清空.
+
+*** 多列更新
+
+有两种书写方式:
+
+#+BEGIN_SRC sql  :eval query
+  UPDATE Products
+  SET sale_price     = sale_price / 10,
+      purchase_price = purchase_price / 2
+  WHERE product_type = '厨房用具';
+#+END_SRC
+
+和
+
+#+BEGIN_SRC sql  :eval query
+ UPDATE Products
+ SET (sale_price,      purchase_price)
+   = (sale_price / 10, purchase_price / 2)
+ WHERE product_type = '厨房用具';
+#+END_SRC
+
+#+RESULTS:
+| UPDATE 3 |
+|----------|
+
+所有的 RDBMS 都支持前一种写法; 后一种写法不太常用 (但 PostgreSQL 和 DB2 是支持的).
+
+** Transaction                                 :TRANSACTION:
+*** 创建 transaction           :BEGIN:START:COMMIT:ROLLBACK:
+
+#+CAPTION: ~TRANSACTION~ 的语法
+#+BEGIN_SRC sql  :eval never
+ 开始 TRANSACTION;
+   DML 语句 1;
+   DML 语句 2;
+   ...       ;
+ COMMIT | ROLLBACK; -- 结束该 transaction.
+#+END_SRC
+
+标准 SQL 并没有定义 transaction 的起始语句, 而是由各个 RDBMS 自己来定义的:
+
+- SQL Server, PostgreSQL:
+   : BEGIN TRANSACTION;
+- MySQL:
+   : START TRANSACTION;
+- Oracle, DB2: \\
+  无
+
+<<隐式进入 ~TRANSACTION~ 块>> Oracle 和 DB2 没有定义特定的起始语句, 其实是因为标准 SQL 中确实规定了一种悄悄开始 transaction 处理的方法.
+这两种数据库每执行完 ~COMMIT~​/​~ROLLBACK~ 语句, 便会进入下一段 transaction.  \\
+与这种模式相对的是[[*自动提交模式][自动提交模式]].
+
+*** 自动提交模式
+
+Transaction 并没有标准的起始语句, 而是根据 RDBMS 的不同而不同.
+实际上, 几乎所有 RDBMS 的 transaction 都无需起始语句 (这里说的是执行那些在 ~TRANSACTION~ 块以外的语句), 因为在大部分情况下, 在数据库连接建立时 transaction 就已经悄悄开始了, 所以并不需要用户再明确指出起始点.
+
+在 SQL Server, PostgreSQL, 和 MySQL 中, 每条 SQL 语句就是一个 transaction, 这称为​/自动提交模式/.
+与这种模式相对的是[[隐式进入 ~TRANSACTION~ 块]].
+
+E.g., [[https://www.postgresql.org/docs/16/tutorial-transactions.html][PostgreSQL 官方文档]]说:
+
+#+BEGIN_QUOTE  :author The PostgreSQL Global Development Group
+PostgreSQL actually treats every SQL statement as being executed within a transaction.
+If you do not issue a ~BEGIN~ command, then each individual statement has an implicit ~BEGIN~ and (if successful) ~COMMIT~ wrapped around it.
+A group of statements surrounded by ~BEGIN~ and ~COMMIT~ is sometimes called a /transaction block/.
+#+END_QUOTE
+
+我们之前发送给 PostgreSQL 的那些 SQL 语句, 在执行时都被悄悄括在 ~BEGIN~ 和 ~COMMIT~ 之间了, 毕竟当时我们可没有显式地写出 ~TRANSACTION~ 块.
+
+*** Consistency of Transaction
+
+在 PostgreSQL 的 ~TRANSACTION~ 块中, 执行 DML 语句会改变数据的状态 (但在 ~COMMIT~ 之前, 这都是暂时的), 如果执行了一条导致当前的数据状态违反了 constraint 的语句, 则该 transaction 会被立刻舍弃.
+
+*** Isolation of Transaction
+
+指的是不同 transaction 之间互不干扰的特性.
+该特性保证了 transaction 之间不会互相嵌套.
+
+此外, 在某个 ~TRANSACTION~ 块中进行的更改, 在该 transaction 结束之前, 对其它 transaction 而言是不可见的.
+因此, 即使某个 transaction 修改了数据, 只要没 ~COMMIT~, 其它 transaction 都是看不到这些修改的.
+
+*** Durability of Transaction
+
+指的是在 transaction 结束 (~COMMIT~​/​~ROLLBACK~) 后, RDBMS 能保证该时间点的数据状态会被保存的特性.
+即使由于系统故障导致数据丢失, RDB 也大概率能通过某种手段进行恢复.
+
+保证持久性的方法根据实现的不同而不同.
+最常见的做法是, 将 transaction 的执行记录 (日志) 保存到硬盘等存储介质中; 当发生故障时, 可能通过日志恢复到故障发生前的状态.
 
 #+CAPTION: File Local Variables (如果你不使用 Emacs, 请忽略它.)
 #+BEGIN_SRC emacs-lisp  :eval never
   Local Variables:
   eval: (w32-notification-close
-         (w32-notification-notify :title "读到了第 148 页"
+         (w32-notification-notify :title "读到了第 166 页"
                                   :body " "))
   eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/TextBook.pdf")
   eval: (find-file-noselect "D:/Desktop/ToRead/SQL基础教程-MICK/src_ans/Answer/")
@@ -1034,6 +1180,7 @@ E.g.,
             (end-of-line)))
   eval: (abbrev-mode)
   eval: (electric-quote-local-mode)
+  eval: (imenu-add-menubar-index)
   eval: (advice-add 'org-html-export-to-html :around
                     (let ((my/PostgreSQL.org (current-buffer)))
                       (lambda (fn &rest args)
