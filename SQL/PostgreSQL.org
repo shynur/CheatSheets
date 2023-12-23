@@ -114,7 +114,7 @@ CREATE TABLE Products (
 #+RESULTS:
 |---|
 
-执行以下代码[fn:Mick_Copyright: 摘编自 /Mick/ 的著作 /SQL 基础教程/ (ISBN 978-7-115-45502-4), 版权归 /Mick/.][fn:BEGIN_TRANSACTION: 对于 ~BEGIN TRANSACTION;~ 这行, 在 MySQL 中使用 ~START TRANSACTION;~; 在 Oracle 和 DB2 中不需要这句.  见[[*Transaction]].]以插入本文使用的示例数据:
+执行以下代码[fn:BEGIN_TRANSACTION: 对于 ~BEGIN TRANSACTION;~ 这行, 在 MySQL 中使用 ~START TRANSACTION;~; 在 Oracle 和 DB2 中不需要这句, 后文不再赘述.  见[[*Transaction]].]以插入本文使用的示例数据:
 
 #+NAME: 填充“Products”表
 #+BEGIN_SRC sql
@@ -426,7 +426,7 @@ N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
 这与“等价为 \( 0 \)”并不相同.
 #+END_CENTER
 
-**** TODO ~AVG~ 函数                                   :AVG:
+**** ~AVG~ 函数                                        :AVG:
 
 #+BEGIN_SRC sql
   SELECT AVG(purchase_price)
@@ -439,15 +439,6 @@ N.b., /~AND~ 的​_结合性_​强于 ~OR~/.
 |-------+--------+---------+------+--------+--------+--------+--------+-----------------|
 |   500 |    320 |    2800 | 2800 |   5000 | +NULL+ |    790 | +NULL+ |           2035. |
 #+TBLFM: $9=($1+$2+$3+$4+$5+$7)/6.0
-
-- [ ] 但是有时也想将 ~NULL~ 作为 \( 0 \) 进行计算:
-
- | T恤衫 | 打孔器 | 运动T恤 | 菜刀 | 高压锅 | 叉子     | 擦菜板 | 圆珠笔   | 合计 \div 8 |
- |-------+--------+---------+------+--------+----------+--------+----------+-------------|
- |   500 |    320 |    2800 | 2800 |   5000 | +NULL+ 0 |    790 | +NULL+ 0 |     1526.25 |
- #+TBLFM: $9=($1+$2+$3+$4+$5+$7)/8.0
-
- 这是有办法做到的.
 
 **** ~MIN~ 函数和 ~MAX~ 函数                       :MIN:MAX:
 
@@ -1409,12 +1400,279 @@ IOW, 子查询内部设定的​/关联名称/, 只能在该子查询内部使�
         AND sale_price <= (SELECT AVG(sale_price)
                            FROM Products AS ProductsOfType);
 #+END_SRC
+
+* 函数
+
+函数可以大致分类为
+- 算术函数
+- 字符串函数
+- 日期函数
+- 转换函数 (转换 数据类型​/​值)
+- 聚合函数 (在第[[*聚合函数]]节已经介绍过)
+- [[*谓词][谓词]] (后文介绍)
+本章介绍​/聚合函数/​/​/谓词/​以外的常规函数.  (下文的“函数”一词仅指代这些会在本章介绍的函数.)
+
+** 算术函数
+
+#+CAPTION: 新建示例用表“SampleMath”
+#+BEGIN_SRC sql  :eval query
+  CREATE TABLE SampleMath (
+    m NUMERIC(10,3),  -- 十进制小数‘NUMERIC(总位数,小数位数)’常用于金额.
+    p INTEGER      ,
+    q INTEGER
+  );
+
+  BEGIN TRANSACTION;
+  INSERT INTO SampleMath(m, p, q) VALUES ( 500    ,    0, NULL);
+  INSERT INTO SampleMath(m, p, q) VALUES (-180    ,    0, NULL);
+  INSERT INTO SampleMath(m, p, q) VALUES (    NULL, NULL, NULL);
+  INSERT INTO SampleMath(m, p, q) VALUES (    NULL,    7,    3);
+  INSERT INTO SampleMath(m, p, q) VALUES (    NULL,    5,    2);
+  INSERT INTO SampleMath(m, p, q) VALUES (    NULL,    4, NULL);
+  INSERT INTO SampleMath(m, p, q) VALUES (   8    , NULL,    3);
+  INSERT INTO SampleMath(m, p, q) VALUES (   2.27 ,    1, NULL);
+  INSERT INTO SampleMath(m, p, q) VALUES (   5.555,    2, NULL);
+  INSERT INTO SampleMath(m, p, q) VALUES (    NULL,    1, NULL);
+  INSERT INTO SampleMath(m, p, q) VALUES (   8.76 , NULL, NULL);
+  COMMIT;
+#+END_SRC
+
+([[*算术运算符][/算术运算符/]]也可以被看作​/算术函数/, 下文将不再单独介绍.)
+
+*** ~ABS~ 函数
+
+#+CAPTION: ~ABS~ 函数的用法示例
+#+BEGIN_SRC sql  :exports both table
+ SELECT m,
+        ABS(m) AS "‘m’的绝对值"
+ FROM SampleMath;
+#+END_SRC
+
+*** ~MOD~ 函数
+
+就是数学中的 /modulo/.
+由于小数运算并没有余数的概念, 所以只能对​_整数_​使用该函数.
+
+#+CAPTION: ~MOD~ 函数的用法示例
+#+BEGIN_SRC sql  :exports both table
+  SELECT p AS "被除数",
+         q AS "除数",
+         MOD(p, q) AS "余数"  -- SQL Server 使用‘%’算术运算符表示取模.
+  FROM SampleMath;
+#+END_SRC
+
+#+RESULTS:
+| 被除数 | 除数 | 余数 |
+|--------+------+------|
+|      0 |      |      |
+|      0 |      |      |
+|        |      |      |
+|      7 |    3 |    1 |
+|      5 |    2 |    1 |
+|      4 |      |      |
+|      3 |      |      |
+|      1 |      |      |
+|      2 |      |      |
+|      1 |      |      |
+
+*** ~ROUND~ 函数
+
+I.e., /*四舍五入*/.
+
+#+CAPTION: ~ROUND~ 函数的用法示例
+#+BEGIN_SRC sql  :exports both table
+  SELECT m AS "实际值",
+         p AS "保留几位小数",
+         ROUND(m, p) AS "近似值"
+  FROM SampleMath;
+#+END_SRC
+
+#+RESULTS:
+|   实际值 | 保留几位小数 | 近似值 |
+|----------+--------------+--------|
+|  500.000 |            0 |    500 |
+| -180.000 |            0 |   -180 |
+|          |              |        |
+|        7 |              |        |
+|        5 |              |        |
+|        4 |              |        |
+|    8.000 |              |        |
+|    2.270 |            1 |    2.3 |
+|    5.555 |            2 |   5.56 |
+|        1 |              |        |
+|    8.760 |              |        |
+
+N.b., PostgreSQL 中 ~ROUND~ 函数的 1st 参数只接受 ~NUMERIC~ 类型, 2nd 参数可以是负数;
+
+** [20%] 字符串函数
+
+#+CAPTION: 新建示例用表“SampleString”
+#+BEGIN_SRC sql  :eval query
+  CREATE TABLE SampleString (s1 VARCHAR(40),
+                             s2 VARCHAR(40),
+                             s3 VARCHAR(40));
+
+  BEGIN TRANSACTION;
+  INSERT INTO SampleString (s1, s2, s3) VALUES (      'opx',   'rt',  NULL );
+  INSERT INTO SampleString (s1, s2, s3) VALUES (      'abc',  'def',  NULL );
+  INSERT INTO SampleString (s1, s2, s3) VALUES (       '碇', '真嗣', '探病');
+  INSERT INTO SampleString (s1, s2, s3) VALUES (      'aaa',  NULL ,  NULL );
+  INSERT INTO SampleString (s1, s2, s3) VALUES (      NULL ,  'xyz',  NULL );
+  INSERT INTO SampleString (s1, s2, s3) VALUES (    '@!#$%',  NULL ,  NULL );
+  INSERT INTO SampleString (s1, s2, s3) VALUES (      'ABC',  NULL ,  NULL );
+  INSERT INTO SampleString (s1, s2, s3) VALUES (      'aBC',  NULL ,  NULL );
+  INSERT INTO SampleString (s1, s2, s3) VALUES (  'abc太郎',  'abc',  'ABC');
+  INSERT INTO SampleString (s1, s2, s3) VALUES ('abcdefabc',  'abc',  'ABC');
+  INSERT INTO SampleString (s1, s2, s3) VALUES (   'micmic',    'i',    'I');
+  COMMIT;
+#+END_SRC
+
+#+RESULTS:
+| CREATE TABLE |
+|--------------|
+| BEGIN        |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| COMMIT       |
+
+*** DONE 拼接字符串                                 :CONCAT:
+
+#+CAPTION: 演示如何拼接字符串
+#+BEGIN_SRC sql  :exports both table
+  SELECT s1, s2, s3,
+         s1 || s2 || s3 AS "拼接“s1”, “s2”, 和“s3”"
+  --         SQL Server       : s1 + s2 +s3
+  -- SQL Server 2012+ 或 MySQL: CONCAT(s1, s2, s3)
+  FROM SampleString;
+#+END_SRC
+
+#+RESULTS:
+| s1        | s2   | s3   | 拼接“s1”, “s2”, 和“s3” |
+|-----------+------+------+------------------------|
+| opx       | rt   |      |                        |
+| abc       | def  |      |                        |
+| 碇        | 真嗣 | 探病 | 碇真嗣探病             |
+| aaa       |      |      |                        |
+| xyz       |      |      |                        |
+| @!#$%     |      |      |                        |
+| ABC       |      |      |                        |
+| aBC       |      |      |                        |
+| abc太郎   | abc  | ABC  | abc太郎abcABC          |
+| abcdefabc | abc  | ABC  | abcdefabcabcABC        |
+| micmic    | i    | I    | micmiciI               |
+
+N.b., ~||~ 并没有特殊对待 ~NULL~, i.e., 若 ~NULL~ 是操作数 则结果仍为 ~NULL~.
+
+*** TODO 获取字符串长度                             :LENGTH:
+*** TODO 大小写转换                            :LOWER:UPPER:
+*** TODO 文本替换                                  :REPLACE:
+*** TODO 字符串的子串                            :SUBSTRING:
+** [0%] 日期函数
+
+大部分​/日期函数/​的接口与行为都是实现相关的, 因此无法统一说明.
+因此, 本节只介绍那些非常常见且用法在各 RDBMS 中差不多的.
+
+*** TODO 获取当前日期                         :CURRENT_DATE:
+*** TODO 获取当前时间                         :CURRENT_TIME:
+*** TODO 获取当前时间戳                  :CURRENT_TIMESTAMP:
+*** TODO 提取指定时间单位的值                      :EXTRACT:
+** 转换函数
+*** 数据类型的转换                                    :CAST:
+
+#+CAPTION: ~CAST~ 函数的用法示例: 字符串 \to 数值
+#+BEGIN_SRC sql  :exports both table
+  -- SQL Server 和 PostgreSQL:
+    SELECT CAST('001' AS        INTEGER); /*
+  MySQL:
+    SELECT CAST('001' AS SIGNED INTEGER);
+  Oracle:
+    SELECT CAST('001' AS        INTEGER) FROM DUAL;
+  DB2:
+    SELECT CAST('001' AS        INTEGER) FROM SYSIBM.SYSDUMMY1; */
+#+END_SRC
+
+#+RESULTS:
+| int4 |
+|------|
+|    1 |
+
+#+CAPTION: ~CAST~ 函数的用法示例: 字符串 \to 日期
+#+BEGIN_SRC sql  :exports both table
+  -- SQL Server, PostgreSQL, 和 MySQL:
+    SELECT CAST('Dec 10, 2002' AS DATE); /*
+  Oracle
+    SELECT CAST('Dec 10, 2002' AS DATE) FROM DUAL;
+  DB2
+    SELECT CAST('Dec 10, 2002' AS DATE) FROM SYSIBM.SYSDUMMY1; */
+#+END_SRC
+
+#+RESULTS:
+|       date |
+|------------|
+| 2002-12-10 |
+
+*** 返回第一个 non-~NULL~ 值                      :COALESCE:
+
+#+CAPTION: ~COALESCE~ 函数的用法示例
+#+BEGIN_SRC sql  :exports both table
+  -- SQL Server, PostgreSQL, 和 MySQL:
+    SELECT COALESCE(NULL, 17),
+           COALESCE(NULL, 'C++', '23'); /*
+  Oracle
+    SELECT COALESCE(NULL, 17),
+           COALESCE(NULL, 'C++', '23') FROM DUAL;
+  DB2
+    SELECT COALESCE(NULL, 17),
+           COALESCE(NULL, 'C++', '23') FROM SYSIBM.SYSDUMMY1; */
+#+END_SRC
+
+#+RESULTS:
+| coalesce | coalesce |
+|----------+----------|
+|       17 | C++      |
+
+#+CAPTION: ~COALESCE~ 函数的用法示例: 打印 ~NULL~ 值, 而不是留空
+#+BEGIN_SRC sql  :exports both table
+  SELECT s2,
+         COALESCE(s2, 'NULL')
+  FROM SampleString;
+#+END_SRC
+
+#+RESULTS:
+| s2  | coalesce |
+|-----+----------|
+| rt  | rt       |
+| def | def      |
+| 嗣  | 嗣       |
+|     | NULL     |
+| xyz | xyz      |
+|     | NULL     |
+|     | NULL     |
+|     | NULL     |
+| abc | abc      |
+| abc | abc      |
+| i   | i        |
+
+N.b., 在 PostgreSQL 中, ~COALESCE~ 函数只接受相同类型的参数.
+
+* 谓词
+
+predicate
 
 #+CAPTION: File Local Variables (如果你不使用 Emacs, 请忽略它.)
 #+BEGIN_SRC emacs-lisp  :eval never
   Local Variables:
   eval: (w32-notification-close
-         (w32-notification-notify :title "读到了第 195 页"
+         (w32-notification-notify :title "读到了第 217 页"
                                   :body " "))
   eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/TextBook.pdf")
   eval: (find-file-noselect "D:/Desktop/ToRead/SQL基础教程-MICK/src_ans/Answer/")
