@@ -20,6 +20,15 @@ PS C:/Users/shynur> ./bin/PostgreSQL/16/scripts/runpsql.bat
 database_name=# \q
 #+END_SRC
 
+** TODO ~psql~ 命令
+
+这些命令以 ~\~ 开头.
+
+#+CAPTION: 查看帮助文档
+#+BEGIN_SRC sql  :eval never
+database_name=# \?
+#+END_SRC
+
 * SQL 概要
 ** 三类语句
 *** DDL[fn:DDL: Data Definition Language]
@@ -341,7 +350,7 @@ E.g.,
 
 N.b., 字符串类型[fn:: 该规则对[[*CHAR][定长字符串]]和[[VARCHAR][可变长字符串]]都适用.]的数据原则上按照字典顺序进行排序, 不能与数字​/​日期的大小顺序混淆.
 
-**** 含 ~NULL~ 的比较                          :IS:NOT:NULL:
+**** 含 ~NULL~ 的比较                                 :NULL:
 
 还记得“叉子”和“圆珠笔”的进货单价 (=purchase_price=) 是 ~NULL~ 吗?[fn:填充Products表: 参见 [[填充“Products”表][=Products= 的建表语句]].]
 我们来尝试根据 =purchase_price= 进行选取:
@@ -356,13 +365,7 @@ N.b., 字符串类型[fn:: 该规则对[[*CHAR][定长字符串]]和[[VARCHAR][�
 
 执行结果中并没有“叉子”和“圆珠笔”.
 因为这两件商品的进货单价不明 (~NULL~), 所以无法判定是不是指定的价格.[fn:: 更具体的分析, [[真值表][参见后文]]]
-不过, SQL 提供了专门用来判断是否为 ~NULL~ 的 ~IS NULL~ 和 ~IS NOT NULL~ 运算符, e.g.,
-
-#+BEGIN_SRC sql
-  SELECT product_name
-  FROM Products
-  WHERE purchase_price IS NULL;
-#+END_SRC
+不过, SQL 提供了专门用来判断是否为 ~NULL~ 的 ~IS NULL~ 和 ~IS NOT NULL~ 运算符, 见[[*值是否为 ~NULL~]].
 
 *** 逻辑运算符                                  :AND:OR:NOT:
 
@@ -561,7 +564,7 @@ N.b., ~GROUP BY~ 子句一定要写在 ~FROM~ (and if existing ~WHERE~) 子句�
 #+END_SRC
 
 上述错误[fn:: 不过, 这样的写法在 PostgreSQL 和 MySQL 中倒是不会发生执行错误.]的原因在于 SQL 语句的执行顺序[fn:SELECT语句的执行顺序: ~FROM~ \to ~WHERE~ \to ~GROUP BY~ \to ~HAVING~ \to ~SELECT~ \to ~ORDER BY~]:
-RDBMS 在执行 ~SELECT~ 子句前, 先执行 ~GROUP BY~ 子句, 而此时 RDBMS 还不知道有什么别名.
+RDBMS 在执行 ~SELECT~ 子句前, 先执行 ~GROUP BY~ 子句, 而此时 RDBMS 还不知道有什么别名[fn:: 不确定是否可以在 ~SELECT~ 子句的 后半部分 中引用 前半部分 定义的别名, 见 [[https://stackoverflow.com/q/77709854/20212483][Question: “Can I use alias name in ~SELECT~ clause?”]].].
 
 *** 聚合键是 ~NULL~ 的情况
 
@@ -731,14 +734,13 @@ E.g.,
 
 新建示例用表“ProductsInsert”:
 
-#+NAME: CREATE TABLE ProductsInsert
 #+CAPTION: 用来学习 ~INSERT INTO … VALUES~ 语句的示例用表
-#+BEGIN_SRC sql  :eval query
+#+BEGIN_SRC sql -r  :eval query
  CREATE TABLE ProductsInsert (
    product_id      CHAR(4)   NOT NULL PRIMARY KEY,
    product_name VARCHAR(100) NOT NULL            ,
    product_type VARCHAR(32)  NOT NULL            ,
-       sale_price INTEGER   DEFAULT 0            ,
+       sale_price INTEGER   DEFAULT 0            ,  (ref:TABLE-ProductsInsert-COLUMN-sale_price-DEFAULT-CONSTRAINT)
    purchase_price INTEGER                        ,
    regist_date    DATE    -- 注意不能有多余的逗号!
  );
@@ -746,7 +748,7 @@ E.g.,
 
 在插入新行时手动指定各列的值, 使用
  : INSERT INTO <表名> [(列清单…)] VALUES (值清单…);
-原则上[fn:: 但也仅仅是原则而已, 其实很多 RDBMS 都支持一次性插入多行数据, 这样的功能称为“multi row ~INSERT~”.  See [[*插入多行]].], 执行一次上述 ~INSERT~ 语句仅会插入一行数据, 因此插入多行通常需要循环执行相应的次数.
+原则上[fn:: 但也仅仅是原则而已, 其实很多 RDBMS 都支持一次性插入多行数据, 这样的功能称为“multi row ~INSERT~​”.  See [[*插入多行]].], 执行一次上述 ~INSERT~ 语句仅会插入一行数据, 因此插入多行通常需要循环执行相应的次数.
 
 **** 按照列清单指定各列的值
 
@@ -855,14 +857,7 @@ E.g., 下面两段代码执行相同的操作:
 
 **** 插入默认值                                    :DEFAULT:
 
-我们在创建“ProductsInsert”表时, 对 =sale_price= 列设置了 ~DEFAULT~ 约束:
-
-# TODO: 有没有办法只引用某一行呢?
-#+BEGIN_SRC sql  :noweb strip-tangle  :eval never
-<<CREATE TABLE ProductsInsert>>
-#+END_SRC
-
-所以插入新行时, 也可以直接给该列赋默认值 (此处是 \( 0 \)).
+我们在创建“ProductsInsert”表时, [[(TABLE-ProductsInsert-COLUMN-sale_price-DEFAULT-CONSTRAINT)][对 =sale_price= 列设置了 ~DEFAULT~ 约束]], 所以插入新行时, 也可以直接给该列赋默认值 (此处是 \( 0 \)).
 
 ***** 显式地插入默认值
 
@@ -1312,7 +1307,7 @@ A group of statements surrounded by ~BEGIN~ and ~COMMIT~ is sometimes called a /
 
 就是返回结果是 \( 1 \times 1 \) 矩阵[fn:: 不考虑用来显示列的名字的那一行.]的子查询.
 因此, 也能当作单一的值 (scalar) 来处理.
-通常, 任何可以使用标量的位置都可以使用标量子查询, 也就是说几乎所有的地方都可以使用[fn:: 但未必会获得预期的结果, e.g., [[https://stackoverflow.com/q/77698620/20212483][Question “ORDER BY a scalar subquery”.]]].
+通常, 任何可以使用标量的位置都可以使用标量子查询, 也就是说几乎所有的地方都可以使用[fn:: 但未必会获得预期的结果, e.g., [[https://stackoverflow.com/q/77698620/20212483][Question: “~ORDER BY~ a /scalar subquery/​”]].].
 
 我们要选取 \( \text{售价} \le \text{均价} \) 的商品, 可能会想这么写:
 
@@ -1368,7 +1363,7 @@ E.g., 我们要选出各“品类”下 \( \text{售价} \le \text{品类均价}
   FROM Products /* AS ProductsAlias */
   WHERE sale_price <= (SELECT AVG(sale_price)
                        FROM Products AS ProductsOfType
-                       -- Oracle 中 ^^^^ 请删掉‘AS’关键字.
+                       -- Oracle 中 ^^^^ 请删掉‘AS’关键字.  (后文不再赘述.)
                        WHERE ProductsOfType.product_type = Products.product_type);
 #+END_SRC
 
@@ -1382,7 +1377,7 @@ E.g., 我们要选出各“品类”下 \( \text{售价} \le \text{品类均价}
 | 办公用品     | 圆珠笔       |        100 |
 | 办公用品     | 印章         |         95 |
 
-其中 =ProductsOfType= 是子查询为自己的“Products”表起的别名, 子查询使用这个别名在 ~WHERE~ 子句中指定关联条件.  (Table 的​/别名/​会 [[https://wikipedia.org/wiki/Variable_shadowing][/shadow/]] 原本的名[fn:: 见 [[https://stackoverflow.com/a/15318375/20212483]]], 所以在上述代码中, 出现在子查询的 ~WHERE~ 子句中的“Products”指的就是​_外层查询中的那张表_, 并不会产生歧义[fn:: 如果担心自己会混淆, 你当然可以给外层查询中的表也起个别名.].)
+其中 =ProductsOfType= 是子查询为自己的“Products”表起的别名, 子查询使用这个别名在 ~WHERE~ 子句中指定关联条件.  (Table 的​/别名/​会 [[https://wikipedia.org/wiki/Variable_shadowing][/shadow/]] 原本的名[fn:: 见 [[https://stackoverflow.com/a/15318375/20212483]].], 所以在上述代码中, 出现在子查询的 ~WHERE~ 子句中的“Products”指的就是​_外层查询中的那张表_, 并不会产生歧义[fn:: 如果担心自己会混淆, 你当然可以给外层查询中的表也起个别名.].)
 在该语境下, 别名被称为​/关联名称/, 子查询被称为​/关联子查询/.
 
 *** 关联名称的作用域
@@ -1622,6 +1617,9 @@ N.b., ~||~ 并没有特殊对待 ~NULL~, i.e., 若 ~NULL~ 是操作数 则结果
 
 *** 返回第一个 non-~NULL~ 值                      :COALESCE:
 
+将 ~NULL~ 作为参数时, 绝大多数函数的返回值都仍是 ~NULL~.
+作为对比, ~COALESCE~ (接受任意多个参数) 会返回左数第一个 non-~NULL~ 值, 只有当参数都是 ~NULL~ 时才返回 ~NULL~.
+
 #+CAPTION: ~COALESCE~ 函数的用法示例
 #+BEGIN_SRC sql  :exports both table
   -- SQL Server, PostgreSQL, 和 MySQL:
@@ -1666,13 +1664,251 @@ N.b., 在 PostgreSQL 中, ~COALESCE~ 函数只接受相同类型的参数.
 
 * 谓词
 
-predicate
+谓词 (predicate) 就是返回值是 [[真值表][/boolean/]] 的函数, e.g., [[*比较运算符][比较运算符]]就被称为​/比较谓词/.
+
+** 字符串的模式匹配                                   :LIKE:
+
+#+CAPTION: 新建示例用表“SampleLike”
+#+BEGIN_SRC sql  :eval query
+  CREATE TABLE SampleLike (s VARCHAR(6) PRIMARY KEY);
+
+  BEGIN TRANSACTION;
+  INSERT INTO SampleLike (s) VALUES ('abcddd');
+  INSERT INTO SampleLike (s) VALUES ('dddabc');
+  INSERT INTO SampleLike (s) VALUES ('abdddc');
+  INSERT INTO SampleLike (s) VALUES ('abcdd' );
+  INSERT INTO SampleLike (s) VALUES ('ddabc' );
+  INSERT INTO SampleLike (s) VALUES ('abddc' );
+  COMMIT;
+#+END_SRC
+
+#+RESULTS:
+| CREATE TABLE |
+|--------------|
+| BEGIN        |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| COMMIT       |
+
+*** 视为任意文本的通配符
+
+#+CAPTION: 通配符 ~'%'~ 的用法示例
+#+BEGIN_SRC sql  :exports both table
+  SELECT s AS " ddd…" FROM SampleLike WHERE s LIKE 'ddd%' ; \qecho
+  SELECT s AS "…ddd…" FROM SampleLike WHERE s LIKE '%ddd%'; \qecho
+  SELECT s AS "…ddd " FROM SampleLike WHERE s LIKE  '%ddd';
+#+END_SRC
+
+#+RESULTS:
+| ddd…   |
+|--------|
+| dddabc |
+|        |
+| …ddd…  |
+| abcddd |
+| dddabc |
+| abdddc |
+|        |
+| …ddd   |
+| dddabc |
+| abdddc |
+| abcdd  |
+| ddabc  |
+| abddc  |
+
+*** 视为单一字符的通配符
+
+#+CAPTION: 通配符 ~'_'~ 的用法示例
+#+BEGIN_SRC sql  :exports both table
+  SELECT s AS "abc__ " FROM SampleLike WHERE s LIKE 'abc__' ; \qecho
+  SELECT s AS "abc___" FROM SampleLike WHERE s LIKE 'abc___';
+#+END_SRC
+
+#+RESULTS:
+| abc__  |
+|--------|
+| abcdd  |
+|        |
+| abc___ |
+| abcddd |
+
+** 值是否在​/闭区间/​内                            :BETWEEN:
+
+#+CAPTION: 选取 \( 100 \le \text{售价} \le 1000 \) 的商品
+#+BEGIN_SRC sql  :exports both table
+  SELECT product_name,
+         sale_price
+  FROM Products
+  WHERE sale_price BETWEEN 100 AND 1000;
+#+END_SRC
+
+#+RESULTS:
+| product_name | sale_price |
+|--------------+------------|
+| T恤衫        |       1000 |
+| 打孔器       |        500 |
+| 叉子         |        500 |
+| 擦菜板       |        880 |
+| 圆珠笔       |        100 |
+
+** 值是否为 ~NULL~                             :IS:NOT:NULL:
+
+#+CAPTION: 仅选取记录了“进价”的商品
+#+BEGIN_SRC sql  :exports both table
+  SELECT product_name, purchase_price
+  FROM Products
+  WHERE purchase_price IS NOT NULL;
+#+END_SRC
+
+#+RESULTS:
+| product_name | purchase_price |
+|--------------+----------------|
+| T恤衫        |            500 |
+| 打孔器       |            320 |
+| 运动T恤      |           2800 |
+| 菜刀         |           2800 |
+| 高压锅       |           5000 |
+| 擦菜板       |            790 |
+| 印章         |             10 |
+| 羽绒服       |          10980 |
+
+** 值是否在集合中                                   :NOT:IN:
+
+#+NAME: “进价”∈{320,500,5000}
+#+CAPTION: 选出“进价”是 \( 320 \)/\( 500 \)/\( 5000 \)元 的商品
+#+BEGIN_SRC sql  :exports both table
+  SELECT product_name,
+         purchase_price
+  FROM Products
+  WHERE purchase_price IN (320, 500, 5000);
+#+END_SRC
+
+#+RESULTS:
+| product_name | purchase_price |
+|--------------+----------------|
+| T恤衫        |            500 |
+| 打孔器       |            320 |
+| 高压锅       |           5000 |
+
+#+NAME: “进价”∉{320,500,5000}
+#+CAPTION: 选出“进价”不是 \( 320 \)/\( 500 \)/\( 5000 \)元 的商品
+#+BEGIN_SRC sql  :exports both table
+  SELECT product_name,
+         purchase_price
+  FROM Products
+  WHERE purchase_price NOT IN (320, 500, 5000);
+#+END_SRC
+
+#+RESULTS:
+| product_name | purchase_price |
+|--------------+----------------|
+| 运动T恤      |           2800 |
+| 菜刀         |           2800 |
+| 擦菜板       |            790 |
+| 印章         |             10 |
+| 羽绒服       |          10980 |
+
+*** ~IN~ 无法判断值是否为 ~NULL~                      :NULL:
+
+不管是 ~IN~ 还是 ~NOT IN~ 都无法判断值是否为 ~NULL~.
+
+#+CAPTION: 将上面的 [[“进价”∈{320,500,5000}][~IN~ 的例子]]和 [[“进价”∉{320,500,5000}][~NOT IN~ 的例子]]中的行数相加, 会发现并不等于 \( \text{商品总数} \)
+#+BEGIN_SRC sql  :exports both table
+  SELECT (SELECT COUNT(*)
+          FROM Products
+          WHERE purchase_price IN (320, 500, 5000))
+         + (SELECT COUNT(*)
+            FROM Products
+            WHERE purchase_price NOT IN (320, 500, 5000))
+         = COUNT(*)  -- 改成“COUNT(purchase_price)”就会返回‘TRUE‘.
+  FROM Products;
+#+END_SRC
+
+#+RESULTS:
+| ?column? |
+|----------|
+| f        |
+
+*** 将​/子查询/​作为 ~IN~ 的宾语                    :SELECT:
+
+#+CAPTION: 新建示例用表“ShopsInventory”
+#+BEGIN_SRC sql  :eval query
+  CREATE TABLE ShopsInventory (
+    shop_id      CHAR(4)   NOT NULL,
+    shop_name VARCHAR(200) NOT NULL,
+    product_id   CHAR(4)   NOT NULL,
+    quantity  INTEGER      NOT NULL,
+    PRIMARY KEY (shop_id, product_id)
+  );
+
+  BEGIN TRANSACTION;
+  INSERT INTO ShopsInventory (shop_id, shop_name, product_id, quantity) VALUES ('000A',   '东京', '0001',  30);
+  INSERT INTO ShopsInventory (shop_id, shop_name, product_id, quantity) VALUES ('000A',   '东京', '0002',  50);
+  INSERT INTO ShopsInventory (shop_id, shop_name, product_id, quantity) VALUES ('000A',   '东京', '0003',  15);
+  INSERT INTO ShopsInventory (shop_id, shop_name, product_id, quantity) VALUES ('000B', '名古屋', '0002',  30);
+  INSERT INTO ShopsInventory (shop_id, shop_name, product_id, quantity) VALUES ('000B', '名古屋', '0003', 120);
+  INSERT INTO ShopsInventory (shop_id, shop_name, product_id, quantity) VALUES ('000B', '名古屋', '0004',  20);
+  INSERT INTO ShopsInventory (shop_id, shop_name, product_id, quantity) VALUES ('000B', '名古屋', '0006',  10);
+  INSERT INTO ShopsInventory (shop_id, shop_name, product_id, quantity) VALUES ('000B', '名古屋', '0007',  40);
+  INSERT INTO ShopsInventory (shop_id, shop_name, product_id, quantity) VALUES ('000C',   '大阪', '0003',  20);
+  INSERT INTO ShopsInventory (shop_id, shop_name, product_id, quantity) VALUES ('000C',   '大阪', '0004',  50);
+  INSERT INTO ShopsInventory (shop_id, shop_name, product_id, quantity) VALUES ('000C',   '大阪', '0006',  90);
+  INSERT INTO ShopsInventory (shop_id, shop_name, product_id, quantity) VALUES ('000C',   '大阪', '0007',  70);
+  INSERT INTO ShopsInventory (shop_id, shop_name, product_id, quantity) VALUES ('000D',   '福冈', '0001', 100);
+  COMMIT;
+#+END_SRC
+
+#+CAPTION: 选取大阪店 (“000C”) 正在销售的商品的售价
+#+BEGIN_SRC sql  :exports both table
+  SELECT product_name,
+         sale_price
+  FROM Products
+  WHERE product_id IN (SELECT product_id
+                       FROM ShopsInventory
+                       WHERE shop_id = '000C');
+#+END_SRC
+
+#+RESULTS:
+| product_name | sale_price |
+|--------------+------------|
+| 运动T恤      |       4000 |
+| 菜刀         |       3000 |
+| 叉子         |        500 |
+| 擦菜板       |        880 |
+
+** 表中是否存在记录                                 :EXISTS:
+
+~EXISTS~​/​~NOT EXISTS~ 用于判断表是否非空 (i.e., \( \text{行数} \gt 0 \)).
+
+#+CAPTION: 选取大阪店 (“000C”) 正在销售的商品的售价
+#+BEGIN_SRC sql  :exports both table
+  SELECT product_name,
+         sale_price
+  FROM Products
+  WHERE EXISTS (SELECT *  -- 并不关心到底选取了哪些列, 因此填‘NULL’也无所谓.
+                FROM ShopsInventory
+                WHERE shop_id = '000C'
+                      AND ShopsInventory.product_id = Products.product_id);
+#+END_SRC
+
+#+RESULTS:
+| product_name | sale_price |
+|--------------+------------|
+| 运动T恤      |       4000 |
+| 菜刀         |       3000 |
+| 叉子         |        500 |
+| 擦菜板       |        880 |
+
 
 #+CAPTION: File Local Variables (如果你不使用 Emacs, 请忽略它.)
 #+BEGIN_SRC emacs-lisp  :eval never
   Local Variables:
   eval: (w32-notification-close
-         (w32-notification-notify :title "读到了第 217 页"
+         (w32-notification-notify :title "读到了第 233 页"
                                   :body " "))
   eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/TextBook.pdf")
   eval: (find-file-noselect "D:/Desktop/ToRead/SQL基础教程-MICK/src_ans/Answer/")
