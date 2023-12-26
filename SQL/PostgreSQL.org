@@ -2386,7 +2386,7 @@ E.g.,
   eval: (w32-notification-close
          (w32-notification-notify :title "读到了第 276 页"
                                   :body " "))
-  eval: (browse-url-default-browser "./SQL基础教程-MICK/TextBook.pdf")
+  eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/TextBook.pdf")
   eval: (require 'ob-sql)
   org-confirm-babel-evaluate: nil
   sql-postgres-program: "D:/Progs/PostgreSQL/16/bin/psql.exe"
