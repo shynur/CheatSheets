@@ -1816,7 +1816,7 @@ N.b., 在 PostgreSQL 中, ~COALESCE~ 函数只接受相同类型的参数.
 
 不管是 ~IN~ 还是 ~NOT IN~ 都无法判断值是否为 ~NULL~.
 
-#+CAPTION: 将上面的 [[“进价”∈{320,500,5000}][~IN~ 的例子]]和 [[“进价”∉{320,500,5000}][~NOT IN~ 的例子]]中的行数相加, 会发现并不等于 \( \text{商品总数} \)
+#+CAPTION: 将前文中 [[“进价”∈{320,500,5000}][~IN~ 的例子]]和 [[“进价”∉{320,500,5000}][~NOT IN~ 的例子]]中的行数相加, 会发现并不等于 \( \text{商品总数} \)
 #+BEGIN_SRC sql  :exports both table
   SELECT (SELECT COUNT(*)
           FROM Products
@@ -1832,6 +1832,23 @@ N.b., 在 PostgreSQL 中, ~COALESCE~ 函数只接受相同类型的参数.
 | ?column? |
 |----------|
 | f        |
+
+-----
+
+但集合中是可以含 ~NULL~ 的, 根据[[真值表][真值表]]计算布尔值即可.
+E.g.,
+
+#+BEGIN_SRC sql  :exports both table
+  SELECT 1     IN (NULL),     -- unknown
+         1     IN (NULL, 1),  -- unknown OR true
+         1 NOT IN (NULL),     -- NOT (unknown)
+         1 NOT IN (NULL, 1);  -- NOT (unknown OR true)
+#+END_SRC
+
+#+RESULTS:
+| ?column? | ?column? | ?column? | ?column? |
+|----------+----------+----------+----------|
+|          | t        |          | f        |
 
 *** 将​/子查询/​作为 ~IN~ 的宾语                    :SELECT:
 
@@ -1903,15 +1920,473 @@ N.b., 在 PostgreSQL 中, ~COALESCE~ 函数只接受相同类型的参数.
 | 叉子         |        500 |
 | 擦菜板       |        880 |
 
+* 条件分支                         :CASE:WHEN:THEN:ELSE:END:
+** 搜索型 ~CASE~ 表达式
+
+#+CAPTION: 搜索型 ~CASE~ 表达式的基本结构
+#+BEGIN_SRC sql  :eval never
+  CASE
+    WHEN <布尔表达式_1> THEN
+      <表达式_1>
+    WHEN <布尔表达式_2> THEN
+      <表达式_2>
+    … …
+    [ELSE <表达式_0>]
+  END
+#+END_SRC
+
+它的执行相当于 Common Lisp 中的 ~cond~ 宏[fn:在CASE表达式中省略ELSE子句: 在 ~CASE~ 表达式中省略 ~ELSE~ 子句时, 相当于显式的 ~ELSE NULL~.  这两种语言在这一点上也是类似的.]:
+
+#+BEGIN_SRC common-lisp  :eval never
+  (cond
+   ((布尔表达式_1) (表达式_1))
+   ((布尔表达式_2) (表达式_2))
+   (t              (表达式_0)))
+#+END_SRC
+
+-----
+
+来看一个​/列向量/​转置成​/行向量/​的例子:
+
+#+CAPTION: 用一个​/列向量/​列出每种品类下商品的总售价
+#+BEGIN_SRC sql  :exports both table
+  SELECT product_type,
+         SUM(sale_price) AS "该品类商品的总售价"
+  FROM Products
+  GROUP BY product_type;
+#+END_SRC
+
+#+RESULTS:
+| product_type | 该品类商品的总售价 |
+|--------------+--------------------|
+| 衣服         |              24600 |
+| Other Type   |                    |
+| 办公用品     |                695 |
+| 厨房用具     |              11180 |
+
+#+CAPTION: 用一个​/行向量/​列出每种品类下商品的总售价
+#+BEGIN_SRC sql  :exports both table
+  SELECT SUM(CASE
+               WHEN product_type = '衣服' THEN
+                 sale_price
+               ELSE
+                 0
+             END),
+         SUM(CASE
+               WHEN product_type = '厨房用具' THEN
+                 sale_price
+             END),
+         SUM(CASE
+               WHEN product_type = '办公用品' THEN
+                 sale_price
+             END)
+ FROM Products;
+#+END_SRC
+
+#+RESULTS:
+|   sum |   sum | sum |
+|-------+-------+-----|
+| 24600 | 11180 | 695 |
+
+** 简单 ~CASE~ 表达式
+
+#+CAPTION: 简单 ~CASE~ 表达式的基本结构
+#+BEGIN_SRC sql  :eval never
+  CASE <表达式_Z>
+    WHEN <表达式_A> THEN
+      <表达式_1>
+    WHEN <表达式_B> THEN
+      <表达式_2>
+    … …
+    [ELSE <表达式_0>]
+  END
+#+END_SRC
+
+它的执行相当于 Ruby 中的 ~case~ 表达式[fn:在CASE表达式中省略ELSE子句]:
+
+#+BEGIN_SRC ruby  :eval never
+  case <表达式_Z>
+    when <表达式_A>
+      <表达式_1>
+    when <表达式_B>
+      <表达式_2>
+    else
+      <表达式_0>
+  end
+#+END_SRC
+
+** TODO [#C] 某些方言特有的条件分支              :DECODE:IF:
+
+- Oracle 中的 ~DECODE~ 函数
+- MySQL 中的 ~IF~ 表达式
+
+* 集合运算
+** 表的加减法
+
+此处的“加减法”指的是对​*查询结果*[fn:查询结果: 查询结果看上去就是一张表.]作
+- 并集 ~UNION~
+- 交集 ~INTERSECT~
+- 差集 ~EXCEPT~
+运算.
+可以想象成将两张表<<纵向拼接>>纵向拼接的 \( 3 \) 种方式[fn:纵横拼接: A4 纸​_上下对折_, 上半张填入 =table_1=, 下半张填入 =table_2=, 就像 emoji‘⊟’, 此为纵向拼接.  同理, 横向拼接就是​_左右对折_, 就像 emoji‘◫’.], 因此, 需要保证两张表的结构相同[fn:: (TODO) 对列名似乎没有要求?]:
+- 列数相同;
+- 对应列的数据类型一致[fn:: 如果类型不同, 此时有些 RDBMS 会进行隐式类型转换.].
+
+和数学中的集合运算一样, 运算结果中
+- _不包含重复行, 除非在​/集合运算符/​后书写 ~ALL~ 关键字._
+- 行与行之间没有顺序关系, 因此, *~ORDER BY~ 子句只能写成最后一句, 作用于整个运算结果[fn:: 即使能写在中间, 也没有意义, 因为集合运算可能会打乱原本的顺序.].*
+
+#+CAPTION: 新建示例用表“Products2”: 定义与“Products”一致; 编号 1-3 的商品与“Products”表中的商品相同, 而编号 9-10 的则是“Products”表中没有的商品.
+#+BEGIN_SRC sql  :eval query
+  CREATE TABLE Products2 (
+    product_id      CHAR(4) PRIMARY KEY ,
+    product_name VARCHAR(100)   NOT NULL,
+    product_type VARCHAR(32)    NOT NULL,
+        sale_price INTEGER              ,
+    purchase_price INTEGER              ,
+    regist_date     DATE
+  );
+
+  BEGIN TRANSACTION;
+  INSERT INTO Products2 VALUES ('0001',   'T恤衫',     '衣服', 1000,  500, '2009-09-20');
+  INSERT INTO Products2 VALUES ('0002',  '打孔器', '办公用品',  500,  320, '2009-09-11');
+  INSERT INTO Products2 VALUES ('0003', '运动T恤',     '衣服', 4000, 2800              );
+  INSERT INTO Products2 VALUES ('0009',    '手套',     '衣服',  800,  500              );
+  INSERT INTO Products2 VALUES ('0010',    '水壶', '厨房用具', 2000, 1700, '2009-09-20');
+  COMMIT;
+#+END_SRC
+
+*** 表的加法                                         :UNION:
+
+#+CAPTION: 合并“Products”和“Products2”
+#+BEGIN_SRC sql
+    SELECT product_id, product_name
+    FROM Products
+  UNION /* ALL */
+    SELECT product_id, product_name
+    FROM Products2
+  ORDER BY product_id;
+#+END_SRC
+
+#+RESULTS:
+| product_id | product_name |
+|------------+--------------|
+|       0001 | T恤衫        |
+|       0002 | 打孔器       |
+|       0003 | 运动T恤      |
+|       0004 | 菜刀         |
+|       0005 | 高压锅       |
+|       0006 | 叉子         |
+|       0007 | 擦菜板       |
+|       0008 | 圆珠笔       |
+|       0009 | 印章         |
+|       0009 | 手套         |
+|       0010 | 水壶         |
+|       1001 | No name      |
+|       1010 | 羽绒服       |
+
+*** 选取同时出现在多张表中的行                   :INTERSECT:
+
+(MySQL 尚不支持该功能.)
+
+#+CAPTION: 选取“Products”表和“Products2”中都有的商品
+#+BEGIN_SRC sql
+    SELECT product_id, product_name
+    FROM Products
+  INTERSECT
+    SELECT product_id, product_name
+    FROM Products2;
+#+END_SRC
+
+#+RESULTS:
+| product_id | product_name |
+|------------+--------------|
+|       0002 | 打孔器       |
+|       0001 | T恤衫        |
+|       0003 | 运动T恤      |
+
+*** 排除也出现在其它表中的行                  :EXCEPT:MINUS:
+
+(MySQL 尚不支持该功能; Oracle 使用 ~MINUS~ 关键字而非 ~EXCEPT~.)
+
+#+CAPTION: 选取“Products2”表中的商品, 但排除那些在“Products”中出现过的
+#+BEGIN_SRC sql
+    SELECT product_id, product_name
+    FROM Products2
+  EXCEPT
+    SELECT product_id, product_name
+    FROM Products;
+#+END_SRC
+
+#+RESULTS:
+| product_id | product_name |
+|------------+--------------|
+|       0010 | 水壶         |
+|       0009 | 手套         |
+
+** 联结: 表的多种乘法                              :JOIN:ON:
+
+可以把​/联结/​想象成将两张表横向拼接[fn:纵横拼接].
+作为对比, “[[纵向拼接][纵向拼接]]”要求列数相同, 而​/联结/​对行数没有要求.
+
+*** 内联结                                           :INNER:
+
+#+NAME: 内联结ShopsInventory与Products
+#+CAPTION: 整合“ShopsInventory”表和“Products”表的数据, 取出 商品的部分信息 与 各家店中该商品的在售数量.  _若某条记录表明, 某店正在销售的商品不在“Products”表​*内* / 某商品不被“ShopsInventory”表​*内*​的任何一家店铺售卖, 则忽略该条记录._
+#+BEGIN_SRC sql  :exports both table
+  SELECT shop_id, shop_name,
+         ShopsInventory.product_id,
+         product_name, sale_price
+ FROM ShopsInventory  -- 联结键: vvvvvvvvvv                  vvvvvvvvvv
+ INNER JOIN Products ON Products.product_id = ShopsInventory.product_id
+ --           联结条件: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ /* WHERE sale_price > 900 */;
+#+END_SRC
+
+#+RESULTS: 内联结ShopsInventory与Products
+| shop_id | shop_name | product_id | product_name | sale_price |
+|---------+-----------+------------+--------------+------------|
+| 000A    | 东京      |       0001 | T恤衫        |       1000 |
+| 000A    | 东京      |       0002 | 打孔器       |        500 |
+| 000A    | 东京      |       0003 | 运动T恤      |       4000 |
+| 000B    | 名古屋    |       0002 | 打孔器       |        500 |
+| 000B    | 名古屋    |       0003 | 运动T恤      |       4000 |
+| 000B    | 名古屋    |       0004 | 菜刀         |       3000 |
+| 000B    | 名古屋    |       0006 | 叉子         |        500 |
+| 000B    | 名古屋    |       0007 | 擦菜板       |        880 |
+| 000C    | 大阪      |       0003 | 运动T恤      |       4000 |
+| 000C    | 大阪      |       0004 | 菜刀         |       3000 |
+| 000C    | 大阪      |       0006 | 叉子         |        500 |
+| 000C    | 大阪      |       0007 | 擦菜板       |        880 |
+| 000D    | 福冈      |       0001 | T恤衫        |       1000 |
+
+(上述的内联结示例代码还有一种过时的写法, 见脚注[fn:: ~SELECT shop_id, shop_name, ShopsInventory.product_id, product_name, sale_price FROM ShopsInventory, Products WHERE Products.product_id = ShopsInventory.product_id /* AND sale_price > 900 */;~].  虽然能在所有的 RDBMS 中执行, 但早晚会被淘汰.)
+
+联结时, ~ON~ 子句指出​*/联结条件/*[fn:: 可以用 与​/​或​/​非 组合多个​/联结条件/.], /联结条件/​所涉及的列称为​*/联结键/*.
+~INNER JOIN <表名> ON~ 必须写在 ~FROM~ 子句中, 因为它也是用来指出从哪张表中选取记录的.
+
+*** 外联结                                :OUTER:LEFT:RIGHT:
+
+#+CAPTION: 整合“ShopsInventory”表和“Products”表的数据, 取出 商品的部分信息 与 各家店中该商品的在售数量.  若某条记录表明, 某店正在销售的商品在“Products”表以​*外* +某商品只被“ShopsInventory”表以​*外*​的店铺售卖+, 则忽略该条记录.
+#+BEGIN_SRC sql  :exports both table
+  SELECT shop_id, shop_name,
+         Products.product_id,
+         product_name, sale_price
+ FROM ShopsInventory
+ RIGHT OUTER JOIN Products ON ShopsInventory.product_id = Products.product_id;
+#+END_SRC
+
+#+RESULTS:
+| shop_id | shop_name | product_id | product_name | sale_price |
+|---------+-----------+------------+--------------+------------|
+| 000A    | 东京      |       0001 | T恤衫        |       1000 |
+| 000A    | 东京      |       0002 | 打孔器       |        500 |
+| 000A    | 东京      |       0003 | 运动T恤      |       4000 |
+| 000B    | 名古屋    |       0002 | 打孔器       |        500 |
+| 000B    | 名古屋    |       0003 | 运动T恤      |       4000 |
+| 000B    | 名古屋    |       0004 | 菜刀         |       3000 |
+| 000B    | 名古屋    |       0006 | 叉子         |        500 |
+| 000B    | 名古屋    |       0007 | 擦菜板       |        880 |
+| 000C    | 大阪      |       0003 | 运动T恤      |       4000 |
+| 000C    | 大阪      |       0004 | 菜刀         |       3000 |
+| 000C    | 大阪      |       0006 | 叉子         |        500 |
+| 000C    | 大阪      |       0007 | 擦菜板       |        880 |
+| 000D    | 福冈      |       0001 | T恤衫        |       1000 |
+|         |           |       0008 | 圆珠笔       |        100 |
+|         |           |       0009 | 印章         |         95 |
+|         |           |       1010 | 羽绒服       |      19600 |
+|         |           |       0005 | 高压锅       |       6800 |
+
+上述结果与[[内联结ShopsInventory与Products][内联结的查询示例]]的结果相比, 不同点显而易见:
+/右外联结/​的查询结果引用了“Products”表中的​*所有*​记录.
+
+/左\slash​右外联结/​以 ~OUTER JOIN~ 左​/​右侧的表为​*/主表/*; /主表/​中的所有记录都会被外联结的查询结果所引用.[fn:: 因此, ~<表1> LEFT OUTER JOIN <表2>~ 与 ~<表2> RIGHT OUTER JOIN <表1>~ 没啥区别, 通常使用 ~LEFT~ 的情况会多一些.]
+
+*** 交叉联结                                         :CROSS:
+
+/交叉联结/​是所有联结运算的基础.
+它对两张表作 ​/Cartesian product/, 因此 ~CROSS JOIN~ 没有 ~ON~ 子句.
+
+#+CAPTION: \( \{0, 1\} \times \{1, 2, 3\} = \{(0, 1), (0, 2), (0, 3), (1, 1), (1, 2), (1, 3)\} \)
+#+BEGIN_SRC sql  :exports both table
+  SELECT *
+  FROM (SELECT 0 UNION SELECT 1)
+  CROSS JOIN (SELECT 1 UNION SELECT 2 UNION SELECT 3);
+#+END_SRC
+
+#+RESULTS:
+| ?column? | ?column? |
+|----------+----------|
+|        0 |        1 |
+|        0 |        2 |
+|        0 |        3 |
+|        1 |        1 |
+|        1 |        2 |
+|        1 |        3 |
+
+-----
+
+~INNER~ 与 ~OUTER~ 的解释:
+- [[*内联结][/内联结/]]是​/交叉联结/​的结果的​/*子*​集/;
+- [[*外联结][/外联结/]]是​/交叉联结/​的结果的​/*超*​集/.
+
+*** 联结三张以上的表
+
+#+CAPTION: 新建示例用表“WarehouseInventory”: 货仓库存
+#+BEGIN_SRC sql  :eval query
+  CREATE TABLE WarehouseInventory (
+    inventory_id       CHAR(4) NOT NULL,
+      product_id       CHAR(4) NOT NULL,
+    inventory_quantity INTEGER NOT NULL,
+    PRIMARY KEY (inventory_id, product_id)
+  );
+
+  BEGIN TRANSACTION;
+  INSERT INTO WarehouseInventory VALUES ('P001', '0001',   0);
+  INSERT INTO WarehouseInventory VALUES ('P001', '0002', 120);
+  INSERT INTO WarehouseInventory VALUES ('P001', '0003', 200);
+  INSERT INTO WarehouseInventory VALUES ('P001', '0004',   3);
+  INSERT INTO WarehouseInventory VALUES ('P001', '0005',   0);
+  INSERT INTO WarehouseInventory VALUES ('P001', '0006',  99);
+  INSERT INTO WarehouseInventory VALUES ('P001', '0007', 999);
+  INSERT INTO WarehouseInventory VALUES ('P001', '0008', 200);
+  INSERT INTO WarehouseInventory VALUES ('P002', '0001',  10);
+  INSERT INTO WarehouseInventory VALUES ('P002', '0002',  25);
+  INSERT INTO WarehouseInventory VALUES ('P002', '0003',  34);
+  INSERT INTO WarehouseInventory VALUES ('P002', '0004',  19);
+  INSERT INTO WarehouseInventory VALUES ('P002', '0005',  99);
+  INSERT INTO WarehouseInventory VALUES ('P002', '0006',   0);
+  INSERT INTO WarehouseInventory VALUES ('P002', '0007',   0);
+  INSERT INTO WarehouseInventory VALUES ('P002', '0008',  18);
+  COMMIT;
+#+END_SRC
+
+#+CAPTION: 在货仓“P001”中有库存, 且正在各家商店中售卖, 且出现在“Products”中 的商品的一些信息
+#+BEGIN_SRC sql
+  SELECT shop_id, shop_name,
+         Products.product_id, Products.product_name, Products.sale_price,
+         inventory_quantity
+  FROM ShopsInventory
+  INNER JOIN Products           ON Products.product_id = ShopsInventory.product_id
+  INNER JOIN WarehouseInventory ON Products.product_id = WarehouseInventory.product_id
+  WHERE inventory_id = 'P001';
+#+END_SRC
+
+#+RESULTS:
+| shop_id | shop_name | product_id | product_name | sale_price | inventory_quantity |
+|---------+-----------+------------+--------------+------------+--------------------|
+| 000A    | 东京      |       0001 | T恤衫        |       1000 |                  0 |
+| 000A    | 东京      |       0002 | 打孔器       |        500 |                120 |
+| 000A    | 东京      |       0003 | 运动T恤      |       4000 |                200 |
+| 000B    | 名古屋    |       0002 | 打孔器       |        500 |                120 |
+| 000B    | 名古屋    |       0003 | 运动T恤      |       4000 |                200 |
+| 000B    | 名古屋    |       0004 | 菜刀         |       3000 |                  3 |
+| 000B    | 名古屋    |       0006 | 叉子         |        500 |                 99 |
+| 000B    | 名古屋    |       0007 | 擦菜板       |        880 |                999 |
+| 000C    | 大阪      |       0003 | 运动T恤      |       4000 |                200 |
+| 000C    | 大阪      |       0004 | 菜刀         |       3000 |                  3 |
+| 000C    | 大阪      |       0006 | 叉子         |        500 |                 99 |
+| 000C    | 大阪      |       0007 | 擦菜板       |        880 |                999 |
+| 000D    | 福冈      |       0001 | T恤衫        |       1000 |                  0 |
+
+** TODO 关系代数中的除法操作
+
+集合运算中的除法通常称为 /Division Operation in Relational Algebra/, SQL 并没有定义类似地运算符.
+不过, 我们可以使用已有的 SQL 关键字来实现这种运算, e.g.,
+
+#+CAPTION: 新建示例用表“PromotionNeededSkills”: 某公司升职所需的专业技能
+#+BEGIN_SRC sql  :eval query
+  CREATE TABLE PromotionNeededSkills (skill VARCHAR(32) PRIMARY KEY);
+
+  BEGIN TRANSACTION;
+  INSERT INTO PromotionNeededSkills VALUES('Oracle');
+  INSERT INTO PromotionNeededSkills VALUES(  'UNIX');
+  INSERT INTO PromotionNeededSkills VALUES(  'Java');
+  COMMIT;
+#+END_SRC
+
+#+RESULTS:
+| CREATE TABLE |
+|--------------|
+| BEGIN        |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| COMMIT       |
+
+#+CAPTION: 新建示例用表“EmployeesSkills”
+#+BEGIN_SRC sql  :eval query
+  CREATE TABLE EmployeesSkills (
+    employee VARCHAR(32),
+       skill VARCHAR(32),
+    PRIMARY KEY(employee, skill)
+  );
+
+  BEGIN TRANSACTION;
+  INSERT INTO EmployeesSkills VALUES('虎杖', 'Oracle');
+  INSERT INTO EmployeesSkills VALUES('虎杖',   'UNIX');
+  INSERT INTO EmployeesSkills VALUES('虎杖',   'Java');
+  INSERT INTO EmployeesSkills VALUES('虎杖',     'C#');
+  INSERT INTO EmployeesSkills VALUES('钉崎', 'Oracle');
+  INSERT INTO EmployeesSkills VALUES('钉崎',   'UNIX');
+  INSERT INTO EmployeesSkills VALUES('钉崎',   'Java');
+  INSERT INTO EmployeesSkills VALUES('惠惠',   'UNIX');
+  INSERT INTO EmployeesSkills VALUES('惠惠', 'Oracle');
+  INSERT INTO EmployeesSkills VALUES('惠惠',    'PHP');
+  INSERT INTO EmployeesSkills VALUES('惠惠',   'Perl');
+  INSERT INTO EmployeesSkills VALUES('惠惠',    'C++');
+  INSERT INTO EmployeesSkills VALUES('五条',   'Perl');
+  INSERT INTO EmployeesSkills VALUES('乙骨', 'Oracle');
+  COMMIT;
+#+END_SRC
+
+#+RESULTS:
+| CREATE TABLE |
+|--------------|
+| BEGIN        |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| INSERT 0 1   |
+| COMMIT       |
+
+下面就是关系除法:
+
+#+CAPTION: 有资格升职的员工
+#+BEGIN_SRC sql
+  SELECT DISTINCT employee
+  FROM EmployeesSkills AS ES1
+  WHERE NOT EXISTS (  SELECT skill
+                      FROM PromotionNeededSkills
+                    EXCEPT
+                      SELECT skill
+                      FROM EmployeesSkills AS ES2
+                    WHERE ES1.employee = ES2.employee);
+#+END_SRC
+
+#+RESULTS:
+| employee |
+|----------|
+| 虎杖     |
+| 钉崎     |
 
-#+CAPTION: File Local Variables (如果你不使用 Emacs, 请忽略它.)
+#+CAPTION: File Local Variables (如果不使用 Emacs, 请忽略它.)
 #+BEGIN_SRC emacs-lisp  :eval never
   Local Variables:
   eval: (w32-notification-close
-         (w32-notification-notify :title "读到了第 233 页"
+         (w32-notification-notify :title "读到了第 276 页"
                                   :body " "))
-  eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/TextBook.pdf")
-  eval: (find-file-noselect "D:/Desktop/ToRead/SQL基础教程-MICK/src_ans/Answer/")
+  eval: (browse-url-default-browser "./SQL基础教程-MICK/TextBook.pdf")
   eval: (require 'ob-sql)
   org-confirm-babel-evaluate: nil
   sql-postgres-program: "D:/Progs/PostgreSQL/16/bin/psql.exe"
