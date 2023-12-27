@@ -86,7 +86,7 @@ database_name=# \?
 
 *** 块注释
 
-该类注释被成对的 =/*=​&​=*/= 包裹, e.g.,
+该类注释被成对的 =/*= & =*/= 包裹, e.g.,
 
 #+BEGIN_SRC sql
  SELECT /* what? */
@@ -225,7 +225,10 @@ DROP COLUMN product_name_pinyin;
 Oracle 中的写法[fn:Oracle增删单列]:
  : ALTER TABLE Products DROP (product_name_pinyin, 更多的旧列, …);
 
-* 查询 (query)                                      :SELECT:
+* 查询                                              :SELECT:
+
+I.e., 查询 (query) 表中的记录.
+
 ** 列的查询
 *** 查询指定的列
 
@@ -1186,7 +1189,7 @@ A group of statements surrounded by ~BEGIN~ and ~COMMIT~ is sometimes called a /
       WHERE product_type = '办公用品';
 #+END_SRC
 
-<<视图的查询>> 视图的查询与[[查询 (query)][表的查询]]别无二致, 只是性能会差很多.
+<<视图的查询>> 视图的查询与[[*查询][表的查询]]别无二致, 只是性能会差很多.
 
 #+BEGIN_SRC sql
  SELECT * FROM ProductsTypeInfoOffice;
@@ -1200,7 +1203,7 @@ A group of statements surrounded by ~BEGIN~ and ~COMMIT~ is sometimes called a /
 标准 SQL 中有这样的规定: 如果定义视图的 ~SELECT~ 语句能够满足某些条件, 那么这个视图就可以被更新.
 下面列举一些具有代表性的条件:
 - 没有使用 ~DISTINCT~ 修饰 ~SELECT~ 子句
-- ~FROM~ 子句中只有一张表[fn:: 第[[*查询 (query)]]章只介绍了如何查询 \( 1 \) 张表的数据, 实际上 \( 1 \) 条 ~SELECT~ 语句可以同时查询多张表.]
+- ~FROM~ 子句中只有一张表[fn:: 第[[*查询]]章只介绍了如何查询 \( 1 \) 张表的数据, 实际上 \( 1 \) 条 ~SELECT~ 语句可以同时查询多张表.]
 - 未使用 ~GROUP BY~ 子句[fn:: 所以肯定也没使用 ~HAVING~ 子句.]
 
 来看一个正面的例子.  \\
@@ -1615,6 +1618,11 @@ N.b., ~||~ 并没有特殊对待 ~NULL~, i.e., 若 ~NULL~ 是操作数 则结果
 |------------|
 | 2002-12-10 |
 
+-----
+
+N.b., *书写 SQL 时必须要保证<<查询结果中列的类型要相同>>查询结果中的所有行在同一列上的数据类型是一致的!**
+这也是 ~CAST~ 函数的另一个用武之地.
+
 *** 返回第一个 non-~NULL~ 值                      :COALESCE:
 
 将 ~NULL~ 作为参数时, 绝大多数函数的返回值都仍是 ~NULL~.
@@ -2020,20 +2028,20 @@ E.g.,
 - Oracle 中的 ~DECODE~ 函数
 - MySQL 中的 ~IF~ 表达式
 
-* 集合运算
+* 多表查询
 ** 表的加减法
 
 此处的“加减法”指的是对​*查询结果*[fn:查询结果: 查询结果看上去就是一张表.]作
 - 并集 ~UNION~
 - 交集 ~INTERSECT~
 - 差集 ~EXCEPT~
-运算.
-可以想象成将两张表<<纵向拼接>>纵向拼接的 \( 3 \) 种方式[fn:纵横拼接: A4 纸​_上下对折_, 上半张填入 =table_1=, 下半张填入 =table_2=, 就像 emoji‘⊟’, 此为纵向拼接.  同理, 横向拼接就是​_左右对折_, 就像 emoji‘◫’.], 因此, 需要保证两张表的结构相同[fn:: (TODO) 对列名似乎没有要求?]:
+运算, *这些运算符的​/结合性/​同数学*.
+可以想象成将两张表<<纵向拼接>>纵向拼接的 \( 3 \) 种方式[fn:纵横拼接: A4 纸​_上下对折_, 上半张填入 =table_1=, 下半张填入 =table_2=, 就像 Unicode 字符‘⊟’, 此为纵向拼接.  同理, 横向拼接就是​_左右对折_, 就像 Unicode 字符‘◫’.], 因此, 需要保证两张表的结构相同[fn:: (TODO) 对列名似乎没有要求?]:
 - 列数相同;
 - 对应列的数据类型一致[fn:: 如果类型不同, 此时有些 RDBMS 会进行隐式类型转换.].
 
 和数学中的集合运算一样, 运算结果中
-- _不包含重复行, 除非在​/集合运算符/​后书写 ~ALL~ 关键字._
+- _不包含重复行, 除非在​/集合运算符/​后书写 ~ALL~ 关键字.[fn:: 所以, 包含 ~ALL~ 时性能更好, 因为此时不需要对查询结果进行排序​/​比较.]_
 - 行与行之间没有顺序关系, 因此, *~ORDER BY~ 子句只能写成最后一句, 作用于整个运算结果[fn:: 即使能写在中间, 也没有意义, 因为集合运算可能会打乱原本的顺序.].*
 
 #+CAPTION: 新建示例用表“Products2”: 定义与“Products”一致; 编号 1-3 的商品与“Products”表中的商品相同, 而编号 9-10 的则是“Products”表中没有的商品.
@@ -2289,9 +2297,9 @@ E.g.,
 | 000C    | 大阪      |       0007 | 擦菜板       |        880 |                999 |
 | 000D    | 福冈      |       0001 | T恤衫        |       1000 |                  0 |
 
-** TODO 关系代数中的除法操作
+** 关系代数中的除法操作
 
-集合运算中的除法通常称为 /Division Operation in Relational Algebra/, SQL 并没有定义类似地运算符.
+集合运算中的除法通常称为 /Division Operation in Relational Algebra/, SQL 并没有定义类似的运算符.
 不过, 我们可以使用已有的 SQL 关键字来实现这种运算, e.g.,
 
 #+CAPTION: 新建示例用表“PromotionNeededSkills”: 某公司升职所需的专业技能
@@ -2304,15 +2312,6 @@ E.g.,
   INSERT INTO PromotionNeededSkills VALUES(  'Java');
   COMMIT;
 #+END_SRC
-
-#+RESULTS:
-| CREATE TABLE |
-|--------------|
-| BEGIN        |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| COMMIT       |
 
 #+CAPTION: 新建示例用表“EmployeesSkills”
 #+BEGIN_SRC sql  :eval query
@@ -2340,51 +2339,191 @@ E.g.,
   COMMIT;
 #+END_SRC
 
-#+RESULTS:
-| CREATE TABLE |
-|--------------|
-| BEGIN        |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| COMMIT       |
-
 下面就是关系除法:
 
 #+CAPTION: 有资格升职的员工
 #+BEGIN_SRC sql
   SELECT DISTINCT employee
   FROM EmployeesSkills AS ES1
-  WHERE NOT EXISTS (  SELECT skill
-                      FROM PromotionNeededSkills
-                    EXCEPT
-                      SELECT skill
-                      FROM EmployeesSkills AS ES2
-                    WHERE ES1.employee = ES2.employee);
+  WHERE NOT EXISTS (SELECT skill
+                    FROM PromotionNeededSkills
+                  EXCEPT
+                    SELECT skill
+                    FROM EmployeesSkills AS ES2
+                  WHERE ES1.employee = ES2.employee);
+#+END_SRC
+
+* OLAP
+
+全称 /OnLine Analytical Processing/.
+
+** 窗口函数            :OVER:PARTITION:BY:ORDER:BY:ASC:DESC:
+
+有时需要对表中的记录进行分类[fn:: 跟 ~GROUP BY~ 一样, 是​_不重复, 不遗漏_​地分割查询结果.]但不汇总 (i.e., 行数不变[fn:: 作为对比, ~GROUP BY~ 就会多出一个汇总的操作, 可能导致行数发生改变.]), 我们称该操作为 /partition/, 称 同一类别下的记录 属于一个 /window/[fn:: 含义跟 /group/ 很像, 这么称呼其实是为了避免混淆 ~PARTITION~ 与 ~GROUP BY~.].
+
+#+CAPTION: /window function/ 的语法
+#+BEGIN_SRC sql  :eval never
+  <窗口函数>(参数…) OVER (
+    [PARTITION BY <供 partition 参考的列清单>]
+         ORDER BY <供   排序    参考的列清单> [ASC|DESC]
+    [ROWS … PRECEDING|FOLLOWING …]    -- 默认: ^^^
+  ) -- ^^^^^^^^^^^^^^^^^^^^^^^^ 供充当窗口函数的聚合函数使用
+#+END_SRC
+
+*/窗口函数/*​就是为了实现 OLAP 而添加的标准 SQL 功能, 因此又称 /OLAP 函数/[fn:窗口函数的别称: /窗口函数/​在 Oracle 和 SQL Server 中也称为​/分析函数/.].
+
+*** [#A] 专用窗口函数[fn:: 标准 SQL 定义的 OLAP 专用函数.]
+**** 为每一行提供有序编号       :RANK:ROW_NUMBER:DENSE_RANK:
+
+#+BEGIN_SRC sql  :exports both table
+  SELECT product_name, product_type, sale_price,
+         RANK() OVER (PARTITION BY product_type ORDER BY sale_price)
+  FROM Products;
 #+END_SRC
 
 #+RESULTS:
-| employee |
-|----------|
-| 虎杖     |
-| 钉崎     |
+| product_name | product_type | sale_price | rank |
+|--------------+--------------+------------+------|
+| No name      | Other Type   |            |    1 |
+| 印章         | 办公用品     |         95 |    1 |
+| 圆珠笔       | 办公用品     |        100 |    2 |
+| 打孔器       | 办公用品     |        500 |    3 |
+| 叉子         | 厨房用具     |        500 |    1 |
+| 擦菜板       | 厨房用具     |        880 |    2 |
+| 菜刀         | 厨房用具     |       3000 |    3 |
+| 高压锅       | 厨房用具     |       6800 |    4 |
+| T恤衫        | 衣服         |       1000 |    1 |
+| 运动T恤      | 衣服         |       4000 |    2 |
+| 羽绒服       | 衣服         |      19600 |    3 |
+
+上述代码中, 我们
+- 使用 ~PARTITION BY~, 将记录按照 =product_type= 分隔成多个窗口;
+- 然后使用 ~ORDER BY~, 分别为各窗口内的记录按照 =sale_price= 的升序提供编号.
+N.b.,
+ : RANK() OVER (… ORDER BY …)
+并不保证查询结果中记录之间的顺序, 它只负责提供编号.[fn:: 虽然经常见到的情况是, 查询结果被有序地打印了出来.]
+
+-----
+
+#+CAPTION: \( 3 \) 种常见的编号方式: ~RANK~, ~ROW_NUMBER~, and ~DENSE_RANK~
+#+BEGIN_SRC sql  :exports both tale
+  SELECT product_name, sale_price,
+               RANK() OVER (ORDER BY sale_price),
+         ROW_NUMBER() OVER (ORDER BY sale_price),
+         DENSE_RANK() OVER (ORDER BY sale_price)
+  FROM Products
+  WHERE sale_price BETWEEN 100 AND 999;
+#+END_SRC
+
+#+RESULTS:
+| product_name | sale_price | rank | row_number | dense_rank |
+|--------------+------------+------+------------+------------|
+| 圆珠笔       |        100 |    1 |          1 |          1 |
+| 打孔器       |        500 |    2 |          2 |          2 |
+| 叉子         |        500 |    2 |          3 |          2 |
+| 擦菜板       |        880 |    4 |          4 |          3 |
+
+*** [#B] 书写​/窗口函数/​的位置
+
+通常是书写在 ~SELECT~ 子句中.[fn:: 语法上讲, /窗口函数/​除了能在 ~SELECT~ 子句中, 还能在 ~ORDER BY~ 和 ~UPDATE~​’s ~SET~ 子句中书写.  后二者跟 ~SELECT~ 一样都符合下文将解释的原因, 只不过, 它们使用​/窗口函数/​并没有实际意义.]
+
+IOW, 它不能在 ~WHERE~​/​~GROUP BY~ 子句中使用.  \\
+这是因为, 在 RDBMS 内部, /窗口函数/​是对 ~WHERE~​/​~GROUP BY~ 子句处理后的“结果”进行的操作.
+以 ~RANK~ 为例, 在得到用户想要的结果之前, 即使进行了排序处理以获取编号, 那样的编号也是错误的; 在得到编号之后, 如果通过 ~WHERE~ 子句过滤掉了某些记录, 或者使
+用 ~GROUP BY~ 子句进行了汇总处理, 那么先前得到的排序结果就没有参考价值了.  \\
+也正因如此, 在 ~SELECT~ 子句之外使用​/窗口函数/​是没有意义的.
+
+*** [#A] /聚合函数/​充当窗口函数     :COUNT:AVG:SUM:MIN:MAX:
+
+只有部分​/聚合函数/​能作为​/窗口函数/​使用[fn:: 这些聚合函数列在本节标题后的 tag 清单中.], 本节仅以 ~AVG~ 举例.
+
+#+CAPTION: 以“当前记录”为基准, 计算 \( \text{product_id} \le \text{当前的 product_id} \) 的商品们的平均售价
+#+BEGIN_SRC sql  :exports both table
+  SELECT product_id, product_name, sale_price,
+         AVG(sale_price) OVER (ORDER BY product_id),  -- ‘AVG’依旧会忽视‘NULL’值.
+         '前 ' || CAST(ROW_NUMBER() OVER (ORDER BY product_id)
+                       AS VARCHAR) || ' 件商品的平均售价'
+  FROM Products
+  ORDER BY product_id;
+#+END_SRC
+
+#+RESULTS:
+| product_id | product_name | sale_price |                   avg | ?column?               |
+|------------+--------------+------------+-----------------------+------------------------|
+|       0001 | T恤衫        |       1000 | 1000.0000000000000000 | 前 1 件商品的平均售价  |
+|       0002 | 打孔器       |        500 |  750.0000000000000000 | 前 2 件商品的平均售价  |
+|       0003 | 运动T恤      |       4000 | 1833.3333333333333333 | 前 3 件商品的平均售价  |
+|       0004 | 菜刀         |       3000 | 2125.0000000000000000 | 前 4 件商品的平均售价  |
+|       0005 | 高压锅       |       6800 | 3060.0000000000000000 | 前 5 件商品的平均售价  |
+|       0006 | 叉子         |        500 | 2633.3333333333333333 | 前 6 件商品的平均售价  |
+|       0007 | 擦菜板       |        880 | 2382.8571428571428571 | 前 7 件商品的平均售价  |
+|       0008 | 圆珠笔       |        100 | 2097.5000000000000000 | 前 8 件商品的平均售价  |
+|       0009 | 印章         |         95 | 1875.0000000000000000 | 前 9 件商品的平均售价  |
+|       1001 | No name      |            | 1875.0000000000000000 | 前 10 件商品的平均售价 |
+|       1010 | 羽绒服       |      19600 | 3647.5000000000000000 | 前 11 件商品的平均售价 |
+
+**** 在​/窗口/​中滑动​/框架/ :ROWS:PRECEDING:FOLLOWING:BETWEEN:AND:
+
+#+CAPTION: 计算“Products”表中 上方两个 和 自身 的平均售价 (i.e., 统计学中的​/移动平均/)
+#+BEGIN_SRC sql  :exports both table
+  SELECT product_id, product_name, sale_price,
+         AVG(sale_price) OVER (ORDER BY product_id
+                               ROWS 2 PRECEDING) AS "moving average"
+  FROM Products;
+#+END_SRC
+
+#+RESULTS:
+| product_id | product_name | sale_price |        moving average |
+|------------+--------------+------------+-----------------------|
+|       0001 | T恤衫        |       1000 | 1000.0000000000000000 |
+|       0002 | 打孔器       |        500 |  750.0000000000000000 |
+|       0003 | 运动T恤      |       4000 | 1833.3333333333333333 |
+|       0004 | 菜刀         |       3000 | 2500.0000000000000000 |
+|       0005 | 高压锅       |       6800 | 4600.0000000000000000 |
+|       0006 | 叉子         |        500 | 3433.3333333333333333 |
+|       0007 | 擦菜板       |        880 | 2726.6666666666666667 |
+|       0008 | 圆珠笔       |        100 |  493.3333333333333333 |
+|       0009 | 印章         |         95 |  358.3333333333333333 |
+|       1001 | No name      |            |   97.5000000000000000 |
+|       1010 | 羽绒服       |      19600 | 9847.5000000000000000 |
+
+/框架/​宽度为 \( 3 \) 且包含当前记录时, ~ROWS~ 子句有三种写法:
+-
+  : ROWS 2 PRECEDING
+  上上一个 + 上一个 + 当前记录.
+-
+  : ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING
+  上一个 + 当前记录 + 下一个.
+-
+  : ROWS 2 FOLLOWING
+  当前记录 + 下一个 + 下下一个.
+
+** 大分组复用小分组                               :GROUPING:
+
+#+BEGIN_SRC sql
+    SELECT '各品类 合计' AS product_type, SUM(sale_price)
+    FROM Products
+  UNION ALL
+    SELECT product_type || ' 合计', SUM(sale_price)
+    FROM Products
+    GROUP BY product_type;
+#+END_SRC
+
+#+RESULTS:
+| product_type    |   sum |
+|-----------------+-------|
+| 各品类 合计     | 36475 |
+| 衣服 合计       | 24600 |
+| 办公用品 合计   |   695 |
+| 厨房用具 合计   | 11180 |
+
+* TODO 应用程序使用 API 访问 RDBMS
 
 #+CAPTION: File Local Variables (如果不使用 Emacs, 请忽略它.)
 #+BEGIN_SRC emacs-lisp  :eval never
   Local Variables:
   eval: (w32-notification-close
-         (w32-notification-notify :title "读到了第 276 页"
+         (w32-notification-notify :title "读到了第 290 页"
                                   :body " "))
   eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/TextBook.pdf")
   eval: (require 'ob-sql)
