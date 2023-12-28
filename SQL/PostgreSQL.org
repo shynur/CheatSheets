@@ -120,9 +120,6 @@ CREATE TABLE Products (
 );
 #+END_SRC
 
-#+RESULTS:
-|---|
-
 执行以下代码[fn:BEGIN_TRANSACTION: 对于 ~BEGIN TRANSACTION;~ 这行, 在 MySQL 中使用 ~START TRANSACTION;~; 在 Oracle 和 DB2 中不需要这句, 后文不再赘述.  见[[*Transaction]].]以插入本文使用的示例数据:
 
 #+NAME: 填充“Products”表
@@ -139,19 +136,6 @@ INSERT INTO Products VALUES('0007', '擦菜板' , '厨房用具',  880,  790, '2
 INSERT INTO Products VALUES('0008', '圆珠笔' , '办公用品',  100, NULL, '2009-11-11');
 COMMIT;
 #+END_SRC
-
-#+RESULTS: 填充“Products”表
-| BEGIN      |
-|------------|
-| INSERT 0 1 |
-| INSERT 0 1 |
-| INSERT 0 1 |
-| INSERT 0 1 |
-| INSERT 0 1 |
-| INSERT 0 1 |
-| INSERT 0 1 |
-| INSERT 0 1 |
-| COMMIT     |
 
 *** 数据类型
 **** INTEGER
@@ -1055,10 +1039,6 @@ E.g.,
  WHERE product_id = '0008';
 #+END_SRC
 
-#+RESULTS:
-| UPDATE 1 |
-|----------|
-
 注意, 只有未设置 ~NOT NULL~ 约束和 ~PRIMARY KEY~ 约束的列才可以清空.
 
 *** 多列更新
@@ -1080,10 +1060,6 @@ E.g.,
    = (sale_price / 10, purchase_price / 2)
  WHERE product_type = '厨房用具';
 #+END_SRC
-
-#+RESULTS:
-| UPDATE 3 |
-|----------|
 
 所有的 RDBMS 都支持前一种写法; 后一种写法不太常用 (但 PostgreSQL 和 DB2 是支持的).
 
@@ -1235,10 +1211,6 @@ A group of statements surrounded by ~BEGIN~ and ~COMMIT~ is sometimes called a /
  );
 #+END_SRC
 
-#+RESULTS:
-| CREATE RULE |
-|-------------|
-
 现在可以插入新行了:
 
 #+BEGIN_SRC sql  :eval query
@@ -1247,29 +1219,12 @@ A group of statements surrounded by ~BEGIN~ and ~COMMIT~ is sometimes called a /
  ('1010', '羽绒服',     '衣服', 19600, 10980, '2023-12-21');
 #+END_SRC
 
-#+RESULTS:
-| INSERT 0 1 |
-|------------|
-
 #+CAPTION:  查看是否添加成功
 #+BEGIN_SRC sql
  SELECT * FROM Products WHERE product_type = '办公用品' OR product_id = '1010';
  \qecho
  SELECT * FROM ProductsOffice;
 #+END_SRC
-
-#+RESULTS:
-| product_id | product_name | product_type | sale_price | purchase_price | regist_date |
-|------------+--------------+--------------+------------+----------------+-------------|
-|       0002 | 打孔器       | 办公用品     |        500 |            320 |  2009-09-11 |
-|       0008 | 圆珠笔       | 办公用品     |        100 |                |  2009-11-11 |
-|       0009 | 印章         | 办公用品     |         95 |             10 |  2009-11-30 |
-|       1010 | 羽绒服       | 衣服         |      19600 |          10980 |  2023-12-21 |
-|            |              |              |            |                |             |
-| product_id | product_name | product_type | sale_price | purchase_price | regist_date |
-|       0002 | 打孔器       | 办公用品     |        500 |            320 |  2009-09-11 |
-|       0008 | 圆珠笔       | 办公用品     |        100 |                |  2009-11-11 |
-|       0009 | 印章         | 办公用品     |         95 |             10 |  2009-11-30 |
 
 ** 删除视图                                           :DROP:
 
@@ -1298,14 +1253,6 @@ A group of statements surrounded by ~BEGIN~ and ~COMMIT~ is sometimes called a /
 -- 在 Oracle 的 FROM 子句中,  ^^^^ 不能使用 AS, 因此需要删去它.
 #+END_SRC
 
-#+RESULTS:
-| product_type | 商品种数 |
-|--------------+----------|
-| 衣服         |        3 |
-| Other Type   |        1 |
-| 办公用品     |        3 |
-| 厨房用具     |        4 |
-
 ** 标量子查询
 
 就是返回结果是 \( 1 \times 1 \) 矩阵[fn:: 不考虑用来显示列的名字的那一行.]的子查询.
@@ -1321,9 +1268,6 @@ A group of statements surrounded by ~BEGIN~ and ~COMMIT~ is sometimes called a /
   FROM Products
   WHERE sale_price <= AVG(sale_price);
 #+END_SRC
-
-#+RESULTS:
-|---|
 
 但[[*不要在 ~WHERE~ 子句中使用聚合函数]]说过这是错误的写法, 以及为什么是错的.
 正确的写法是用标量子查询:
@@ -1369,16 +1313,6 @@ E.g., 我们要选出各“品类”下 \( \text{售价} \le \text{品类均价}
                        -- Oracle 中 ^^^^ 请删掉‘AS’关键字.  (后文不再赘述.)
                        WHERE ProductsOfType.product_type = Products.product_type);
 #+END_SRC
-
-#+RESULTS:
-| product_type | product_name | sale_price |
-|--------------+--------------+------------|
-| 衣服         | T恤衫        |       1000 |
-| 衣服         | 运动T恤      |       4000 |
-| 厨房用具     | 叉子         |        500 |
-| 厨房用具     | 擦菜板       |        880 |
-| 办公用品     | 圆珠笔       |        100 |
-| 办公用品     | 印章         |         95 |
 
 其中 =ProductsOfType= 是子查询为自己的“Products”表起的别名, 子查询使用这个别名在 ~WHERE~ 子句中指定关联条件.  (Table 的​/别名/​会 [[https://wikipedia.org/wiki/Variable_shadowing][/shadow/]] 原本的名[fn:: 见 [[https://stackoverflow.com/a/15318375/20212483]].], 所以在上述代码中, 出现在子查询的 ~WHERE~ 子句中的“Products”指的就是​_外层查询中的那张表_, 并不会产生歧义[fn:: 如果担心自己会混淆, 你当然可以给外层查询中的表也起个别名.].)
 在该语境下, 别名被称为​/关联名称/, 子查询被称为​/关联子查询/.
@@ -1524,23 +1458,6 @@ N.b., PostgreSQL 中 ~ROUND~ 函数的 1st 参数只接受 ~NUMERIC~ 类型, 2nd
   INSERT INTO SampleString (s1, s2, s3) VALUES (   'micmic',    'i',    'I');
   COMMIT;
 #+END_SRC
-
-#+RESULTS:
-| CREATE TABLE |
-|--------------|
-| BEGIN        |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| COMMIT       |
 
 *** DONE 拼接字符串                                 :CONCAT:
 
@@ -1689,18 +1606,6 @@ N.b., 在 PostgreSQL 中, ~COALESCE~ 函数只接受相同类型的参数.
   INSERT INTO SampleLike (s) VALUES ('abddc' );
   COMMIT;
 #+END_SRC
-
-#+RESULTS:
-| CREATE TABLE |
-|--------------|
-| BEGIN        |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| INSERT 0 1   |
-| COMMIT       |
 
 *** 视为任意文本的通配符
 
@@ -2076,23 +1981,6 @@ E.g.,
   ORDER BY product_id;
 #+END_SRC
 
-#+RESULTS:
-| product_id | product_name |
-|------------+--------------|
-|       0001 | T恤衫        |
-|       0002 | 打孔器       |
-|       0003 | 运动T恤      |
-|       0004 | 菜刀         |
-|       0005 | 高压锅       |
-|       0006 | 叉子         |
-|       0007 | 擦菜板       |
-|       0008 | 圆珠笔       |
-|       0009 | 印章         |
-|       0009 | 手套         |
-|       0010 | 水壶         |
-|       1001 | No name      |
-|       1010 | 羽绒服       |
-
 *** 选取同时出现在多张表中的行                   :INTERSECT:
 
 (MySQL 尚不支持该功能.)
@@ -2106,13 +1994,6 @@ E.g.,
     FROM Products2;
 #+END_SRC
 
-#+RESULTS:
-| product_id | product_name |
-|------------+--------------|
-|       0002 | 打孔器       |
-|       0001 | T恤衫        |
-|       0003 | 运动T恤      |
-
 *** 排除也出现在其它表中的行                  :EXCEPT:MINUS:
 
 (MySQL 尚不支持该功能; Oracle 使用 ~MINUS~ 关键字而非 ~EXCEPT~.)
@@ -2125,12 +2006,6 @@ E.g.,
     SELECT product_id, product_name
     FROM Products;
 #+END_SRC
-
-#+RESULTS:
-| product_id | product_name |
-|------------+--------------|
-|       0010 | 水壶         |
-|       0009 | 手套         |
 
 ** 联结: 表的多种乘法                              :JOIN:ON:
 
@@ -2279,23 +2154,6 @@ E.g.,
   INNER JOIN WarehouseInventory ON Products.product_id = WarehouseInventory.product_id
   WHERE inventory_id = 'P001';
 #+END_SRC
-
-#+RESULTS:
-| shop_id | shop_name | product_id | product_name | sale_price | inventory_quantity |
-|---------+-----------+------------+--------------+------------+--------------------|
-| 000A    | 东京      |       0001 | T恤衫        |       1000 |                  0 |
-| 000A    | 东京      |       0002 | 打孔器       |        500 |                120 |
-| 000A    | 东京      |       0003 | 运动T恤      |       4000 |                200 |
-| 000B    | 名古屋    |       0002 | 打孔器       |        500 |                120 |
-| 000B    | 名古屋    |       0003 | 运动T恤      |       4000 |                200 |
-| 000B    | 名古屋    |       0004 | 菜刀         |       3000 |                  3 |
-| 000B    | 名古屋    |       0006 | 叉子         |        500 |                 99 |
-| 000B    | 名古屋    |       0007 | 擦菜板       |        880 |                999 |
-| 000C    | 大阪      |       0003 | 运动T恤      |       4000 |                200 |
-| 000C    | 大阪      |       0004 | 菜刀         |       3000 |                  3 |
-| 000C    | 大阪      |       0006 | 叉子         |        500 |                 99 |
-| 000C    | 大阪      |       0007 | 擦菜板       |        880 |                999 |
-| 000D    | 福冈      |       0001 | T恤衫        |       1000 |                  0 |
 
 ** 关系代数中的除法操作
 
@@ -2498,10 +2356,11 @@ IOW, 它不能在 ~WHERE~​/​~GROUP BY~ 子句中使用.  \\
   : ROWS 2 FOLLOWING
   当前记录 + 下一个 + 下下一个.
 
-** 大分组复用小分组                               :GROUPING:
+** 大分组复用小分组                               :GROUP:BY:
 
+#+CAPTION: 计算出小分组与大分组的售价总和
 #+BEGIN_SRC sql
-    SELECT '各品类 合计' AS product_type, SUM(sale_price)
+    SELECT '所有品类 合计' AS product_type, SUM(sale_price)
     FROM Products
   UNION ALL
     SELECT product_type || ' 合计', SUM(sale_price)
@@ -2509,23 +2368,137 @@ IOW, 它不能在 ~WHERE~​/​~GROUP BY~ 子句中使用.  \\
     GROUP BY product_type;
 #+END_SRC
 
-#+RESULTS:
-| product_type    |   sum |
-|-----------------+-------|
-| 各品类 合计     | 36475 |
-| 衣服 合计       | 24600 |
-| 办公用品 合计   |   695 |
-| 厨房用具 合计   | 11180 |
+注意到, 上述代码中的大分组 (i.e., 所有品类下的商品的售价的总和) 其实就是所有小分组 (i.e., 单个品类下的商品的售价的总和) 的总和.
+IOW, 计算大分组时, 我们或许应该寻找某种能复用小分组的计算结果的方法, 从而避免重新地扫描整张表.
 
-* TODO 应用程序使用 API 访问 RDBMS
+为了解决类似的问题, 标准 SQL 引入了 \( 3 \) 个 ~GROUPING~ /运算符/:
+- ~ROLLUP~
+- ~CUBE~
+- ~GROUPING SETS~
+
+*** 由小计得出合计                                  :ROLLUP:
+
+我们可以使用
+ : GROUP BY ROLLUP(列名_1, 列名_2, …)
+计算出小分组, 再根据小分组计算出中分组, 再根据中分组计算出更大的分组的售价总和:
+
+#+NAME: 用三种分组方式统计商品售价的总和
+#+CAPTION: 计算: \bull _各品类下不同日期_​登记的商品售价的总和; \bull _各品类下所有日期_​登记的商品售价的总和; \bull _所有品类下所有日期_​登记的商品售价的总和
+#+BEGIN_SRC sql  :exports both table
+    SELECT product_type,
+           regist_date,
+           SUM(sale_price)
+    FROM Products
+  -- Oracle, SQL Server, DB2, and PostgreSQL:
+    GROUP BY ROLLUP(product_type, regist_date) /*
+  MySQL:
+    GROUP BY product_type, regist_date WITH ROLLUP
+  */;
+#+END_SRC
+
+#+RESULTS: 用三种分组方式统计商品售价的总和
+| product_type | regist_date |   sum |
+|--------------+-------------+-------|
+| 36475        |             |       |
+| Other Type   |             |       |
+| 办公用品     |  2009-11-30 |    95 |
+| 衣服         |  2023-12-21 | 19600 |
+| 衣服         |             |  4000 |
+| 厨房用具     |  2008-04-28 |   880 |
+| 衣服         |  2009-09-20 |  1000 |
+| 办公用品     |  2009-11-11 |   100 |
+| 厨房用具     |  2009-01-15 |  6800 |
+| 办公用品     |  2009-09-11 |   500 |
+| 厨房用具     |  2009-09-20 |  3500 |
+| 衣服         |             | 24600 |
+| Other Type   |             |       |
+| 办公用品     |             |   695 |
+| 厨房用具     |             | 11180 |
+
+从结果中看, 上述代码相当于分别执行了
+1. 按“品类”和“登记日期”分组
+    : GROUP BY product_type, regist_date
+2. 按“品类”分组
+    : GROUP BY product_type
+3. 不分组
+    : GROUP BY ()
+这三种情况下的聚合查询.
+
+由此容易得出 _~GROUP BY ROLLUP(聚合键清单)~ 会按 \vert{}聚合键清单\vert{}\plus1 种方式对表进行分组_, 从最细粒度的聚合集逐步扩大到将整个表作为一个聚合单位.
+
+*** 超级分组记录                                  :GROUPING:
+
+之前提到过[[*不要在 ~SELECT~ 子句中包含非聚合键的列][不要在 ~SELECT~ 子句中包含非聚合键的列]], 而代码[[用三种分组方式统计商品售价的总和]]却作为特例无视这一规则.
+
+E.g., 在
+ : GROUP BY ROLLUP(product_type, regist_date)
+所产生的一种分组方式
+ : GROUP BY product_type
+中, =regist_date= 明显不是​/聚合键/, 但仍然出现在了 ~SELECT~ 子句中, RDBMS 也只好把它打印为 ~NULL~, 我们将这样的记录称为 /super group row/.
+
+然而, 把 =regist_date= 打印为 ~NULL~ 是可能导致歧义的.
+因为在
+ : GROUP BY ROLLUP(product_type, regist_date)
+所产生的另一种分组方式
+ : GROUP BY product_type, regist_date
+中, =regist_date= 确实是​/聚合键/, 而且聚合后的值确实可能是 ~NULL~, e.g., 代码[[用三种分组方式统计商品售价的总和]]的结果中就出现了两条符合
+
+| =product_type= | =regist_date= |
+| 衣服           | ~NULL~        |
+
+的记录.
+这样, 我们就分辨不出哪条才是 /super group row/ 了.
+
+为了避免这样的混淆, 我们可以使用 ~GROUPING~ 函数判断 ~SELECT~ 子句中的某列
+- 若使该条记录成为 /super group row/, 则返回 \( 1 \);
+- 否则返回 \( 0 \).
+
+将代码[[用三种分组方式统计商品售价的总和]]修改一下, 使用 ~GROUPING~ 函数:
+
+#+BEGIN_SRC sql
+  SELECT CAST(GROUPING(product_type) AS CHAR) || ' ' || COALESCE(product_type, ' '),
+         CAST(GROUPING(regist_date)  AS CHAR) || ' ' || COALESCE(CAST(regist_date AS VARCHAR), ' '),
+         SUM(sale_price)
+  FROM Products
+  GROUP BY ROLLUP(product_type, regist_date);
+#+END_SRC
+
+*** \vert{}幂集\vert{}个分组方式                      :CUBE:
+
+_~GROUP BY CUBE(聚合键清单)~ 会按 2^{\vert{}聚合键清单\vert{}} 种方式对表进行分组_, e.g.,
+ : GROUP BY CUBE(product_type, regist_date)
+将记录按照
+-
+   : GROUP BY (                         )
+-
+   : GROUP BY (              regist_date)
+-
+   : GROUP BY (product_type             )
+-
+   : GROUP BY (product_type, regist_date)
+这 \( 4 \) 种方式分组.
+
+*** 每种分组仅参考单个​/聚合键/              :GROUPING:SETS:
+
+_~GROUP BY GROUPING SETS(聚合键清单)~ 会按 \vert{}聚合键清单\vert{} 种方式对表进行分组_, e.g.,
+ : GROUP BY GROUPING SETS(product_type, regist_date)
+将记录按照
+-
+   : GROUP BY (              regist_date)
+-
+   : GROUP BY (product_type             )
+这两种方式分组.
+
+* TODO 应用程序通过 API 访问 RDBMS
 
-#+CAPTION: File Local Variables (如果不使用 Emacs, 请忽略它.)
+#+CAPTION: File Local Variables (非 Emacs 用户请忽略它)
 #+BEGIN_SRC emacs-lisp  :eval never
   Local Variables:
-  eval: (w32-notification-close
-         (w32-notification-notify :title "读到了第 290 页"
-                                  :body " "))
-  eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/TextBook.pdf")
+  eval: '(progn
+           (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/SQL基础教程-MICK/TextBook.pdf")
+           (w32-notification-close
+            (w32-notification-notify :title "读到了第 296 页"
+                                     :body " ")))
   eval: (require 'ob-sql)
   org-confirm-babel-evaluate: nil
   sql-postgres-program: "D:/Progs/PostgreSQL/16/bin/psql.exe"
