@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
 <head>
-<!-- 2023-12-27 周三 00:51 -->
+<!-- 2023-12-28 周四 16:58 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>简明 PostgreSQL</title>
@@ -234,244 +234,264 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgbcc7ee6">1. 使用 <code>psql</code></a>
+<li><a href="#org7aff0f7">1. 使用 <code>psql</code></a>
 <ul>
-<li><a href="#org1e46e51">1.1. 打开 <code>psql</code></a></li>
-<li><a href="#org52f659d">1.2. 退出 <code>psql</code></a></li>
-<li><a href="#orgf7643a4">1.3. <span class="todo TODO">TODO</span> <code>psql</code> 命令</a></li>
+<li><a href="#orgf773375">1.1. 打开 <code>psql</code></a></li>
+<li><a href="#org6b06dbd">1.2. 退出 <code>psql</code></a></li>
+<li><a href="#org39a80de">1.3. <span class="todo TODO">TODO</span> <code>psql</code> 命令</a></li>
 </ul>
 </li>
-<li><a href="#org2b1d14e">2. SQL 概要</a>
+<li><a href="#org753a6ff">2. SQL 概要</a>
 <ul>
-<li><a href="#org19490a3">2.1. 三类语句</a>
+<li><a href="#org6e4c3e5">2.1. 三类语句</a>
 <ul>
-<li><a href="#orga752866">2.1.1. DDL</a></li>
-<li><a href="#org7aea9b5">2.1.2. DML</a></li>
-<li><a href="#orgc996d19">2.1.3. DCL</a></li>
+<li><a href="#orged39953">2.1.1. DDL</a></li>
+<li><a href="#org55d3889">2.1.2. DML</a></li>
+<li><a href="#org0262858">2.1.3. DCL</a></li>
 </ul>
 </li>
-<li><a href="#org6496bbb">2.2. 基本书写规则</a></li>
-<li><a href="#org59a2ff1">2.3. 命名约定</a></li>
-<li><a href="#org9c26e5a">2.4. 注释</a>
+<li><a href="#org11e1c40">2.2. 基本书写规则</a></li>
+<li><a href="#org7677397">2.3. 命名约定</a></li>
+<li><a href="#orga9ec893">2.4. 注释</a>
 <ul>
-<li><a href="#org175e8d1">2.4.1. 行尾注释</a></li>
-<li><a href="#orgd44bc05">2.4.2. 块注释</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orge17ef96">3. 创建数据库与表</a>
-<ul>
-<li><a href="#orgb7d5754">3.1. 数据库的创建&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CRAETE">CRAETE</span>&#xa0;<span class="DATABASE">DATABASE</span></span></a></li>
-<li><a href="#org22bb916">3.2. 表的创建&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CREATE">CREATE</span>&#xa0;<span class="TABLE">TABLE</span></span></a>
-<ul>
-<li><a href="#org2ca5626">3.2.1. 数据类型</a></li>
-<li><a href="#org80fdc7b">3.2.2. 约束</a></li>
-</ul>
-</li>
-<li><a href="#org5675572">3.3. 删除表&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DROP">DROP</span>&#xa0;<span class="TABLE">TABLE</span></span></a></li>
-<li><a href="#orgd352749">3.4. 更新表的定义&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ALTER">ALTER</span>&#xa0;<span class="TABLE">TABLE</span></span></a>
-<ul>
-<li><a href="#orgfecb1b9">3.4.1. 添加列&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ADD">ADD</span>&#xa0;<span class="COLUMN">COLUMN</span></span></a></li>
-<li><a href="#org6de93d8">3.4.2. 删除列&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DROP">DROP</span>&#xa0;<span class="COLUMN">COLUMN</span></span></a></li>
+<li><a href="#org97490ab">2.4.1. 行尾注释</a></li>
+<li><a href="#org22f59c5">2.4.2. 块注释</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org9c01c6f">4. 查询 (query)&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SELECT">SELECT</span></span></a>
+<li><a href="#orge036863">3. 创建数据库与表</a>
 <ul>
-<li><a href="#org5209f06">4.1. 列的查询</a>
+<li><a href="#org28c5512">3.1. 数据库的创建&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CRAETE">CRAETE</span>&#xa0;<span class="DATABASE">DATABASE</span></span></a></li>
+<li><a href="#org6caa61f">3.2. 表的创建&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CREATE">CREATE</span>&#xa0;<span class="TABLE">TABLE</span></span></a>
 <ul>
-<li><a href="#orgb593bc0">4.1.1. 查询指定的列</a></li>
-<li><a href="#org4081d14">4.1.2. 查询所有列</a></li>
-<li><a href="#org020ff3c">4.1.3. 为列取别名&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AS">AS</span></span></a></li>
-<li><a href="#orgd5dc980">4.1.4. 常数的查询</a></li>
+<li><a href="#org02cb8ed">3.2.1. 数据类型</a></li>
+<li><a href="#orga4a45f3">3.2.2. 约束</a></li>
 </ul>
 </li>
-<li><a href="#org170f65d">4.2. 筛选</a>
+<li><a href="#org32d6795">3.3. 删除表&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DROP">DROP</span>&#xa0;<span class="TABLE">TABLE</span></span></a></li>
+<li><a href="#org6da99dd">3.4. 更新表的定义&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ALTER">ALTER</span>&#xa0;<span class="TABLE">TABLE</span></span></a>
 <ul>
-<li><a href="#org6f1c850">4.2.1. 去重&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DISTINCT">DISTINCT</span></span></a></li>
-<li><a href="#orgd81af3a">4.2.2. 过滤条件&#xa0;&#xa0;&#xa0;<span class="tag"><span class="WHERE">WHERE</span></span></a></li>
-</ul>
-</li>
-<li><a href="#org430aec3">4.3. 数学运算符</a>
-<ul>
-<li><a href="#org3f722d5">4.3.1. 算术运算符</a></li>
-<li><a href="#org7f72118">4.3.2. 比较运算符</a></li>
-<li><a href="#org059c295">4.3.3. 逻辑运算符&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AND">AND</span>&#xa0;<span class="OR">OR</span>&#xa0;<span class="NOT">NOT</span></span></a></li>
+<li><a href="#orgf5a60e5">3.4.1. 添加列&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ADD">ADD</span>&#xa0;<span class="COLUMN">COLUMN</span></span></a></li>
+<li><a href="#orgcf76982">3.4.2. 删除列&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DROP">DROP</span>&#xa0;<span class="COLUMN">COLUMN</span></span></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org6c06890">5. 分组与聚合</a>
+<li><a href="#org25d8232">4. 查询&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SELECT">SELECT</span></span></a>
 <ul>
-<li><a href="#org2a4bda2">5.1. 聚合函数</a>
+<li><a href="#org5465210">4.1. 列的查询</a>
 <ul>
-<li><a href="#orgced86e5">5.1.1. 常用的聚合函数</a></li>
-<li><a href="#org2cca7c9">5.1.2. 向聚合函数传入互异的参数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DISTINCT">DISTINCT</span></span></a></li>
-<li><a href="#org8a3eccc">5.1.3. 不要在 <code>WHERE</code> 子句中使用聚合函数</a></li>
+<li><a href="#org2dc885d">4.1.1. 查询指定的列</a></li>
+<li><a href="#orga4b9fb0">4.1.2. 查询所有列</a></li>
+<li><a href="#org446e47b">4.1.3. 为列取别名&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AS">AS</span></span></a></li>
+<li><a href="#orgbcc7754">4.1.4. 常数的查询</a></li>
 </ul>
 </li>
-<li><a href="#orgf1f6a29">5.2. 对表进行分组&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUP">GROUP</span>&#xa0;<span class="BY">BY</span></span></a>
+<li><a href="#org03d32b1">4.2. 筛选</a>
 <ul>
-<li><a href="#org403bdd2">5.2.1. 使用 <code>GROUP BY</code> 子句按列汇总数据</a></li>
-<li><a href="#org81795a4">5.2.2. 聚合键是 <code>NULL</code> 的情况</a></li>
-<li><a href="#orgcd4b0c9">5.2.3. 先过滤再分组</a></li>
-<li><a href="#org07eb991">5.2.4. 为聚合结果指定条件&#xa0;&#xa0;&#xa0;<span class="tag"><span class="HAVING">HAVING</span></span></a></li>
+<li><a href="#org03a526c">4.2.1. 去重&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DISTINCT">DISTINCT</span></span></a></li>
+<li><a href="#org2c7c1ef">4.2.2. 过滤条件&#xa0;&#xa0;&#xa0;<span class="tag"><span class="WHERE">WHERE</span></span></a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#orgccfc8b4">6. 排序&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ORDER">ORDER</span>&#xa0;<span class="BY">BY</span></span></a>
+<li><a href="#org451f796">4.3. 数学运算符</a>
 <ul>
-<li><a href="#org4c718d2">6.1. 指定顺序&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ASC">ASC</span>&#xa0;<span class="DESC">DESC</span></span></a></li>
-<li><a href="#orgf4bf564">6.2. 指定多个排序键</a></li>
-<li><a href="#orgaeec7bc">6.3. <code>NULL</code> 的顺序&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span></a></li>
-<li><a href="#orgb356f3f">6.4. 哪些要素可以作为排序键</a>
-<ul>
-<li><a href="#org50723e8">6.4.1. 使用别名作为排序键&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AS">AS</span></span></a></li>
-<li><a href="#org035f6df">6.4.2. <code>SELECT</code> 子句中未包含的列作为排序键</a></li>
-<li><a href="#org2084865">6.4.3. 使用聚合函数作为排序键&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUP">GROUP</span>&#xa0;<span class="BY">BY</span></span></a></li>
-<li><a href="#org76b03af">6.4.4. 不要使用列编号</a></li>
+<li><a href="#orgafc34e5">4.3.1. 算术运算符</a></li>
+<li><a href="#orge05294a">4.3.2. 比较运算符</a></li>
+<li><a href="#org8fdf479">4.3.3. 逻辑运算符&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AND">AND</span>&#xa0;<span class="OR">OR</span>&#xa0;<span class="NOT">NOT</span></span></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orge6ec697">7. 数据更新</a>
+<li><a href="#org057980a">5. 分组与聚合</a>
 <ul>
-<li><a href="#org7e7358e">7.1. 插入新行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="INSERT">INSERT</span>&#xa0;<span class="INTO">INTO</span></span></a>
+<li><a href="#orgdcaa791">5.1. 聚合函数</a>
 <ul>
-<li><a href="#org4ec8617">7.1.1. 插入时指定各列的值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="VALUES">VALUES</span></span></a></li>
-<li><a href="#orgb4f1d15">7.1.2. 复制给定表中的行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SELECT">SELECT</span></span></a></li>
+<li><a href="#orgdef93fa">5.1.1. 常用的聚合函数</a></li>
+<li><a href="#org1292ea6">5.1.2. 向聚合函数传入互异的参数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DISTINCT">DISTINCT</span></span></a></li>
+<li><a href="#org9867c7b">5.1.3. 不要在 <code>WHERE</code> 子句中使用聚合函数</a></li>
 </ul>
 </li>
-<li><a href="#org910ce01">7.2. 删除旧行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DELETE">DELETE</span></span></a></li>
-<li><a href="#orga154e00">7.3. 修改旧行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="UPDATE">UPDATE</span>&#xa0;<span class="SET">SET</span></span></a>
+<li><a href="#org5635d3b">5.2. 对表进行分组&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUP">GROUP</span>&#xa0;<span class="BY">BY</span></span></a>
 <ul>
-<li><a href="#orgff5c313">7.3.1. <code>NULL</code> 清空&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span></a></li>
-<li><a href="#org142fe54">7.3.2. 多列更新</a></li>
-</ul>
-</li>
-<li><a href="#orgd335f9c">7.4. Transaction&#xa0;&#xa0;&#xa0;<span class="tag"><span class="TRANSACTION">TRANSACTION</span></span></a>
-<ul>
-<li><a href="#orgebb3c65">7.4.1. 创建 transaction&#xa0;&#xa0;&#xa0;<span class="tag"><span class="BEGIN">BEGIN</span>&#xa0;<span class="START">START</span>&#xa0;<span class="COMMIT">COMMIT</span>&#xa0;<span class="ROLLBACK">ROLLBACK</span></span></a></li>
-<li><a href="#org7c3e921">7.4.2. 自动提交模式</a></li>
-<li><a href="#orgbb24902">7.4.3. Consistency of Transaction</a></li>
-<li><a href="#org3908c27">7.4.4. Isolation of Transaction</a></li>
-<li><a href="#org0ca87c0">7.4.5. Durability of Transaction</a></li>
+<li><a href="#orgc2ff528">5.2.1. 使用 <code>GROUP BY</code> 子句按列汇总数据</a></li>
+<li><a href="#orgcc296f2">5.2.2. 聚合键是 <code>NULL</code> 的情况</a></li>
+<li><a href="#org7a86831">5.2.3. 先过滤再分组</a></li>
+<li><a href="#org340ef12">5.2.4. 为聚合结果指定条件&#xa0;&#xa0;&#xa0;<span class="tag"><span class="HAVING">HAVING</span></span></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org481c46f">8. 视图&#xa0;&#xa0;&#xa0;<span class="tag"><span class="VIEW">VIEW</span></span></a>
+<li><a href="#org0fb4714">6. 排序&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ORDER">ORDER</span>&#xa0;<span class="BY">BY</span></span></a>
 <ul>
-<li><a href="#org75f8efa">8.1. 视图的创建与查询&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CREATE">CREATE</span>&#xa0;<span class="AS">AS</span></span></a></li>
-<li><a href="#org75172c2">8.2. 更新视图中的数据行</a></li>
-<li><a href="#org15ef8c9">8.3. 删除视图&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DROP">DROP</span></span></a></li>
-</ul>
-</li>
-<li><a href="#org93c1359">9. 子查询</a>
+<li><a href="#orge2c6265">6.1. 指定顺序&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ASC">ASC</span>&#xa0;<span class="DESC">DESC</span></span></a></li>
+<li><a href="#orgfad2101">6.2. 指定多个排序键</a></li>
+<li><a href="#org188afda">6.3. <code>NULL</code> 的顺序&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span></a></li>
+<li><a href="#orga07eed1">6.4. 哪些要素可以作为排序键</a>
 <ul>
-<li><a href="#org686b6bb">9.1. 标量子查询</a></li>
-<li><a href="#org77fcec5">9.2. 关联子查询&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AS">AS</span></span></a>
-<ul>
-<li><a href="#orge30b78f">9.2.1. 关联名称的作用域</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orgbe24934">10. 函数</a>
-<ul>
-<li><a href="#orgba0baa3">10.1. 算术函数</a>
-<ul>
-<li><a href="#org23d1505">10.1.1. <code>ABS</code> 函数</a></li>
-<li><a href="#org8e35ae0">10.1.2. <code>MOD</code> 函数</a></li>
-<li><a href="#orge0af4e3">10.1.3. <code>ROUND</code> 函数</a></li>
-</ul>
-</li>
-<li><a href="#orgdce9c0c">10.2. <code>[20%]</code> 字符串函数</a>
-<ul>
-<li><a href="#org4bb9cec">10.2.1. <span class="done DONE">DONE</span> 拼接字符串&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CONCAT">CONCAT</span></span></a></li>
-<li><a href="#orgc16941e">10.2.2. <span class="todo TODO">TODO</span> 获取字符串长度&#xa0;&#xa0;&#xa0;<span class="tag"><span class="LENGTH">LENGTH</span></span></a></li>
-<li><a href="#org1864f4e">10.2.3. <span class="todo TODO">TODO</span> 大小写转换&#xa0;&#xa0;&#xa0;<span class="tag"><span class="LOWER">LOWER</span>&#xa0;<span class="UPPER">UPPER</span></span></a></li>
-<li><a href="#org214f392">10.2.4. <span class="todo TODO">TODO</span> 文本替换&#xa0;&#xa0;&#xa0;<span class="tag"><span class="REPLACE">REPLACE</span></span></a></li>
-<li><a href="#orgf13a694">10.2.5. <span class="todo TODO">TODO</span> 字符串的子串&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SUBSTRING">SUBSTRING</span></span></a></li>
-</ul>
-</li>
-<li><a href="#orgfa4bd15">10.3. <code>[0%]</code> 日期函数</a>
-<ul>
-<li><a href="#org24cf0ca">10.3.1. <span class="todo TODO">TODO</span> 获取当前日期&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CURRENT_DATE">CURRENT_DATE</span></span></a></li>
-<li><a href="#orgd836ca5">10.3.2. <span class="todo TODO">TODO</span> 获取当前时间&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CURRENT_TIME">CURRENT_TIME</span></span></a></li>
-<li><a href="#orgedc1848">10.3.3. <span class="todo TODO">TODO</span> 获取当前时间戳&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</span></span></a></li>
-<li><a href="#orgce9cf82">10.3.4. <span class="todo TODO">TODO</span> 提取指定时间单位的值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="EXTRACT">EXTRACT</span></span></a></li>
-</ul>
-</li>
-<li><a href="#orgab87fb8">10.4. 转换函数</a>
-<ul>
-<li><a href="#org47fb2e6">10.4.1. 数据类型的转换&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CAST">CAST</span></span></a></li>
-<li><a href="#org60d5a68">10.4.2. 返回第一个 non-<code>NULL</code> 值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="COALESCE">COALESCE</span></span></a></li>
+<li><a href="#org2b6b9cd">6.4.1. 使用别名作为排序键&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AS">AS</span></span></a></li>
+<li><a href="#orga099190">6.4.2. <code>SELECT</code> 子句中未包含的列作为排序键</a></li>
+<li><a href="#orga818051">6.4.3. 使用聚合函数作为排序键&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUP">GROUP</span>&#xa0;<span class="BY">BY</span></span></a></li>
+<li><a href="#orgf1b6a1f">6.4.4. 不要使用列编号</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org2a45702">11. 谓词</a>
+<li><a href="#org8ab953e">7. 数据更新</a>
 <ul>
-<li><a href="#orgc30ab02">11.1. 字符串的模式匹配&#xa0;&#xa0;&#xa0;<span class="tag"><span class="LIKE">LIKE</span></span></a>
+<li><a href="#orgee62a72">7.1. 插入新行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="INSERT">INSERT</span>&#xa0;<span class="INTO">INTO</span></span></a>
 <ul>
-<li><a href="#org9df5ea3">11.1.1. 视为任意文本的通配符</a></li>
-<li><a href="#org383d81e">11.1.2. 视为单一字符的通配符</a></li>
+<li><a href="#org6299c72">7.1.1. 插入时指定各列的值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="VALUES">VALUES</span></span></a></li>
+<li><a href="#orgbfbf328">7.1.2. 复制给定表中的行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SELECT">SELECT</span></span></a></li>
 </ul>
 </li>
-<li><a href="#org4172234">11.2. 值是否在​<i>闭区间</i>​内&#xa0;&#xa0;&#xa0;<span class="tag"><span class="BETWEEN">BETWEEN</span></span></a></li>
-<li><a href="#org8cbe8e6">11.3. 值是否为 <code>NULL</code>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="IS">IS</span>&#xa0;<span class="NOT">NOT</span>&#xa0;<span class="NULL">NULL</span></span></a></li>
-<li><a href="#org1eb7326">11.4. 值是否在集合中&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NOT">NOT</span>&#xa0;<span class="IN">IN</span></span></a>
+<li><a href="#orgb5bd05f">7.2. 删除旧行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DELETE">DELETE</span></span></a></li>
+<li><a href="#orgee21396">7.3. 修改旧行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="UPDATE">UPDATE</span>&#xa0;<span class="SET">SET</span></span></a>
 <ul>
-<li><a href="#org09fa8b3">11.4.1. <code>IN</code> 无法判断值是否为 <code>NULL</code>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span></a></li>
-<li><a href="#org8944ac9">11.4.2. 将​<i>子查询</i>​作为 <code>IN</code> 的宾语&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SELECT">SELECT</span></span></a></li>
+<li><a href="#orgfa68760">7.3.1. <code>NULL</code> 清空&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span></a></li>
+<li><a href="#orgf486aef">7.3.2. 多列更新</a></li>
 </ul>
 </li>
-<li><a href="#orgfda6f6d">11.5. 表中是否存在记录&#xa0;&#xa0;&#xa0;<span class="tag"><span class="EXISTS">EXISTS</span></span></a></li>
-</ul>
-</li>
-<li><a href="#org68a567a">12. 条件分支&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CASE">CASE</span>&#xa0;<span class="WHEN">WHEN</span>&#xa0;<span class="THEN">THEN</span>&#xa0;<span class="ELSE">ELSE</span>&#xa0;<span class="END">END</span></span></a>
+<li><a href="#org9f9e6ec">7.4. Transaction&#xa0;&#xa0;&#xa0;<span class="tag"><span class="TRANSACTION">TRANSACTION</span></span></a>
 <ul>
-<li><a href="#orgd271301">12.1. 搜索型 <code>CASE</code> 表达式</a></li>
-<li><a href="#org909bcf2">12.2. 简单 <code>CASE</code> 表达式</a></li>
-<li><a href="#orga73e3e4">12.3. <span class="todo TODO">TODO</span> <span class="priority">[C]</span> 某些方言特有的条件分支&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DECODE">DECODE</span>&#xa0;<span class="IF">IF</span></span></a></li>
+<li><a href="#org15afe62">7.4.1. 创建 transaction&#xa0;&#xa0;&#xa0;<span class="tag"><span class="BEGIN">BEGIN</span>&#xa0;<span class="START">START</span>&#xa0;<span class="COMMIT">COMMIT</span>&#xa0;<span class="ROLLBACK">ROLLBACK</span></span></a></li>
+<li><a href="#orgcace3c3">7.4.2. 自动提交模式</a></li>
+<li><a href="#org73c8778">7.4.3. Consistency of Transaction</a></li>
+<li><a href="#orgf8efe8c">7.4.4. Isolation of Transaction</a></li>
+<li><a href="#org7ce901e">7.4.5. Durability of Transaction</a></li>
 </ul>
 </li>
-<li><a href="#orgc4a90e4">13. 集合运算</a>
+</ul>
+</li>
+<li><a href="#orgf895e69">8. 视图&#xa0;&#xa0;&#xa0;<span class="tag"><span class="VIEW">VIEW</span></span></a>
 <ul>
-<li><a href="#org1e1ae96">13.1. 表的加减法</a>
+<li><a href="#orged5998a">8.1. 视图的创建与查询&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CREATE">CREATE</span>&#xa0;<span class="AS">AS</span></span></a></li>
+<li><a href="#org20f6e5c">8.2. 更新视图中的数据行</a></li>
+<li><a href="#orgfe8b307">8.3. 删除视图&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DROP">DROP</span></span></a></li>
+</ul>
+</li>
+<li><a href="#org57c5bd8">9. 子查询</a>
 <ul>
-<li><a href="#orgf45144c">13.1.1. 表的加法&#xa0;&#xa0;&#xa0;<span class="tag"><span class="UNION">UNION</span></span></a></li>
-<li><a href="#org1c3f7cb">13.1.2. 选取同时出现在多张表中的行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="INTERSECT">INTERSECT</span></span></a></li>
-<li><a href="#orgb3ecc8a">13.1.3. 排除也出现在其它表中的行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="EXCEPT">EXCEPT</span>&#xa0;<span class="MINUS">MINUS</span></span></a></li>
-</ul>
-</li>
-<li><a href="#org0e80081">13.2. 联结: 表的多种乘法&#xa0;&#xa0;&#xa0;<span class="tag"><span class="JOIN">JOIN</span>&#xa0;<span class="ON">ON</span></span></a>
+<li><a href="#org7ab945f">9.1. 标量子查询</a></li>
+<li><a href="#orgb5febe6">9.2. 关联子查询&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AS">AS</span></span></a>
 <ul>
-<li><a href="#org1334b96">13.2.1. 内联结&#xa0;&#xa0;&#xa0;<span class="tag"><span class="INNER">INNER</span></span></a></li>
-<li><a href="#orgbc0f4b4">13.2.2. 外联结&#xa0;&#xa0;&#xa0;<span class="tag"><span class="OUTER">OUTER</span>&#xa0;<span class="LEFT">LEFT</span>&#xa0;<span class="RIGHT">RIGHT</span></span></a></li>
-<li><a href="#orgb066d5f">13.2.3. 交叉联结&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CROSS">CROSS</span></span></a></li>
-<li><a href="#org1730ffc">13.2.4. 联结三张以上的表</a></li>
+<li><a href="#org1535873">9.2.1. 关联名称的作用域</a></li>
 </ul>
 </li>
-<li><a href="#orgdcf1f81">13.3. <span class="todo TODO">TODO</span> 关系代数中的除法操作</a></li>
 </ul>
 </li>
+<li><a href="#org3e42fa2">10. 函数</a>
+<ul>
+<li><a href="#org8dd4cac">10.1. 算术函数</a>
+<ul>
+<li><a href="#org443ea20">10.1.1. <code>ABS</code> 函数</a></li>
+<li><a href="#org2e1510a">10.1.2. <code>MOD</code> 函数</a></li>
+<li><a href="#orgdf65b32">10.1.3. <code>ROUND</code> 函数</a></li>
+</ul>
+</li>
+<li><a href="#org1e161de">10.2. <code>[20%]</code> 字符串函数</a>
+<ul>
+<li><a href="#org465fccb">10.2.1. <span class="done DONE">DONE</span> 拼接字符串&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CONCAT">CONCAT</span></span></a></li>
+<li><a href="#orgc1c612c">10.2.2. <span class="todo TODO">TODO</span> 获取字符串长度&#xa0;&#xa0;&#xa0;<span class="tag"><span class="LENGTH">LENGTH</span></span></a></li>
+<li><a href="#org7829d98">10.2.3. <span class="todo TODO">TODO</span> 大小写转换&#xa0;&#xa0;&#xa0;<span class="tag"><span class="LOWER">LOWER</span>&#xa0;<span class="UPPER">UPPER</span></span></a></li>
+<li><a href="#orgfbed08a">10.2.4. <span class="todo TODO">TODO</span> 文本替换&#xa0;&#xa0;&#xa0;<span class="tag"><span class="REPLACE">REPLACE</span></span></a></li>
+<li><a href="#orgc406b15">10.2.5. <span class="todo TODO">TODO</span> 字符串的子串&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SUBSTRING">SUBSTRING</span></span></a></li>
+</ul>
+</li>
+<li><a href="#orga7cf514">10.3. <code>[0%]</code> 日期函数</a>
+<ul>
+<li><a href="#orged086d0">10.3.1. <span class="todo TODO">TODO</span> 获取当前日期&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CURRENT_DATE">CURRENT_DATE</span></span></a></li>
+<li><a href="#org10b570d">10.3.2. <span class="todo TODO">TODO</span> 获取当前时间&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CURRENT_TIME">CURRENT_TIME</span></span></a></li>
+<li><a href="#orge2b8e2e">10.3.3. <span class="todo TODO">TODO</span> 获取当前时间戳&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</span></span></a></li>
+<li><a href="#org2a28659">10.3.4. <span class="todo TODO">TODO</span> 提取指定时间单位的值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="EXTRACT">EXTRACT</span></span></a></li>
+</ul>
+</li>
+<li><a href="#org3c27e5a">10.4. 转换函数</a>
+<ul>
+<li><a href="#orgb55c47f">10.4.1. 数据类型的转换&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CAST">CAST</span></span></a></li>
+<li><a href="#orgbb29faf">10.4.2. 返回第一个 non-<code>NULL</code> 值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="COALESCE">COALESCE</span></span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgad64dd8">11. 谓词</a>
+<ul>
+<li><a href="#org4adf697">11.1. 字符串的模式匹配&#xa0;&#xa0;&#xa0;<span class="tag"><span class="LIKE">LIKE</span></span></a>
+<ul>
+<li><a href="#org48cdda0">11.1.1. 视为任意文本的通配符</a></li>
+<li><a href="#orgc3ee8a9">11.1.2. 视为单一字符的通配符</a></li>
+</ul>
+</li>
+<li><a href="#org37da489">11.2. 值是否在​<i>闭区间</i>​内&#xa0;&#xa0;&#xa0;<span class="tag"><span class="BETWEEN">BETWEEN</span></span></a></li>
+<li><a href="#orgdcc5c11">11.3. 值是否为 <code>NULL</code>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="IS">IS</span>&#xa0;<span class="NOT">NOT</span>&#xa0;<span class="NULL">NULL</span></span></a></li>
+<li><a href="#org3602c5e">11.4. 值是否在集合中&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NOT">NOT</span>&#xa0;<span class="IN">IN</span></span></a>
+<ul>
+<li><a href="#orgae0f611">11.4.1. <code>IN</code> 无法判断值是否为 <code>NULL</code>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span></a></li>
+<li><a href="#org7d2cff3">11.4.2. 将​<i>子查询</i>​作为 <code>IN</code> 的宾语&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SELECT">SELECT</span></span></a></li>
+</ul>
+</li>
+<li><a href="#org35179bd">11.5. 表中是否存在记录&#xa0;&#xa0;&#xa0;<span class="tag"><span class="EXISTS">EXISTS</span></span></a></li>
+</ul>
+</li>
+<li><a href="#org268c007">12. 条件分支&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CASE">CASE</span>&#xa0;<span class="WHEN">WHEN</span>&#xa0;<span class="THEN">THEN</span>&#xa0;<span class="ELSE">ELSE</span>&#xa0;<span class="END">END</span></span></a>
+<ul>
+<li><a href="#orga214a6f">12.1. 搜索型 <code>CASE</code> 表达式</a></li>
+<li><a href="#orgf8fc670">12.2. 简单 <code>CASE</code> 表达式</a></li>
+<li><a href="#org5a062be">12.3. <span class="todo TODO">TODO</span> <span class="priority">[C]</span> 某些方言特有的条件分支&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DECODE">DECODE</span>&#xa0;<span class="IF">IF</span></span></a></li>
+</ul>
+</li>
+<li><a href="#org8ae13b8">13. 多表查询</a>
+<ul>
+<li><a href="#orgf6c1acc">13.1. 表的加减法</a>
+<ul>
+<li><a href="#org5a47a80">13.1.1. 表的加法&#xa0;&#xa0;&#xa0;<span class="tag"><span class="UNION">UNION</span></span></a></li>
+<li><a href="#orge2fd598">13.1.2. 选取同时出现在多张表中的行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="INTERSECT">INTERSECT</span></span></a></li>
+<li><a href="#org7dc04a9">13.1.3. 排除也出现在其它表中的行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="EXCEPT">EXCEPT</span>&#xa0;<span class="MINUS">MINUS</span></span></a></li>
+</ul>
+</li>
+<li><a href="#org5de1fba">13.2. 联结: 表的多种乘法&#xa0;&#xa0;&#xa0;<span class="tag"><span class="JOIN">JOIN</span>&#xa0;<span class="ON">ON</span></span></a>
+<ul>
+<li><a href="#org528d214">13.2.1. 内联结&#xa0;&#xa0;&#xa0;<span class="tag"><span class="INNER">INNER</span></span></a></li>
+<li><a href="#orgd0f329f">13.2.2. 外联结&#xa0;&#xa0;&#xa0;<span class="tag"><span class="OUTER">OUTER</span>&#xa0;<span class="LEFT">LEFT</span>&#xa0;<span class="RIGHT">RIGHT</span></span></a></li>
+<li><a href="#org66e8c61">13.2.3. 交叉联结&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CROSS">CROSS</span></span></a></li>
+<li><a href="#org8ab9817">13.2.4. 联结三张以上的表</a></li>
+</ul>
+</li>
+<li><a href="#org34daf22">13.3. 关系代数中的除法操作</a></li>
+</ul>
+</li>
+<li><a href="#org8d6bcdc">14. OLAP</a>
+<ul>
+<li><a href="#org45d6351">14.1. 窗口函数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="OVER">OVER</span>&#xa0;<span class="PARTITION">PARTITION</span>&#xa0;<span class="BY">BY</span>&#xa0;<span class="ORDER">ORDER</span>&#xa0;<span class="BY">BY</span>&#xa0;<span class="ASC">ASC</span>&#xa0;<span class="DESC">DESC</span></span></a>
+<ul>
+<li><a href="#org364ffb5">14.1.1. <span class="priority">[A]</span> 专用窗口函数</a></li>
+<li><a href="#org2a22977">14.1.2. <span class="priority">[B]</span> 书写​<i>窗口函数</i>​的位置</a></li>
+<li><a href="#org3917782">14.1.3. <span class="priority">[A]</span> <i>聚合函数</i>​充当窗口函数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="COUNT">COUNT</span>&#xa0;<span class="AVG">AVG</span>&#xa0;<span class="SUM">SUM</span>&#xa0;<span class="MIN">MIN</span>&#xa0;<span class="MAX">MAX</span></span></a></li>
+</ul>
+</li>
+<li><a href="#org4ecd3f5">14.2. 大分组复用小分组&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUP">GROUP</span>&#xa0;<span class="BY">BY</span></span></a>
+<ul>
+<li><a href="#org909b31a">14.2.1. 由小计得出合计&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ROLLUP">ROLLUP</span></span></a></li>
+<li><a href="#orgbc41f1d">14.2.2. 超级分组记录&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUPING">GROUPING</span></span></a></li>
+<li><a href="#orgf2e1aad">14.2.3. &vert;幂集&vert;个分组方式&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CUBE">CUBE</span></span></a></li>
+<li><a href="#org4142a14">14.2.4. 每种分组仅参考单个​<i>聚合键</i>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUPING">GROUPING</span>&#xa0;<span class="SETS">SETS</span></span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org5d39941">15. <span class="todo TODO">TODO</span> 应用程序通过 API 访问 RDBMS</a></li>
 </ul>
 </div>
 </div>
 <p>
 
 </p>
-<div id="outline-container-orgbcc7ee6" class="outline-2">
-<h2 id="orgbcc7ee6"><span class="section-number-2">1.</span> 使用 <code>psql</code></h2>
+<div id="outline-container-org7aff0f7" class="outline-2">
+<h2 id="org7aff0f7"><span class="section-number-2">1.</span> 使用 <code>psql</code></h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org1e46e51" class="outline-3">
-<h3 id="org1e46e51"><span class="section-number-3">1.1.</span> 打开 <code>psql</code></h3>
+<div id="outline-container-orgf773375" class="outline-3">
+<h3 id="orgf773375"><span class="section-number-3">1.1.</span> 打开 <code>psql</code></h3>
 <div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;1&nbsp; </span>运行安装时自带的 <code>runpsql.bat</code> (以 MS-Windows 为例)</label><pre class="src src-pwsh">PS C:/Users/shynur&gt; ./bin/PostgreSQL/16/scripts/runpsql.bat
@@ -480,8 +500,8 @@
 </div>
 </div>
 
-<div id="outline-container-org52f659d" class="outline-3">
-<h3 id="org52f659d"><span class="section-number-3">1.2.</span> 退出 <code>psql</code></h3>
+<div id="outline-container-org6b06dbd" class="outline-3">
+<h3 id="org6b06dbd"><span class="section-number-3">1.2.</span> 退出 <code>psql</code></h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 可直接叉掉窗口, 或
@@ -494,8 +514,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgf7643a4" class="outline-3">
-<h3 id="orgf7643a4"><span class="section-number-3">1.3.</span> <span class="todo TODO">TODO</span> <code>psql</code> 命令</h3>
+<div id="outline-container-org39a80de" class="outline-3">
+<h3 id="org39a80de"><span class="section-number-3">1.3.</span> <span class="todo TODO">TODO</span> <code>psql</code> 命令</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 这些命令以 <code>\</code> 开头.
@@ -509,16 +529,16 @@
 </div>
 </div>
 
-<div id="outline-container-org2b1d14e" class="outline-2">
-<h2 id="org2b1d14e"><span class="section-number-2">2.</span> SQL 概要</h2>
+<div id="outline-container-org753a6ff" class="outline-2">
+<h2 id="org753a6ff"><span class="section-number-2">2.</span> SQL 概要</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org19490a3" class="outline-3">
-<h3 id="org19490a3"><span class="section-number-3">2.1.</span> 三类语句</h3>
+<div id="outline-container-org6e4c3e5" class="outline-3">
+<h3 id="org6e4c3e5"><span class="section-number-3">2.1.</span> 三类语句</h3>
 <div class="outline-text-3" id="text-2-1">
 </div>
-<div id="outline-container-orga752866" class="outline-4">
-<h4 id="orga752866"><span class="section-number-4">2.1.1.</span> DDL<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup></h4>
+<div id="outline-container-orged39953" class="outline-4">
+<h4 id="orged39953"><span class="section-number-4">2.1.1.</span> DDL<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup></h4>
 <div class="outline-text-4" id="text-2-1-1">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -548,8 +568,8 @@
 </div>
 </div>
 
-<div id="outline-container-org7aea9b5" class="outline-4">
-<h4 id="org7aea9b5"><span class="section-number-4">2.1.2.</span> DML<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup></h4>
+<div id="outline-container-org55d3889" class="outline-4">
+<h4 id="org55d3889"><span class="section-number-4">2.1.2.</span> DML<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup></h4>
 <div class="outline-text-4" id="text-2-1-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -583,8 +603,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgc996d19" class="outline-4">
-<h4 id="orgc996d19"><span class="section-number-4">2.1.3.</span> DCL<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup></h4>
+<div id="outline-container-org0262858" class="outline-4">
+<h4 id="org0262858"><span class="section-number-4">2.1.3.</span> DCL<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup></h4>
 <div class="outline-text-4" id="text-2-1-3">
 <ul class="org-ul">
 <li><p>
@@ -643,8 +663,8 @@
 </div>
 </div>
 
-<div id="outline-container-org6496bbb" class="outline-3">
-<h3 id="org6496bbb"><span class="section-number-3">2.2.</span> 基本书写规则</h3>
+<div id="outline-container-org11e1c40" class="outline-3">
+<h3 id="org11e1c40"><span class="section-number-3">2.2.</span> 基本书写规则</h3>
 <div class="outline-text-3" id="text-2-2">
 <ul class="org-ul">
 <li>语句以 分号 (‘​<code>;</code>​’) 结尾</li>
@@ -653,8 +673,8 @@
 </div>
 </div>
 
-<div id="outline-container-org59a2ff1" class="outline-3">
-<h3 id="org59a2ff1"><span class="section-number-3">2.3.</span> 命名约定</h3>
+<div id="outline-container-org7677397" class="outline-3">
+<h3 id="org7677397"><span class="section-number-3">2.3.</span> 命名约定</h3>
 <div class="outline-text-3" id="text-2-3">
 <ul class="org-ul">
 <li>数据库的名字, 表名, 和列名 只能使用:
@@ -669,16 +689,16 @@
 </div>
 </div>
 
-<div id="outline-container-org9c26e5a" class="outline-3">
-<h3 id="org9c26e5a"><span class="section-number-3">2.4.</span> 注释</h3>
+<div id="outline-container-orga9ec893" class="outline-3">
+<h3 id="orga9ec893"><span class="section-number-3">2.4.</span> 注释</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 名副其实, 注释对 SQL 的执行没有任何影响.
 </p>
 </div>
 
-<div id="outline-container-org175e8d1" class="outline-4">
-<h4 id="org175e8d1"><span class="section-number-4">2.4.1.</span> 行尾注释</h4>
+<div id="outline-container-org97490ab" class="outline-4">
+<h4 id="org97490ab"><span class="section-number-4">2.4.1.</span> 行尾注释</h4>
 <div class="outline-text-4" id="text-2-4-1">
 <p>
 该类注释以 <code>--</code> 打头<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>, e.g.,
@@ -692,11 +712,11 @@
 </div>
 </div>
 
-<div id="outline-container-orgd44bc05" class="outline-4">
-<h4 id="orgd44bc05"><span class="section-number-4">2.4.2.</span> 块注释</h4>
+<div id="outline-container-org22f59c5" class="outline-4">
+<h4 id="org22f59c5"><span class="section-number-4">2.4.2.</span> 块注释</h4>
 <div class="outline-text-4" id="text-2-4-2">
 <p>
-该类注释被成对的 <code>/*</code>​&amp;​<code>*/</code> 包裹, e.g.,
+该类注释被成对的 <code>/*</code> &amp; <code>*/</code> 包裹, e.g.,
 </p>
 
 <div class="org-src-container">
@@ -711,12 +731,12 @@
 </div>
 </div>
 
-<div id="outline-container-orge17ef96" class="outline-2">
-<h2 id="orge17ef96"><span class="section-number-2">3.</span> 创建数据库与表</h2>
+<div id="outline-container-orge036863" class="outline-2">
+<h2 id="orge036863"><span class="section-number-2">3.</span> 创建数据库与表</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgb7d5754" class="outline-3">
-<h3 id="orgb7d5754"><span class="section-number-3">3.1.</span> 数据库的创建&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CRAETE">CRAETE</span>&#xa0;<span class="DATABASE">DATABASE</span></span></h3>
+<div id="outline-container-org28c5512" class="outline-3">
+<h3 id="org28c5512"><span class="section-number-3">3.1.</span> 数据库的创建&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CRAETE">CRAETE</span>&#xa0;<span class="DATABASE">DATABASE</span></span></h3>
 <div class="outline-text-3" id="text-3-1">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;3&nbsp; </span>创建名为“shop”的数据库.</label><pre class="src src-sql"><span style="color: #5317ac;">CREATE</span> DATABASE shop;
@@ -725,8 +745,8 @@
 </div>
 </div>
 
-<div id="outline-container-org22bb916" class="outline-3">
-<h3 id="org22bb916"><span class="section-number-3">3.2.</span> 表的创建&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CREATE">CREATE</span>&#xa0;<span class="TABLE">TABLE</span></span></h3>
+<div id="outline-container-org6caa61f" class="outline-3">
+<h3 id="org6caa61f"><span class="section-number-3">3.2.</span> 表的创建&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CREATE">CREATE</span>&#xa0;<span class="TABLE">TABLE</span></span></h3>
 <div class="outline-text-3" id="text-3-2">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;4&nbsp; </span>在数据库“shop”中创建名为“Products”的表.</label><pre class="src src-sql"><span style="color: #5317ac;">CREATE</span> <span style="color: #5317ac;">TABLE</span> <span style="color: #721045;">Products</span> <span style="color: #000000;">(</span>
@@ -748,7 +768,7 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sql" id="org397a539"><span style="color: #5317ac;">BEGIN</span> <span style="color: #5317ac;">TRANSACTION</span>;     <span style="color: #505050;">/* product_id         product_type    purchase_price</span>
+<pre class="src src-sql" id="orgfcc74fc"><span style="color: #5317ac;">BEGIN</span> <span style="color: #5317ac;">TRANSACTION</span>;     <span style="color: #505050;">/* product_id         product_type    purchase_price</span>
 <span style="color: #505050;">                              |   product_name    |    sale_price  |   regist_date */</span>
 <span style="color: #5317ac;">INSERT</span> <span style="color: #5317ac;">INTO</span> Products <span style="color: #5317ac;">VALUES</span><span style="color: #000000;">(</span><span style="color: #2544bb;">'0001'</span>, <span style="color: #2544bb;">'T&#24676;&#34923;'</span>  , <span style="color: #2544bb;">'&#34915;&#26381;'</span>    , 1000,  500, <span style="color: #2544bb;">'2009-09-20'</span><span style="color: #000000;">)</span>;
 <span style="color: #5317ac;">INSERT</span> <span style="color: #5317ac;">INTO</span> Products <span style="color: #5317ac;">VALUES</span><span style="color: #000000;">(</span><span style="color: #2544bb;">'0002'</span>, <span style="color: #2544bb;">'&#25171;&#23380;&#22120;'</span> , <span style="color: #2544bb;">'&#21150;&#20844;&#29992;&#21697;'</span>,  500,  320, <span style="color: #2544bb;">'2009-09-11'</span><span style="color: #000000;">)</span>;
@@ -763,12 +783,12 @@
 </div>
 </div>
 
-<div id="outline-container-org2ca5626" class="outline-4">
-<h4 id="org2ca5626"><span class="section-number-4">3.2.1.</span> 数据类型</h4>
+<div id="outline-container-org02cb8ed" class="outline-4">
+<h4 id="org02cb8ed"><span class="section-number-4">3.2.1.</span> 数据类型</h4>
 <div class="outline-text-4" id="text-3-2-1">
 </div>
 <ol class="org-ol">
-<li><a id="org8c05af8"></a>INTEGER<br />
+<li><a id="org29e4de1"></a>INTEGER<br />
 <div class="outline-text-5" id="text-3-2-1-1">
 <p>
 存储整数.
@@ -776,7 +796,7 @@
 </div>
 </li>
 
-<li><a id="orgddd4f30"></a>CHAR<br />
+<li><a id="org0a77ba9"></a>CHAR<br />
 <div class="outline-text-5" id="text-3-2-1-2">
 <p>
 存储​<b>定长字符串</b>, 用法: <code>CHAR(最大长度)</code>.
@@ -790,16 +810,16 @@ E.g., 向 <code>CHAR(3)</code> 类型的列中输入 <code>'ab'</code> 时, 实�
 </div>
 </li>
 
-<li><a id="orgbb9f2ed"></a><a id="org461491d"></a>VARCHAR<sup><a id="fnr.7" class="footref" href="#fn.7" role="doc-backlink">7</a></sup><br />
+<li><a id="org91c3100"></a><a id="orgcb8d271"></a>VARCHAR<sup><a id="fnr.7" class="footref" href="#fn.7" role="doc-backlink">7</a></sup><br />
 <div class="outline-text-5" id="text-3-2-1-3">
 <p>
-存储​<b>变长字符串</b>, 和 <a href="#orgddd4f30">CHAR</a> 型的区别是: <b>不会</b>​使用​<span class="underline">空格</span>​补足.
+存储​<b>变长字符串</b>, 和 <a href="#org0a77ba9">CHAR</a> 型的区别是: <b>不会</b>​使用​<span class="underline">空格</span>​补足.
 E.g., 向 <code>VARCHAR(3)</code> 类型的列中输入 <code>'ab'</code> 时, 实际存储的还是它.
 </p>
 </div>
 </li>
 
-<li><a id="org68a54e0"></a>DATE<br />
+<li><a id="org07600b7"></a>DATE<br />
 <div class="outline-text-5" id="text-3-2-1-4">
 <p>
 存储​<span class="underline">年月日</span><sup><a id="fnr.9" class="footref" href="#fn.9" role="doc-backlink">9</a></sup>.
@@ -809,12 +829,12 @@ E.g., 向 <code>VARCHAR(3)</code> 类型的列中输入 <code>'ab'</code> 时, �
 </ol>
 </div>
 
-<div id="outline-container-org80fdc7b" class="outline-4">
-<h4 id="org80fdc7b"><span class="section-number-4">3.2.2.</span> 约束</h4>
+<div id="outline-container-orga4a45f3" class="outline-4">
+<h4 id="orga4a45f3"><span class="section-number-4">3.2.2.</span> 约束</h4>
 <div class="outline-text-4" id="text-3-2-2">
 </div>
 <ol class="org-ol">
-<li><a id="org349c98d"></a><code>NULL</code><br />
+<li><a id="org2f395b8"></a><code>NULL</code><br />
 <div class="outline-text-5" id="text-3-2-2-1">
 <p>
 能否输入空白.
@@ -822,7 +842,7 @@ E.g., 向 <code>VARCHAR(3)</code> 类型的列中输入 <code>'ab'</code> 时, �
 </div>
 </li>
 
-<li><a id="org0cdc4c1"></a><code>KEY</code><br />
+<li><a id="org88ac45c"></a><code>KEY</code><br />
 <div class="outline-text-5" id="text-3-2-2-2">
 <p>
 所谓键, 就是在指定特定数据时使用的列的组合.
@@ -830,14 +850,14 @@ E.g., 向 <code>VARCHAR(3)</code> 类型的列中输入 <code>'ab'</code> 时, �
 </div>
 
 <ol class="org-ol">
-<li><a id="orgb9eeacf"></a><code>PRIMARY KEY</code><br /></li>
+<li><a id="orgb067698"></a><code>PRIMARY KEY</code><br /></li>
 </ol>
 </li>
 </ol>
 </div>
 </div>
-<div id="outline-container-org5675572" class="outline-3">
-<h3 id="org5675572"><span class="section-number-3">3.3.</span> 删除表&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DROP">DROP</span>&#xa0;<span class="TABLE">TABLE</span></span></h3>
+<div id="outline-container-org32d6795" class="outline-3">
+<h3 id="org32d6795"><span class="section-number-3">3.3.</span> 删除表&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DROP">DROP</span>&#xa0;<span class="TABLE">TABLE</span></span></h3>
 <div class="outline-text-3" id="text-3-3">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;5&nbsp; </span>删除“Products”表</label><pre class="src src-sql"><span style="color: #5317ac;">DROP</span> <span style="color: #5317ac;">TABLE</span> <span style="color: #721045;">Products</span>;
@@ -851,17 +871,17 @@ N.b., 删除的表是无法恢复的.
 </div>
 </div>
 
-<div id="outline-container-orgd352749" class="outline-3">
-<h3 id="orgd352749"><span class="section-number-3">3.4.</span> 更新表的定义&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ALTER">ALTER</span>&#xa0;<span class="TABLE">TABLE</span></span></h3>
+<div id="outline-container-org6da99dd" class="outline-3">
+<h3 id="org6da99dd"><span class="section-number-3">3.4.</span> 更新表的定义&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ALTER">ALTER</span>&#xa0;<span class="TABLE">TABLE</span></span></h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
-N.b., <code>ALTER TABLE</code> 语句和 <a href="#org5675572"><code>DROP TABLE</code> 语句</a>一样, 执行之后无法恢复.
+N.b., <code>ALTER TABLE</code> 语句和 <a href="#org32d6795"><code>DROP TABLE</code> 语句</a>一样, 执行之后无法恢复.
 误添的列可以通过 <code>ALTER TABLE</code> 语句删除, 或者将表全部删除之后再重新创建.
 </p>
 </div>
 
-<div id="outline-container-orgfecb1b9" class="outline-4">
-<h4 id="orgfecb1b9"><span class="section-number-4">3.4.1.</span> 添加列&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ADD">ADD</span>&#xa0;<span class="COLUMN">COLUMN</span></span></h4>
+<div id="outline-container-orgf5a60e5" class="outline-4">
+<h4 id="orgf5a60e5"><span class="section-number-4">3.4.1.</span> 添加列&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ADD">ADD</span>&#xa0;<span class="COLUMN">COLUMN</span></span></h4>
 <div class="outline-text-4" id="text-3-4-1">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #505050;">-- </span><span style="color: #505050;">&#32473; &#8216;Products&#8217; &#34920;&#28155;&#21152;&#19968;&#21015;, &#34920;&#31034;&#21830;&#21697;&#21517;&#31216;&#30340;&#25340;&#38899;.</span>
@@ -890,8 +910,8 @@ ALTER TABLE Products ADD product_name_pinyin VARCHAR(100);
 </div>
 </div>
 
-<div id="outline-container-org6de93d8" class="outline-4">
-<h4 id="org6de93d8"><span class="section-number-4">3.4.2.</span> 删除列&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DROP">DROP</span>&#xa0;<span class="COLUMN">COLUMN</span></span></h4>
+<div id="outline-container-orgcf76982" class="outline-4">
+<h4 id="orgcf76982"><span class="section-number-4">3.4.2.</span> 删除列&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DROP">DROP</span>&#xa0;<span class="COLUMN">COLUMN</span></span></h4>
 <div class="outline-text-4" id="text-3-4-2">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;6&nbsp; </span>删除“Products”表中的“product<sub>name</sub><sub>pinyin</sub>”列.</label><pre class="src src-sql"><span style="color: #5317ac;">ALTER</span> <span style="color: #5317ac;">TABLE</span> <span style="color: #721045;">Products</span>
@@ -910,16 +930,20 @@ ALTER TABLE Products DROP (product_name_pinyin, 更多的旧列, …);
 </div>
 </div>
 
-<div id="outline-container-org9c01c6f" class="outline-2">
-<h2 id="org9c01c6f"><span class="section-number-2">4.</span> 查询 (query)&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SELECT">SELECT</span></span></h2>
+<div id="outline-container-org25d8232" class="outline-2">
+<h2 id="org25d8232"><span class="section-number-2">4.</span> 查询&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SELECT">SELECT</span></span></h2>
 <div class="outline-text-2" id="text-4">
+<p>
+I.e., 查询 (query) 表中的记录.
+</p>
 </div>
-<div id="outline-container-org5209f06" class="outline-3">
-<h3 id="org5209f06"><span class="section-number-3">4.1.</span> 列的查询</h3>
+
+<div id="outline-container-org5465210" class="outline-3">
+<h3 id="org5465210"><span class="section-number-3">4.1.</span> 列的查询</h3>
 <div class="outline-text-3" id="text-4-1">
 </div>
-<div id="outline-container-orgb593bc0" class="outline-4">
-<h4 id="orgb593bc0"><span class="section-number-4">4.1.1.</span> 查询指定的列</h4>
+<div id="outline-container-org2dc885d" class="outline-4">
+<h4 id="org2dc885d"><span class="section-number-4">4.1.1.</span> 查询指定的列</h4>
 <div class="outline-text-4" id="text-4-1-1">
 <p>
 基本的 <code>SELECT</code> 语句:
@@ -938,8 +962,8 @@ ALTER TABLE Products DROP (product_name_pinyin, 更多的旧列, …);
 </div>
 </div>
 
-<div id="outline-container-org4081d14" class="outline-4">
-<h4 id="org4081d14"><span class="section-number-4">4.1.2.</span> 查询所有列</h4>
+<div id="outline-container-orga4b9fb0" class="outline-4">
+<h4 id="orga4b9fb0"><span class="section-number-4">4.1.2.</span> 查询所有列</h4>
 <div class="outline-text-4" id="text-4-1-2">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> * <span style="color: #5317ac;">FROM</span> Products;
@@ -947,13 +971,13 @@ ALTER TABLE Products DROP (product_name_pinyin, 更多的旧列, …);
 </div>
 
 <p>
-但这样就无法设定列的显示顺序了, 这时就会按创建表时使用的 <a href="#org22bb916"><code>CREATE TABLE</code></a> 对列进行排序.
+但这样就无法设定列的显示顺序了, 这时就会按创建表时使用的 <a href="#org6caa61f"><code>CREATE TABLE</code></a> 对列进行排序.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org020ff3c" class="outline-4">
-<h4 id="org020ff3c"><span class="section-number-4">4.1.3.</span> 为列取别名&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AS">AS</span></span></h4>
+<div id="outline-container-org446e47b" class="outline-4">
+<h4 id="org446e47b"><span class="section-number-4">4.1.3.</span> 为列取别名&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AS">AS</span></span></h4>
 <div class="outline-text-4" id="text-4-1-3">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_id     <span style="color: #5317ac;">AS</span> id,
@@ -969,8 +993,8 @@ ALTER TABLE Products DROP (product_name_pinyin, 更多的旧列, …);
 </div>
 </div>
 
-<div id="outline-container-orgd5dc980" class="outline-4">
-<h4 id="orgd5dc980"><span class="section-number-4">4.1.4.</span> 常数的查询</h4>
+<div id="outline-container-orgbcc7754" class="outline-4">
+<h4 id="orgbcc7754"><span class="section-number-4">4.1.4.</span> 常数的查询</h4>
 <div class="outline-text-4" id="text-4-1-4">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> <span style="color: #2544bb;">'&#21830;&#21697;'</span>        <span style="color: #505050;">-- </span><span style="color: #505050;">&#23383;&#31526;&#20018;&#24120;&#25968;</span>
@@ -991,15 +1015,15 @@ ALTER TABLE Products DROP (product_name_pinyin, 更多的旧列, …);
 </div>
 </div>
 
-<div id="outline-container-org170f65d" class="outline-3">
-<h3 id="org170f65d"><span class="section-number-3">4.2.</span> 筛选</h3>
+<div id="outline-container-org03d32b1" class="outline-3">
+<h3 id="org03d32b1"><span class="section-number-3">4.2.</span> 筛选</h3>
 <div class="outline-text-3" id="text-4-2">
 </div>
-<div id="outline-container-org6f1c850" class="outline-4">
-<h4 id="org6f1c850"><span class="section-number-4">4.2.1.</span> 去重&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DISTINCT">DISTINCT</span></span></h4>
+<div id="outline-container-org03a526c" class="outline-4">
+<h4 id="org03a526c"><span class="section-number-4">4.2.1.</span> 去重&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DISTINCT">DISTINCT</span></span></h4>
 <div class="outline-text-4" id="text-4-2-1">
 <div class="org-src-container">
-<pre class="src src-sql" id="orge0e0f9a"><span style="color: #5317ac;">SELECT</span> <span style="color: #5317ac;">DISTINCT</span> purchase_price
+<pre class="src src-sql" id="org0177d29"><span style="color: #5317ac;">SELECT</span> <span style="color: #5317ac;">DISTINCT</span> purchase_price
 <span style="color: #5317ac;">FROM</span> Products;
 </pre>
 </div>
@@ -1027,8 +1051,8 @@ I.e., 当 <code>NULL</code> 存在于多行中时, 也会被合并为一条 <cod
 </div>
 </div>
 
-<div id="outline-container-orgd81af3a" class="outline-4">
-<h4 id="orgd81af3a"><span class="section-number-4">4.2.2.</span> 过滤条件&#xa0;&#xa0;&#xa0;<span class="tag"><span class="WHERE">WHERE</span></span></h4>
+<div id="outline-container-org2c7c1ef" class="outline-4">
+<h4 id="org2c7c1ef"><span class="section-number-4">4.2.2.</span> 过滤条件&#xa0;&#xa0;&#xa0;<span class="tag"><span class="WHERE">WHERE</span></span></h4>
 <div class="outline-text-4" id="text-4-2-2">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_name
@@ -1044,12 +1068,12 @@ N.b., <code>WHERE</code> 子句必须​<i>紧跟</i>​在 <code>FROM</code> �
 </div>
 </div>
 
-<div id="outline-container-org430aec3" class="outline-3">
-<h3 id="org430aec3"><span class="section-number-3">4.3.</span> 数学运算符</h3>
+<div id="outline-container-org451f796" class="outline-3">
+<h3 id="org451f796"><span class="section-number-3">4.3.</span> 数学运算符</h3>
 <div class="outline-text-3" id="text-4-3">
 </div>
-<div id="outline-container-org3f722d5" class="outline-4">
-<h4 id="org3f722d5"><span class="section-number-4">4.3.1.</span> 算术运算符</h4>
+<div id="outline-container-orgafc34e5" class="outline-4">
+<h4 id="orgafc34e5"><span class="section-number-4">4.3.1.</span> 算术运算符</h4>
 <div class="outline-text-4" id="text-4-3-1">
 <p>
 可使用四则运算, e.g.,
@@ -1064,7 +1088,7 @@ N.b., <code>WHERE</code> 子句必须​<i>紧跟</i>​在 <code>FROM</code> �
 </div>
 
 <ol class="org-ol">
-<li><a id="orgf24f4f2"></a>含 <code>NULL</code> 的计算&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span><br />
+<li><a id="org975a32a"></a>含 <code>NULL</code> 的计算&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span><br />
 <div class="outline-text-5" id="text-4-3-1-1">
 <p>
 <b>所有包含 <code>NULL</code> 的计算, 结果肯定是 <code>NULL</code>.</b>
@@ -1087,8 +1111,8 @@ E.g.,
 </ol>
 </div>
 
-<div id="outline-container-org7f72118" class="outline-4">
-<h4 id="org7f72118"><span class="section-number-4">4.3.2.</span> 比较运算符</h4>
+<div id="outline-container-orge05294a" class="outline-4">
+<h4 id="orge05294a"><span class="section-number-4">4.3.2.</span> 比较运算符</h4>
 <div class="outline-text-4" id="text-4-3-2">
 <p>
 有 <code>&lt;</code>, <code>&lt;=</code>, <code>=</code>, <code>&gt;=</code>, <code>&gt;</code>, 和 <code>&lt;&gt;</code><sup><a id="fnr.14" class="footref" href="#fn.14" role="doc-backlink">14</a></sup> 这些.
@@ -1115,7 +1139,7 @@ N.b., 字符串类型<sup><a id="fnr.15" class="footref" href="#fn.15" role="doc
 </div>
 
 <ol class="org-ol">
-<li><a id="org5072ed9"></a>含 <code>NULL</code> 的比较&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span><br />
+<li><a id="org73431a6"></a>含 <code>NULL</code> 的比较&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span><br />
 <div class="outline-text-5" id="text-4-3-2-1">
 <p>
 还记得“叉子”和“圆珠笔”的进货单价 (<code>purchase_price</code>) 是 <code>NULL</code> 吗?<sup><a id="fnr.16" class="footref" href="#fn.16" role="doc-backlink">16</a></sup>
@@ -1134,15 +1158,15 @@ N.b., 字符串类型<sup><a id="fnr.15" class="footref" href="#fn.15" role="doc
 <p>
 执行结果中并没有“叉子”和“圆珠笔”.
 因为这两件商品的进货单价不明 (<code>NULL</code>), 所以无法判定是不是指定的价格.<sup><a id="fnr.17" class="footref" href="#fn.17" role="doc-backlink">17</a></sup>
-不过, SQL 提供了专门用来判断是否为 <code>NULL</code> 的 <code>IS NULL</code> 和 <code>IS NOT NULL</code> 运算符, 见<a href="#org8cbe8e6">11.3</a>.
+不过, SQL 提供了专门用来判断是否为 <code>NULL</code> 的 <code>IS NULL</code> 和 <code>IS NOT NULL</code> 运算符, 见<a href="#orgdcc5c11">11.3</a>.
 </p>
 </div>
 </li>
 </ol>
 </div>
 
-<div id="outline-container-org059c295" class="outline-4">
-<h4 id="org059c295"><span class="section-number-4">4.3.3.</span> 逻辑运算符&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AND">AND</span>&#xa0;<span class="OR">OR</span>&#xa0;<span class="NOT">NOT</span></span></h4>
+<div id="outline-container-org8fdf479" class="outline-4">
+<h4 id="org8fdf479"><span class="section-number-4">4.3.3.</span> 逻辑运算符&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AND">AND</span>&#xa0;<span class="OR">OR</span>&#xa0;<span class="NOT">NOT</span></span></h4>
 <div class="outline-text-4" id="text-4-3-3">
 <p>
 有 <code>AND</code>, <code>OR</code>, 和 <code>NOT</code> 这些.
@@ -1150,11 +1174,11 @@ N.b., <i><code>AND</code> 的​<span class="underline">结合性</span>​强�
 </p>
 
 <p>
-<a href="#org5072ed9">前文</a>中介绍了查询 <code>NULL</code> 时不该使用 <code>=</code>​/​<code>&lt;&gt;</code>; 实际上, 使用逻辑运算符时也需要特别对待 <code>NULL</code>.
+<a href="#org73431a6">前文</a>中介绍了查询 <code>NULL</code> 时不该使用 <code>=</code>​/​<code>&lt;&gt;</code>; 实际上, 使用逻辑运算符时也需要特别对待 <code>NULL</code>.
 因为 SQL 中与 <code>NULL</code> 比较的结果是不确定 (UNKNOWN), 所以:
 </p>
 
-<table id="org6caa96b" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="orgc96348d" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">&#34920;1&nbsp;</span> <span class="underline">三值逻辑</span>​中的 <code>AND</code> 和 <code>OR</code> 真值表</caption>
 
 <colgroup>
@@ -1223,24 +1247,24 @@ N.b., <i><code>AND</code> 的​<span class="underline">结合性</span>​强�
 </div>
 </div>
 
-<div id="outline-container-org6c06890" class="outline-2">
-<h2 id="org6c06890"><span class="section-number-2">5.</span> 分组与聚合</h2>
+<div id="outline-container-org057980a" class="outline-2">
+<h2 id="org057980a"><span class="section-number-2">5.</span> 分组与聚合</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org2a4bda2" class="outline-3">
-<h3 id="org2a4bda2"><span class="section-number-3">5.1.</span> 聚合函数</h3>
+<div id="outline-container-orgdcaa791" class="outline-3">
+<h3 id="orgdcaa791"><span class="section-number-3">5.1.</span> 聚合函数</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 所谓​<i>聚合</i>, 就是将多行汇总为一行; 用于计算汇总的数据的函数称为​<span class="underline">聚合函数</span>.
 </p>
 </div>
 
-<div id="outline-container-orgced86e5" class="outline-4">
-<h4 id="orgced86e5"><span class="section-number-4">5.1.1.</span> 常用的聚合函数</h4>
+<div id="outline-container-orgdef93fa" class="outline-4">
+<h4 id="orgdef93fa"><span class="section-number-4">5.1.1.</span> 常用的聚合函数</h4>
 <div class="outline-text-4" id="text-5-1-1">
 </div>
 <ol class="org-ol">
-<li><a id="org5a15e2c"></a><code>COUNT</code> 函数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="COUNT">COUNT</span></span><br />
+<li><a id="orga6b638f"></a><code>COUNT</code> 函数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="COUNT">COUNT</span></span><br />
 <div class="outline-text-5" id="text-5-1-1-1">
 <p>
 <b>聚合函数通常会对 non-<code>NULL</code> 的对象进行汇总</b>, 但是只有 <span class="underline"><code>COUNT(*)</code></span> 是例外.
@@ -1260,7 +1284,7 @@ N.b., <i><code>AND</code> 的​<span class="underline">结合性</span>​强�
 </div>
 </li>
 
-<li><a id="orge883da7"></a><code>SUM</code> 函数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SUM">SUM</span></span><br />
+<li><a id="org6be775d"></a><code>SUM</code> 函数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SUM">SUM</span></span><br />
 <div class="outline-text-5" id="text-5-1-1-2">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> <span style="color: #8f0075;">SUM</span><span style="color: #000000;">(</span>sale_price<span style="color: #000000;">)</span>,
@@ -1324,7 +1348,7 @@ N.b., <i><code>AND</code> 的​<span class="underline">结合性</span>​强�
 </table>
 
 <p>
-前文说过: “<a href="#orgf24f4f2">所有包含 <code>NULL</code> 的计算, 结果肯定是 <code>NULL</code>.</a>”
+前文说过: “<a href="#org975a32a">所有包含 <code>NULL</code> 的计算, 结果肯定是 <code>NULL</code>.</a>”
 但我们看到, 这里的结果并非 <code>NULL</code>, 这说明:
 </p>
 
@@ -1338,7 +1362,7 @@ N.b., <i><code>AND</code> 的​<span class="underline">结合性</span>​强�
 </div>
 </li>
 
-<li><a id="orge67a851"></a><code>AVG</code> 函数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AVG">AVG</span></span><br />
+<li><a id="org19cd9db"></a><code>AVG</code> 函数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AVG">AVG</span></span><br />
 <div class="outline-text-5" id="text-5-1-1-3">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> <span style="color: #8f0075;">AVG</span><span style="color: #000000;">(</span>purchase_price<span style="color: #000000;">)</span>
@@ -1347,7 +1371,7 @@ N.b., <i><code>AND</code> 的​<span class="underline">结合性</span>​强�
 </div>
 
 <p>
-计算时对待 <code>NULL</code> 的方式类似 <a href="#orge883da7">5.1.1.2</a>:
+计算时对待 <code>NULL</code> 的方式类似 <a href="#org6be775d">5.1.1.2</a>:
 </p>
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
@@ -1402,7 +1426,7 @@ N.b., <i><code>AND</code> 的​<span class="underline">结合性</span>​强�
 </div>
 </li>
 
-<li><a id="org1d9f69c"></a><code>MIN</code> 函数和 <code>MAX</code> 函数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="MIN">MIN</span>&#xa0;<span class="MAX">MAX</span></span><br />
+<li><a id="orgc3c5c6b"></a><code>MIN</code> 函数和 <code>MAX</code> 函数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="MIN">MIN</span>&#xa0;<span class="MAX">MAX</span></span><br />
 <div class="outline-text-5" id="text-5-1-1-4">
 <p>
 同样地, 这两个函数预先排除了 <code>NULL</code>:
@@ -1438,8 +1462,8 @@ E.g.,
 </ol>
 </div>
 
-<div id="outline-container-org2cca7c9" class="outline-4">
-<h4 id="org2cca7c9"><span class="section-number-4">5.1.2.</span> 向聚合函数传入互异的参数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DISTINCT">DISTINCT</span></span></h4>
+<div id="outline-container-org1292ea6" class="outline-4">
+<h4 id="org1292ea6"><span class="section-number-4">5.1.2.</span> 向聚合函数传入互异的参数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DISTINCT">DISTINCT</span></span></h4>
 <div class="outline-text-4" id="text-5-1-2">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;7&nbsp; </span>计算去重后的数据行数</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> <span style="color: #8f0075;">COUNT</span><span style="color: #000000;">(</span><span style="color: #5317ac;">DISTINCT</span> product_type<span style="color: #000000;">)</span> <span style="color: #5317ac;">AS</span> "&#21697;&#31867;&#25968;&#30446;"
@@ -1449,7 +1473,7 @@ E.g.,
 
 <p>
 这里 <code>DISTINCT</code> 写在括号中, 是因为必须要在计算行数之前删除 <code>product_type</code> 列中的重复数据.
-如果像<a href="#orge0e0f9a"><code>SELECT DISTINCT</code> 语句</a>那样写在括号外的话, 就会先计算出数据行数, 再删除重复数据, 最终得到的是 <code>product_type</code> 列的所有行数:
+如果像<a href="#org0177d29"><code>SELECT DISTINCT</code> 语句</a>那样写在括号外的话, 就会先计算出数据行数, 再删除重复数据, 最终得到的是 <code>product_type</code> 列的所有行数:
 </p>
 
 <div class="org-src-container">
@@ -1460,11 +1484,11 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-org8a3eccc" class="outline-4">
-<h4 id="org8a3eccc"><span class="section-number-4">5.1.3.</span> 不要在 <code>WHERE</code> 子句中使用聚合函数</h4>
+<div id="outline-container-org9867c7b" class="outline-4">
+<h4 id="org9867c7b"><span class="section-number-4">5.1.3.</span> 不要在 <code>WHERE</code> 子句中使用聚合函数</h4>
 <div class="outline-text-4" id="text-5-1-3">
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;9&nbsp; </span>错误的语句[fn:: 正确的写法见<a href="#orgc3e5b2e">5.2.4.1</a>.]: 在 <code>WHERE</code> 子句中使用了聚合函数</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_type <span style="color: #5317ac;">AS</span> "&#21547;&#26377;&#20004;&#31181;&#21830;&#21697;&#30340;&#21697;&#31867;"
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;9&nbsp; </span>错误的语句[fn:: 正确的写法见<a href="#orgb8d31d0">5.2.4.1</a>.]: 在 <code>WHERE</code> 子句中使用了聚合函数</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_type <span style="color: #5317ac;">AS</span> "&#21547;&#26377;&#20004;&#31181;&#21830;&#21697;&#30340;&#21697;&#31867;"
 <span style="color: #5317ac;">FROM</span> Products
 <span style="color: #5317ac;">WHERE</span> <span style="color: #8f0075;">COUNT</span><span style="color: #000000;">(</span>*<span style="color: #000000;">)</span> = 2
 <span style="color: #5317ac;">GROUP</span> <span style="color: #5317ac;">BY</span> product_type;
@@ -1472,13 +1496,13 @@ E.g.,
 </div>
 
 <p>
-原因类似<a href="#orgccebb14">5.2.1.2</a>; 再者, <code>WHERE</code> 是用来对​<b>行</b> (而不是 <b>分组</b>) 进行过滤的.
+原因类似<a href="#org1c86ef0">5.2.1.2</a>; 再者, <code>WHERE</code> 是用来对​<b>行</b> (而不是 <b>分组</b>) 进行过滤的.
 实际上, 只有在
 </p>
 
 <ul class="org-ul">
 <li><code>SELECT</code></li>
-<li><a href="#org07eb991"><code>HAVING</code></a></li>
+<li><a href="#org340ef12"><code>HAVING</code></a></li>
 <li><code>ORDER BY</code></li>
 </ul>
 
@@ -1489,18 +1513,18 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-orgf1f6a29" class="outline-3">
-<h3 id="orgf1f6a29"><span class="section-number-3">5.2.</span> 对表进行分组&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUP">GROUP</span>&#xa0;<span class="BY">BY</span></span></h3>
+<div id="outline-container-org5635d3b" class="outline-3">
+<h3 id="org5635d3b"><span class="section-number-3">5.2.</span> 对表进行分组&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUP">GROUP</span>&#xa0;<span class="BY">BY</span></span></h3>
 <div class="outline-text-3" id="text-5-2">
 </div>
-<div id="outline-container-org403bdd2" class="outline-4">
-<h4 id="org403bdd2"><span class="section-number-4">5.2.1.</span> 使用 <code>GROUP BY</code> 子句按列汇总数据</h4>
+<div id="outline-container-orgc2ff528" class="outline-4">
+<h4 id="orgc2ff528"><span class="section-number-4">5.2.1.</span> 使用 <code>GROUP BY</code> 子句按列汇总数据</h4>
 <div class="outline-text-4" id="text-5-2-1">
 <p>
 我们可以用 <code>GROUP BY</code> 子句像这样:
 </p>
 
-<pre class="example" id="org1fe02e4">
+<pre class="example" id="orge1678ed">
 | (厨房用具) |   (衣服)   |
 |            |    T恤衫   |
 |   菜刀     |   运动T恤  |
@@ -1524,7 +1548,7 @@ E.g.,
 
 <p>
 在 <code>GROUP BY</code> 子句中指定的列称为​<span class="underline">聚合键</span>​/​<span class="underline">分组列</span>.
-和 <code>SELECT</code> 子句一样, <a id="org7157e4e"></a> 可以通过逗号分隔以指定多列, 这些列的组合决定分组的方式.  <sup><a id="fnr.18" class="footref" href="#fn.18" role="doc-backlink">18</a></sup>
+和 <code>SELECT</code> 子句一样, <a id="orgab2dc4f"></a> 可以通过逗号分隔以指定多列, 这些列的组合决定分组的方式.  <sup><a id="fnr.18" class="footref" href="#fn.18" role="doc-backlink">18</a></sup>
 </p>
 
 <p>
@@ -1533,10 +1557,10 @@ N.b., <code>GROUP BY</code> 子句一定要写在 <code>FROM</code> (and if exis
 </div>
 
 <ol class="org-ol">
-<li><a id="org3b6eb31"></a>不要在 <code>SELECT</code> 子句中包含非聚合键的列<br />
+<li><a id="org8b07586"></a>不要在 <code>SELECT</code> 子句中包含非聚合键的列<br />
 <div class="outline-text-5" id="text-5-2-1-1">
 <p>
-在对数据进行分组时<sup><a id="fnr.20" class="footref" href="#fn.20" role="doc-backlink">20</a></sup>, <code>SELECT</code> 子句中只能包含 <a id="orgbe11f08"></a>
+在对数据进行分组时<sup><a id="fnr.20" class="footref" href="#fn.20" role="doc-backlink">20</a></sup>, <code>SELECT</code> 子句中只能包含 <a id="orgf38d33e"></a>
 </p>
 <ul class="org-ul">
 <li>常数 (e.g., <code>123</code>, <code>'测试'</code>)</li>
@@ -1564,7 +1588,7 @@ N.b., <code>GROUP BY</code> 子句一定要写在 <code>FROM</code> (and if exis
 </div>
 </li>
 
-<li><a id="orgccebb14"></a>不要在 <code>GROUP BY</code> 子句中包含列的别名<br />
+<li><a id="org1c86ef0"></a>不要在 <code>GROUP BY</code> 子句中包含列的别名<br />
 <div class="outline-text-5" id="text-5-2-1-2">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_type <span style="color: #5317ac;">AS</span> "&#21697;&#31867;",
@@ -1583,8 +1607,8 @@ RDBMS 在执行 <code>SELECT</code> 子句前, 先执行 <code>GROUP BY</code> �
 </ol>
 </div>
 
-<div id="outline-container-org81795a4" class="outline-4">
-<h4 id="org81795a4"><span class="section-number-4">5.2.2.</span> 聚合键是 <code>NULL</code> 的情况</h4>
+<div id="outline-container-orgcc296f2" class="outline-4">
+<h4 id="orgcc296f2"><span class="section-number-4">5.2.2.</span> 聚合键是 <code>NULL</code> 的情况</h4>
 <div class="outline-text-4" id="text-5-2-2">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> regist_date <span style="color: #505050;">/* &#21547; NULL */</span>,
@@ -1600,8 +1624,8 @@ RDBMS 在执行 <code>SELECT</code> 子句前, 先执行 <code>GROUP BY</code> �
 </div>
 </div>
 
-<div id="outline-container-orgcd4b0c9" class="outline-4">
-<h4 id="orgcd4b0c9"><span class="section-number-4">5.2.3.</span> 先过滤再分组</h4>
+<div id="outline-container-org7a86831" class="outline-4">
+<h4 id="org7a86831"><span class="section-number-4">5.2.3.</span> 先过滤再分组</h4>
 <div class="outline-text-4" id="text-5-2-3">
 <p>
 有 <code>WHERE</code> 子句时, 会先根据它指定的条件进行过滤, 然后再进行汇总.
@@ -1624,15 +1648,15 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-org07eb991" class="outline-4">
-<h4 id="org07eb991"><span class="section-number-4">5.2.4.</span> 为聚合结果指定条件&#xa0;&#xa0;&#xa0;<span class="tag"><span class="HAVING">HAVING</span></span></h4>
+<div id="outline-container-org340ef12" class="outline-4">
+<h4 id="org340ef12"><span class="section-number-4">5.2.4.</span> 为聚合结果指定条件&#xa0;&#xa0;&#xa0;<span class="tag"><span class="HAVING">HAVING</span></span></h4>
 <div class="outline-text-4" id="text-5-2-4">
 </div>
 <ol class="org-ol">
-<li><a id="orgc3e5b2e"></a>使用 <code>HAVING</code> 子句过滤分组<br />
+<li><a id="orgb8d31d0"></a>使用 <code>HAVING</code> 子句过滤分组<br />
 <div class="outline-text-5" id="text-5-2-4-1">
 <p>
-在<a href="#orgf1f6a29">前文</a>的<a href="#org1fe02e4">例子</a>中, 如果我们只想取出 含有两种商品 的品类, 请用 <code>HAVING</code> 子句, e.g.,
+在<a href="#org5635d3b">前文</a>的<a href="#orge1678ed">例子</a>中, 如果我们只想取出 含有两种商品 的品类, 请用 <code>HAVING</code> 子句, e.g.,
 </p>
 
 <div class="org-src-container">
@@ -1650,10 +1674,10 @@ E.g.,
 </div>
 </li>
 
-<li><a id="orge272f37"></a>书写 <code>HAVING</code> 子句的限制<br />
+<li><a id="org70d4f81"></a>书写 <code>HAVING</code> 子句的限制<br />
 <div class="outline-text-5" id="text-5-2-4-2">
 <p>
-<code>HAVING</code> 子句和<a href="#org3b6eb31">后接 <code>GROUP BY</code> 子句的 <code>SELECT</code> 子句</a>一样, 能够使用的要素也有限制, 而且限制内容也<a href="#orgbe11f08">完全相同</a><sup><a id="fnr.27" class="footref" href="#fn.27" role="doc-backlink">27</a></sup>.
+<code>HAVING</code> 子句和<a href="#org8b07586">后接 <code>GROUP BY</code> 子句的 <code>SELECT</code> 子句</a>一样, 能够使用的要素也有限制, 而且限制内容也<a href="#orgf38d33e">完全相同</a><sup><a id="fnr.27" class="footref" href="#fn.27" role="doc-backlink">27</a></sup>.
 道理是相同的, 但在此提供另一种理解的角度:
 </p>
 
@@ -1689,8 +1713,8 @@ SELECT product_type, COUNT(*) FROM Products GROUP BY product_type;
 </div>
 </div>
 
-<div id="outline-container-orgccfc8b4" class="outline-2">
-<h2 id="orgccfc8b4"><span class="section-number-2">6.</span> 排序&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ORDER">ORDER</span>&#xa0;<span class="BY">BY</span></span></h2>
+<div id="outline-container-org0fb4714" class="outline-2">
+<h2 id="org0fb4714"><span class="section-number-2">6.</span> 排序&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ORDER">ORDER</span>&#xa0;<span class="BY">BY</span></span></h2>
 <div class="outline-text-2" id="text-6">
 <p>
 通常从表中抽取数据时, 如果没有特别指定顺序, 最终排列顺序便无从得知.  <sup><a id="fnr.30" class="footref" href="#fn.30" role="doc-backlink">30</a></sup>
@@ -1698,7 +1722,7 @@ SELECT product_type, COUNT(*) FROM Products GROUP BY product_type;
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;10&nbsp; </span>按照销售单价升序排列</label><pre class="src src-sql" id="org126dd44"><span style="color: #5317ac;">SELECT</span> product_id,
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;10&nbsp; </span>按照销售单价升序排列</label><pre class="src src-sql" id="org1db586e"><span style="color: #5317ac;">SELECT</span> product_id,
        product_name,
        sale_price
 <span style="color: #5317ac;">FROM</span> Products
@@ -1717,16 +1741,16 @@ SELECT product_type, COUNT(*) FROM Products GROUP BY product_type;
 </p>
 </div>
 
-<div id="outline-container-org4c718d2" class="outline-3">
-<h3 id="org4c718d2"><span class="section-number-3">6.1.</span> 指定顺序&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ASC">ASC</span>&#xa0;<span class="DESC">DESC</span></span></h3>
+<div id="outline-container-orge2c6265" class="outline-3">
+<h3 id="orge2c6265"><span class="section-number-3">6.1.</span> 指定顺序&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ASC">ASC</span>&#xa0;<span class="DESC">DESC</span></span></h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
-如<a href="#org126dd44">代码&ldquo;​按照销售单价升序排列&rdquo;</a>所示, 默认使用升序 (ascendent) 排列<sup><a id="fnr.32" class="footref" href="#fn.32" role="doc-backlink">32</a></sup>;
+如<a href="#org1db586e">代码&ldquo;​按照销售单价升序排列&rdquo;</a>所示, 默认使用升序 (ascendent) 排列<sup><a id="fnr.32" class="footref" href="#fn.32" role="doc-backlink">32</a></sup>;
 想要按照 <code>sale_price</code> 降序 (descendent) 排列时, 在列名后面使用 <code>DESC</code> 关键字, i.e.,
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;11&nbsp; </span>按照销售单价降序排列</label><pre class="src src-sql" id="org475ac8d"><span style="color: #5317ac;">SELECT</span> product_id,
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;11&nbsp; </span>按照销售单价降序排列</label><pre class="src src-sql" id="org66488f4"><span style="color: #5317ac;">SELECT</span> product_id,
        product_name,
        sale_price
 <span style="color: #5317ac;">FROM</span> Products
@@ -1736,11 +1760,11 @@ SELECT product_type, COUNT(*) FROM Products GROUP BY product_type;
 </div>
 </div>
 
-<div id="outline-container-orgf4bf564" class="outline-3">
-<h3 id="orgf4bf564"><span class="section-number-3">6.2.</span> 指定多个排序键</h3>
+<div id="outline-container-orgfad2101" class="outline-3">
+<h3 id="orgfad2101"><span class="section-number-3">6.2.</span> 指定多个排序键</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
-如<a href="#org126dd44">代码&ldquo;​按照销售单价升序排列&rdquo;</a>和<a href="#org475ac8d">代码&ldquo;​按照销售单价降序排列&rdquo;</a>所示, “打孔器”和“叉子”的先后顺序是随机的, 因为它们的销售单价都是 \( 500 \).
+如<a href="#org1db586e">代码&ldquo;​按照销售单价升序排列&rdquo;</a>和<a href="#org66488f4">代码&ldquo;​按照销售单价降序排列&rdquo;</a>所示, “打孔器”和“叉子”的先后顺序是随机的, 因为它们的销售单价都是 \( 500 \).
 我们可以指定多个排序键以实现更细致的排序, e.g.,
 </p>
 
@@ -1760,8 +1784,8 @@ SELECT product_type, COUNT(*) FROM Products GROUP BY product_type;
 </div>
 </div>
 
-<div id="outline-container-orgaeec7bc" class="outline-3">
-<h3 id="orgaeec7bc"><span class="section-number-3">6.3.</span> <code>NULL</code> 的顺序&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span></h3>
+<div id="outline-container-org188afda" class="outline-3">
+<h3 id="org188afda"><span class="section-number-3">6.3.</span> <code>NULL</code> 的顺序&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span></h3>
 <div class="outline-text-3" id="text-6-3">
 <p>
 “叉子”和“圆珠笔”的进价都是 <code>NULL</code>, 究竟 <code>NULL</code> 会排在哪里?
@@ -1777,21 +1801,21 @@ SELECT product_type, COUNT(*) FROM Products GROUP BY product_type;
 </div>
 
 <p>
-<a href="#org5072ed9">前文</a>说过, 含 <code>NULL</code> 的比较结果是 unknown, 因此干脆把 <code>NULL</code> 显示在开头​/​末尾.
+<a href="#org73431a6">前文</a>说过, 含 <code>NULL</code> 的比较结果是 unknown, 因此干脆把 <code>NULL</code> 显示在开头​/​末尾.
 究竟是在开头显示还是在末尾, 并没有特殊规定<sup><a id="fnr.33" class="footref" href="#fn.33" role="doc-backlink">33</a></sup>.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgb356f3f" class="outline-3">
-<h3 id="orgb356f3f"><span class="section-number-3">6.4.</span> 哪些要素可以作为排序键</h3>
+<div id="outline-container-orga07eed1" class="outline-3">
+<h3 id="orga07eed1"><span class="section-number-3">6.4.</span> 哪些要素可以作为排序键</h3>
 <div class="outline-text-3" id="text-6-4">
 </div>
-<div id="outline-container-org50723e8" class="outline-4">
-<h4 id="org50723e8"><span class="section-number-4">6.4.1.</span> 使用别名作为排序键&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AS">AS</span></span></h4>
+<div id="outline-container-org2b6b9cd" class="outline-4">
+<h4 id="org2b6b9cd"><span class="section-number-4">6.4.1.</span> 使用别名作为排序键&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AS">AS</span></span></h4>
 <div class="outline-text-4" id="text-6-4-1">
 <p>
-第<a href="#orgccebb14">5.2.1.2</a>节说过, <code>GROUP BY</code> 子句中不能使用 <code>SELECT</code> 子句中定义的别名.
+第<a href="#org1c86ef0">5.2.1.2</a>节说过, <code>GROUP BY</code> 子句中不能使用 <code>SELECT</code> 子句中定义的别名.
 但在 <code>ORDER BY</code> 子句中是允许使用别名的, e.g.,
 </p>
 
@@ -1804,8 +1828,8 @@ SELECT product_type, COUNT(*) FROM Products GROUP BY product_type;
 </div>
 </div>
 
-<div id="outline-container-org035f6df" class="outline-4">
-<h4 id="org035f6df"><span class="section-number-4">6.4.2.</span> <code>SELECT</code> 子句中未包含的列作为排序键</h4>
+<div id="outline-container-orga099190" class="outline-4">
+<h4 id="orga099190"><span class="section-number-4">6.4.2.</span> <code>SELECT</code> 子句中未包含的列作为排序键</h4>
 <div class="outline-text-4" id="text-6-4-2">
 <p>
 E.g.,
@@ -1816,8 +1840,8 @@ SELECT product_name FROM Products ORDER BY product_id;
 </div>
 </div>
 
-<div id="outline-container-org2084865" class="outline-4">
-<h4 id="org2084865"><span class="section-number-4">6.4.3.</span> 使用聚合函数作为排序键&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUP">GROUP</span>&#xa0;<span class="BY">BY</span></span></h4>
+<div id="outline-container-orga818051" class="outline-4">
+<h4 id="orga818051"><span class="section-number-4">6.4.3.</span> 使用聚合函数作为排序键&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUP">GROUP</span>&#xa0;<span class="BY">BY</span></span></h4>
 <div class="outline-text-4" id="text-6-4-3">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_type,
@@ -1830,8 +1854,8 @@ SELECT product_name FROM Products ORDER BY product_id;
 </div>
 </div>
 
-<div id="outline-container-org76b03af" class="outline-4">
-<h4 id="org76b03af"><span class="section-number-4">6.4.4.</span> 不要使用列编号</h4>
+<div id="outline-container-orgf1b6a1f" class="outline-4">
+<h4 id="orgf1b6a1f"><span class="section-number-4">6.4.4.</span> 不要使用列编号</h4>
 <div class="outline-text-4" id="text-6-4-4">
 <p>
 在 SQL-92<sup><a id="fnr.34" class="footref" href="#fn.34" role="doc-backlink">34</a></sup> 中已明确指出该排序功能将来会被删除.
@@ -1841,16 +1865,16 @@ SELECT product_name FROM Products ORDER BY product_id;
 </div>
 </div>
 
-<div id="outline-container-orge6ec697" class="outline-2">
-<h2 id="orge6ec697"><span class="section-number-2">7.</span> 数据更新</h2>
+<div id="outline-container-org8ab953e" class="outline-2">
+<h2 id="org8ab953e"><span class="section-number-2">7.</span> 数据更新</h2>
 <div class="outline-text-2" id="text-7">
 </div>
-<div id="outline-container-org7e7358e" class="outline-3">
-<h3 id="org7e7358e"><span class="section-number-3">7.1.</span> 插入新行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="INSERT">INSERT</span>&#xa0;<span class="INTO">INTO</span></span></h3>
+<div id="outline-container-orgee62a72" class="outline-3">
+<h3 id="orgee62a72"><span class="section-number-3">7.1.</span> 插入新行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="INSERT">INSERT</span>&#xa0;<span class="INTO">INTO</span></span></h3>
 <div class="outline-text-3" id="text-7-1">
 </div>
-<div id="outline-container-org4ec8617" class="outline-4">
-<h4 id="org4ec8617"><span class="section-number-4">7.1.1.</span> 插入时指定各列的值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="VALUES">VALUES</span></span></h4>
+<div id="outline-container-org6299c72" class="outline-4">
+<h4 id="org6299c72"><span class="section-number-4">7.1.1.</span> 插入时指定各列的值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="VALUES">VALUES</span></span></h4>
 <div class="outline-text-4" id="text-7-1-1">
 <p>
 新建示例用表“ProductsInsert”:
@@ -1881,7 +1905,7 @@ INSERT INTO &lt;表名&gt; [(列清单…)] VALUES (值清单…);
 </div>
 
 <ol class="org-ol">
-<li><a id="org37dc3cc"></a>按照列清单指定各列的值<br />
+<li><a id="org3439470"></a>按照列清单指定各列的值<br />
 <div class="outline-text-5" id="text-7-1-1-1">
 <p>
 例如, 我们要插入
@@ -1955,7 +1979,7 @@ INSERT INTO &lt;表名&gt; [(列清单…)] VALUES (值清单…);
 </div>
 </li>
 
-<li><a id="orge5a9ae9"></a>按照表定义指定各列的值<br />
+<li><a id="org381e8c9"></a>按照表定义指定各列的值<br />
 <div class="outline-text-5" id="text-7-1-1-2">
 <p>
 对表进行全列 <code>INSERT</code> 时, 可以省略列清单.
@@ -1983,7 +2007,7 @@ E.g., 下面两段代码执行相同的操作:
 </div>
 </li>
 
-<li><a id="org198c6df"></a>插入多行<br />
+<li><a id="orgff856b2"></a>插入多行<br />
 <div class="outline-text-5" id="text-7-1-1-3">
 <p>
 按照 ISO SQL 书写的下列语句
@@ -2035,7 +2059,7 @@ E.g., 下面两段代码执行相同的操作:
 </div>
 </li>
 
-<li><a id="org0d0851a"></a>插入 <code>NULL</code>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span><br />
+<li><a id="orge2b8449"></a>插入 <code>NULL</code>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span><br />
 <div class="outline-text-5" id="text-7-1-1-4">
 <p>
 直接书写即可, e.g.,
@@ -2058,7 +2082,7 @@ E.g., 下面两段代码执行相同的操作:
 </div>
 </li>
 
-<li><a id="orge61a89e"></a>插入默认值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DEFAULT">DEFAULT</span></span><br />
+<li><a id="org9d571ec"></a>插入默认值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DEFAULT">DEFAULT</span></span><br />
 <div class="outline-text-5" id="text-7-1-1-5">
 <p>
 我们在创建“ProductsInsert”表时, <a href="#coderef-TABLE-ProductsInsert-COLUMN-sale_price-DEFAULT-CONSTRAINT" class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-TABLE-ProductsInsert-COLUMN-sale_price-DEFAULT-CONSTRAINT');" onmouseout="CodeHighlightOff(this, 'coderef-TABLE-ProductsInsert-COLUMN-sale_price-DEFAULT-CONSTRAINT');">对 <code>sale_price</code> 列设置了 <code>DEFAULT</code> 约束</a>, 所以插入新行时, 也可以直接给该列赋默认值 (此处是 \( 0 \)).
@@ -2066,10 +2090,10 @@ E.g., 下面两段代码执行相同的操作:
 </div>
 
 <ol class="org-ol">
-<li><a id="org459ead2"></a>显式地插入默认值<br />
+<li><a id="org47ad5c7"></a>显式地插入默认值<br />
 <div class="outline-text-6" id="text-7-1-1-5-1">
 <div class="org-src-container">
-<pre class="src src-sql" id="org8386331"><span style="color: #5317ac;">INSERT</span> <span style="color: #5317ac;">INTO</span> ProductsInsert <span style="color: #000000;">(</span>
+<pre class="src src-sql" id="orgbc6a9fe"><span style="color: #5317ac;">INSERT</span> <span style="color: #5317ac;">INTO</span> ProductsInsert <span style="color: #000000;">(</span>
   product_id,   product_name, product_type,
   sale_price, purchase_price,  regist_date
 <span style="color: #000000;">)</span> <span style="color: #5317ac;">VALUES</span> <span style="color: #000000;">(</span>
@@ -2084,7 +2108,7 @@ E.g., 下面两段代码执行相同的操作:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sql" id="org24047d3"><span style="color: #5317ac;">SELECT</span> *
+<pre class="src src-sql" id="org03c89f3"><span style="color: #5317ac;">SELECT</span> *
 <span style="color: #5317ac;">FROM</span> ProductsInsert
 <span style="color: #5317ac;">WHERE</span> product_id = <span style="color: #2544bb;">'0007'</span>;
 </pre>
@@ -2092,10 +2116,10 @@ E.g., 下面两段代码执行相同的操作:
 </div>
 </li>
 
-<li><a id="org84ae54c"></a>插入时省略对应的列以使用缺省值<br />
+<li><a id="org6b3d991"></a>插入时省略对应的列以使用缺省值<br />
 <div class="outline-text-6" id="text-7-1-1-5-2">
 <p>
-先将<a href="#org8386331">刚刚插入的 <code>0007</code> 号商品</a>从“ProductsInsert”表中删除:
+先将<a href="#orgbc6a9fe">刚刚插入的 <code>0007</code> 号商品</a>从“ProductsInsert”表中删除:
 </p>
 
 <div class="org-src-container">
@@ -2163,8 +2187,8 @@ E.g.,
 </ol>
 </div>
 
-<div id="outline-container-orgb4f1d15" class="outline-4">
-<h4 id="orgb4f1d15"><span class="section-number-4">7.1.2.</span> 复制给定表中的行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SELECT">SELECT</span></span></h4>
+<div id="outline-container-orgbfbf328" class="outline-4">
+<h4 id="orgbfbf328"><span class="section-number-4">7.1.2.</span> 复制给定表中的行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SELECT">SELECT</span></span></h4>
 <div class="outline-text-4" id="text-7-1-2">
 <p>
 新建示例用表“ProductsCopy”:
@@ -2253,8 +2277,8 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-org910ce01" class="outline-3">
-<h3 id="org910ce01"><span class="section-number-3">7.2.</span> 删除旧行<sup><a id="fnr.39" class="footref" href="#fn.39" role="doc-backlink">39</a></sup>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DELETE">DELETE</span></span></h3>
+<div id="outline-container-orgb5bd05f" class="outline-3">
+<h3 id="orgb5bd05f"><span class="section-number-3">7.2.</span> 删除旧行<sup><a id="fnr.39" class="footref" href="#fn.39" role="doc-backlink">39</a></sup>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DELETE">DELETE</span></span></h3>
 <div class="outline-text-3" id="text-7-2">
 <p>
 语句格式<sup><a id="fnr.40" class="footref" href="#fn.40" role="doc-backlink">40</a></sup>为
@@ -2286,8 +2310,8 @@ DELETE FROM &lt;表名&gt; [WHERE …];
 </div>
 </div>
 
-<div id="outline-container-orga154e00" class="outline-3">
-<h3 id="orga154e00"><span class="section-number-3">7.3.</span> 修改旧行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="UPDATE">UPDATE</span>&#xa0;<span class="SET">SET</span></span></h3>
+<div id="outline-container-orgee21396" class="outline-3">
+<h3 id="orgee21396"><span class="section-number-3">7.3.</span> 修改旧行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="UPDATE">UPDATE</span>&#xa0;<span class="SET">SET</span></span></h3>
 <div class="outline-text-3" id="text-7-3">
 <p>
 语句格式为
@@ -2322,8 +2346,8 @@ E.g.,
 </ul>
 </div>
 
-<div id="outline-container-orgff5c313" class="outline-4">
-<h4 id="orgff5c313"><span class="section-number-4">7.3.1.</span> <code>NULL</code> 清空&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span></h4>
+<div id="outline-container-orgfa68760" class="outline-4">
+<h4 id="orgfa68760"><span class="section-number-4">7.3.1.</span> <code>NULL</code> 清空&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span></h4>
 <div class="outline-text-4" id="text-7-3-1">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;25&nbsp; </span>将编号为 8 的登记日期清空</label><pre class="src src-sql"><span style="color: #5317ac;">UPDATE</span> Products
@@ -2338,8 +2362,8 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-org142fe54" class="outline-4">
-<h4 id="org142fe54"><span class="section-number-4">7.3.2.</span> 多列更新</h4>
+<div id="outline-container-orgf486aef" class="outline-4">
+<h4 id="orgf486aef"><span class="section-number-4">7.3.2.</span> 多列更新</h4>
 <div class="outline-text-4" id="text-7-3-2">
 <p>
 有两种书写方式:
@@ -2372,12 +2396,12 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-orgd335f9c" class="outline-3">
-<h3 id="orgd335f9c"><span class="section-number-3">7.4.</span> Transaction&#xa0;&#xa0;&#xa0;<span class="tag"><span class="TRANSACTION">TRANSACTION</span></span></h3>
+<div id="outline-container-org9f9e6ec" class="outline-3">
+<h3 id="org9f9e6ec"><span class="section-number-3">7.4.</span> Transaction&#xa0;&#xa0;&#xa0;<span class="tag"><span class="TRANSACTION">TRANSACTION</span></span></h3>
 <div class="outline-text-3" id="text-7-4">
 </div>
-<div id="outline-container-orgebb3c65" class="outline-4">
-<h4 id="orgebb3c65"><span class="section-number-4">7.4.1.</span> 创建 transaction&#xa0;&#xa0;&#xa0;<span class="tag"><span class="BEGIN">BEGIN</span>&#xa0;<span class="START">START</span>&#xa0;<span class="COMMIT">COMMIT</span>&#xa0;<span class="ROLLBACK">ROLLBACK</span></span></h4>
+<div id="outline-container-org15afe62" class="outline-4">
+<h4 id="org15afe62"><span class="section-number-4">7.4.1.</span> 创建 transaction&#xa0;&#xa0;&#xa0;<span class="tag"><span class="BEGIN">BEGIN</span>&#xa0;<span class="START">START</span>&#xa0;<span class="COMMIT">COMMIT</span>&#xa0;<span class="ROLLBACK">ROLLBACK</span></span></h4>
 <div class="outline-text-4" id="text-7-4-1">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;26&nbsp; </span><code>TRANSACTION</code> 的语法</label><pre class="src src-sql">&#24320;&#22987; <span style="color: #5317ac;">TRANSACTION</span>;
@@ -2410,15 +2434,15 @@ START TRANSACTION;
 </ul>
 
 <p>
-<a id="org7e12f57"></a> Oracle 和 DB2 没有定义特定的起始语句, 其实是因为标准 SQL 中确实规定了一种悄悄开始 transaction 处理的方法.
+<a id="org9ad2413"></a> Oracle 和 DB2 没有定义特定的起始语句, 其实是因为标准 SQL 中确实规定了一种悄悄开始 transaction 处理的方法.
 这两种数据库每执行完 <code>COMMIT</code>​/​<code>ROLLBACK</code> 语句, 便会进入下一段 transaction.  <br />
-与这种模式相对的是<a href="#org7c3e921">自动提交模式</a>.
+与这种模式相对的是<a href="#orgcace3c3">自动提交模式</a>.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org7c3e921" class="outline-4">
-<h4 id="org7c3e921"><span class="section-number-4">7.4.2.</span> 自动提交模式</h4>
+<div id="outline-container-orgcace3c3" class="outline-4">
+<h4 id="orgcace3c3"><span class="section-number-4">7.4.2.</span> 自动提交模式</h4>
 <div class="outline-text-4" id="text-7-4-2">
 <p>
 Transaction 并没有标准的起始语句, 而是根据 RDBMS 的不同而不同.
@@ -2427,7 +2451,7 @@ Transaction 并没有标准的起始语句, 而是根据 RDBMS 的不同而不�
 
 <p>
 在 SQL Server, PostgreSQL, 和 MySQL 中, 每条 SQL 语句就是一个 transaction, 这称为​<i>自动提交模式</i>.
-与这种模式相对的是<a href="#org7e12f57">7.4.1</a>.
+与这种模式相对的是<a href="#org9ad2413">7.4.1</a>.
 </p>
 
 <p>
@@ -2448,8 +2472,8 @@ A group of statements surrounded by <code>BEGIN</code> and <code>COMMIT</code> i
 </div>
 </div>
 
-<div id="outline-container-orgbb24902" class="outline-4">
-<h4 id="orgbb24902"><span class="section-number-4">7.4.3.</span> Consistency of Transaction</h4>
+<div id="outline-container-org73c8778" class="outline-4">
+<h4 id="org73c8778"><span class="section-number-4">7.4.3.</span> Consistency of Transaction</h4>
 <div class="outline-text-4" id="text-7-4-3">
 <p>
 在 PostgreSQL 的 <code>TRANSACTION</code> 块中, 执行 DML 语句会改变数据的状态 (但在 <code>COMMIT</code> 之前, 这都是暂时的), 如果执行了一条导致当前的数据状态违反了 constraint 的语句, 则该 transaction 会被立刻舍弃.
@@ -2457,8 +2481,8 @@ A group of statements surrounded by <code>BEGIN</code> and <code>COMMIT</code> i
 </div>
 </div>
 
-<div id="outline-container-org3908c27" class="outline-4">
-<h4 id="org3908c27"><span class="section-number-4">7.4.4.</span> Isolation of Transaction</h4>
+<div id="outline-container-orgf8efe8c" class="outline-4">
+<h4 id="orgf8efe8c"><span class="section-number-4">7.4.4.</span> Isolation of Transaction</h4>
 <div class="outline-text-4" id="text-7-4-4">
 <p>
 指的是不同 transaction 之间互不干扰的特性.
@@ -2472,8 +2496,8 @@ A group of statements surrounded by <code>BEGIN</code> and <code>COMMIT</code> i
 </div>
 </div>
 
-<div id="outline-container-org0ca87c0" class="outline-4">
-<h4 id="org0ca87c0"><span class="section-number-4">7.4.5.</span> Durability of Transaction</h4>
+<div id="outline-container-org7ce901e" class="outline-4">
+<h4 id="org7ce901e"><span class="section-number-4">7.4.5.</span> Durability of Transaction</h4>
 <div class="outline-text-4" id="text-7-4-5">
 <p>
 指的是在 transaction 结束 (<code>COMMIT</code>​/​<code>ROLLBACK</code>) 后, RDBMS 能保证该时间点的数据状态会被保存的特性.
@@ -2489,8 +2513,8 @@ A group of statements surrounded by <code>BEGIN</code> and <code>COMMIT</code> i
 </div>
 </div>
 
-<div id="outline-container-org481c46f" class="outline-2">
-<h2 id="org481c46f"><span class="section-number-2">8.</span> 视图&#xa0;&#xa0;&#xa0;<span class="tag"><span class="VIEW">VIEW</span></span></h2>
+<div id="outline-container-orgf895e69" class="outline-2">
+<h2 id="orgf895e69"><span class="section-number-2">8.</span> 视图&#xa0;&#xa0;&#xa0;<span class="tag"><span class="VIEW">VIEW</span></span></h2>
 <div class="outline-text-2" id="text-8">
 <p>
 <i>视图</i>​保存的是 <code>SELECT</code> 语句.
@@ -2499,8 +2523,8 @@ A group of statements surrounded by <code>BEGIN</code> and <code>COMMIT</code> i
 </p>
 </div>
 
-<div id="outline-container-org75f8efa" class="outline-3">
-<h3 id="org75f8efa"><span class="section-number-3">8.1.</span> 视图的创建与查询&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CREATE">CREATE</span>&#xa0;<span class="AS">AS</span></span></h3>
+<div id="outline-container-orged5998a" class="outline-3">
+<h3 id="orged5998a"><span class="section-number-3">8.1.</span> 视图的创建与查询&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CREATE">CREATE</span>&#xa0;<span class="AS">AS</span></span></h3>
 <div class="outline-text-3" id="text-8-1">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;27&nbsp; </span>重建示例用表“Products”</label><pre class="src src-sql"><span style="color: #5317ac;">DELETE</span> <span style="color: #5317ac;">FROM</span> Products;
@@ -2523,7 +2547,7 @@ A group of statements surrounded by <code>BEGIN</code> and <code>COMMIT</code> i
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;28&nbsp; </span>创建视图“ProductsTypeInfo”, 统计各品类下的商品种数</label><pre class="src src-sql" id="orgc8d68fe"><span style="color: #5317ac;">CREATE</span> <span style="color: #5317ac;">VIEW</span> <span style="color: #721045;">ProductsTypeInfo</span> <span style="color: #000000;">(</span>
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;28&nbsp; </span>创建视图“ProductsTypeInfo”, 统计各品类下的商品种数</label><pre class="src src-sql" id="orgaccadc1"><span style="color: #5317ac;">CREATE</span> <span style="color: #5317ac;">VIEW</span> <span style="color: #721045;">ProductsTypeInfo</span> <span style="color: #000000;">(</span>
             product_type, cnt_product
 <span style="color: #000000;">)</span> <span style="color: #5317ac;">AS</span> <span style="color: #5317ac;">SELECT</span> product_type,    <span style="color: #8f0075;">COUNT</span><span style="color: #000000;">(</span>*<span style="color: #000000;">)</span>
      <span style="color: #5317ac;">FROM</span> Products
@@ -2537,7 +2561,7 @@ A group of statements surrounded by <code>BEGIN</code> and <code>COMMIT</code> i
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;29&nbsp; </span>以视图“ProductsTypeInfo”为基础, 创建​<i>多重视图</i>​“ProductsTypeInfoOffice”, 筛选出“办公用品”的信息</label><pre class="src src-sql" id="org31a2ed3"><span style="color: #5317ac;">CREATE</span> <span style="color: #5317ac;">VIEW</span> <span style="color: #721045;">ProductsTypeInfoOffice</span> <span style="color: #000000;">(</span>
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;29&nbsp; </span>以视图“ProductsTypeInfo”为基础, 创建​<i>多重视图</i>​“ProductsTypeInfoOffice”, 筛选出“办公用品”的信息</label><pre class="src src-sql" id="org77ecfac"><span style="color: #5317ac;">CREATE</span> <span style="color: #5317ac;">VIEW</span> <span style="color: #721045;">ProductsTypeInfoOffice</span> <span style="color: #000000;">(</span>
             product_type, cnt_product
 <span style="color: #000000;">)</span> <span style="color: #5317ac;">AS</span> <span style="color: #5317ac;">SELECT</span> *
      <span style="color: #5317ac;">FROM</span> ProductsTypeInfo
@@ -2546,7 +2570,7 @@ A group of statements surrounded by <code>BEGIN</code> and <code>COMMIT</code> i
 </div>
 
 <p>
-<a id="org45a7221"></a> 视图的查询与<a href="#org9c01c6f">表的查询</a>别无二致, 只是性能会差很多.
+<a id="orge83bdf0"></a> 视图的查询与<a href="#org25d8232">表的查询</a>别无二致, 只是性能会差很多.
 </p>
 
 <div class="org-src-container">
@@ -2556,11 +2580,11 @@ A group of statements surrounded by <code>BEGIN</code> and <code>COMMIT</code> i
 </div>
 </div>
 
-<div id="outline-container-org75172c2" class="outline-3">
-<h3 id="org75172c2"><span class="section-number-3">8.2.</span> 更新视图中的数据行</h3>
+<div id="outline-container-org20f6e5c" class="outline-3">
+<h3 id="org20f6e5c"><span class="section-number-3">8.2.</span> 更新视图中的数据行</h3>
 <div class="outline-text-3" id="text-8-2">
 <p>
-在 <code>SELECT</code> 语句中<a href="#org45a7221">视图可以和表一样使用</a>.
+在 <code>SELECT</code> 语句中<a href="#orge83bdf0">视图可以和表一样使用</a>.
 那么, 对于 <code>INSERT</code>​/​<code>DELETE</code>​/​<code>UPDATE</code> 这类语句, 会怎么样呢?  <br />
 实际上, 虽然这其中有很严格的限制, 但确实可以对视图进行更新.
 标准 SQL 中有这样的规定: 如果定义视图的 <code>SELECT</code> 语句能够满足某些条件, 那么这个视图就可以被更新.
@@ -2625,8 +2649,8 @@ DO INSTEAD
 </div>
 </div>
 
-<div id="outline-container-org15ef8c9" class="outline-3">
-<h3 id="org15ef8c9"><span class="section-number-3">8.3.</span> 删除视图&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DROP">DROP</span></span></h3>
+<div id="outline-container-orgfe8b307" class="outline-3">
+<h3 id="orgfe8b307"><span class="section-number-3">8.3.</span> 删除视图&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DROP">DROP</span></span></h3>
 <div class="outline-text-3" id="text-8-3">
 <pre class="example">
 DROP VIEW &lt;视图名字&gt;;
@@ -2634,7 +2658,7 @@ DROP VIEW &lt;视图名字&gt;;
 
 
 <p>
-<a href="#org31a2ed3">视图“ProductsTypeInfoOffice”</a>是在另一张<a href="#orgc8d68fe">视图“ProductsTypeInfo”</a>的基础上创建的, 前者依赖后者.
+<a href="#org77ecfac">视图“ProductsTypeInfoOffice”</a>是在另一张<a href="#orgaccadc1">视图“ProductsTypeInfo”</a>的基础上创建的, 前者依赖后者.
 因此, 必须先删除前者, 才能删除后者.  <br />
 不过, 在 PostgreSQL 中, 可以在删除一张视图的同时, 级联地删除所有依赖它的视图, e.g.,
 </p>
@@ -2645,20 +2669,20 @@ DROP VIEW ProductsTypeInfo CASCADE;
 </div>
 </div>
 
-<div id="outline-container-org93c1359" class="outline-2">
-<h2 id="org93c1359"><span class="section-number-2">9.</span> 子查询</h2>
+<div id="outline-container-org57c5bd8" class="outline-2">
+<h2 id="org57c5bd8"><span class="section-number-2">9.</span> 子查询</h2>
 <div class="outline-text-2" id="text-9">
 <p>
-一言以蔽之, 子查询 (subquery) 就是一次性<a href="#org481c46f">视图</a><sup><a id="fnr.50" class="footref" href="#fn.50" role="doc-backlink">50</a></sup>.
+一言以蔽之, 子查询 (subquery) 就是一次性<a href="#orgf895e69">视图</a><sup><a id="fnr.50" class="footref" href="#fn.50" role="doc-backlink">50</a></sup>.
 它的用法是, 将用来定义视图的 <code>SELECT</code> 语句直接写到各种子句<sup><a id="fnr.51" class="footref" href="#fn.51" role="doc-backlink">51</a></sup>当中, 如果是写在 <code>FROM</code> 子句中, 还需要​<b>取上合适的别名</b>.
 </p>
 
 <p>
-我们将<a href="#org75f8efa">8.1</a>中的例子修改为使用子查询实现:
+我们将<a href="#orged5998a">8.1</a>中的例子修改为使用子查询实现:
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;33&nbsp; </span>相当于查询<a href="#orgc8d68fe">视图“ProductsTypeInfo”</a>的数据</label><pre class="src src-sql">  <span style="color: #5317ac;">SELECT</span> product_type,
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;33&nbsp; </span>相当于查询<a href="#orgaccadc1">视图“ProductsTypeInfo”</a>的数据</label><pre class="src src-sql">  <span style="color: #5317ac;">SELECT</span> product_type,
          "&#21830;&#21697;&#31181;&#25968;"
   <span style="color: #5317ac;">FROM</span> <span style="color: #000000;">(</span><span style="color: #5317ac;">SELECT</span> product_type,
                <span style="color: #8f0075;">COUNT</span><span style="color: #a8007f;">(</span>*<span style="color: #a8007f;">)</span> <span style="color: #5317ac;">AS</span> "&#21830;&#21697;&#31181;&#25968;"
@@ -2669,8 +2693,8 @@ DROP VIEW ProductsTypeInfo CASCADE;
 </div>
 </div>
 
-<div id="outline-container-org686b6bb" class="outline-3">
-<h3 id="org686b6bb"><span class="section-number-3">9.1.</span> 标量子查询</h3>
+<div id="outline-container-org7ab945f" class="outline-3">
+<h3 id="org7ab945f"><span class="section-number-3">9.1.</span> 标量子查询</h3>
 <div class="outline-text-3" id="text-9-1">
 <p>
 就是返回结果是 \( 1 \times 1 \) 矩阵<sup><a id="fnr.52" class="footref" href="#fn.52" role="doc-backlink">52</a></sup>的子查询.
@@ -2691,12 +2715,12 @@ DROP VIEW ProductsTypeInfo CASCADE;
 </div>
 
 <p>
-但<a href="#org8a3eccc">5.1.3</a>说过这是错误的写法, 以及为什么是错的.
+但<a href="#org9867c7b">5.1.3</a>说过这是错误的写法, 以及为什么是错的.
 正确的写法是用标量子查询:
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;35&nbsp; </span>从“Products”表中选取 \( \text{售价} \le \text{均价} \) 的商品</label><pre class="src src-sql" id="orgf6f245e"><span style="color: #5317ac;">SELECT</span> product_name,
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;35&nbsp; </span>从“Products”表中选取 \( \text{售价} \le \text{均价} \) 的商品</label><pre class="src src-sql" id="orgeb57a3a"><span style="color: #5317ac;">SELECT</span> product_name,
        sale_price
 <span style="color: #5317ac;">FROM</span> Products
 <span style="color: #5317ac;">WHERE</span> sale_price &lt;= <span style="color: #000000;">(</span><span style="color: #5317ac;">SELECT</span> <span style="color: #8f0075;">AVG</span><span style="color: #a8007f;">(</span>sale_price<span style="color: #a8007f;">)</span>
@@ -2706,8 +2730,8 @@ DROP VIEW ProductsTypeInfo CASCADE;
 </div>
 </div>
 
-<div id="outline-container-org77fcec5" class="outline-3">
-<h3 id="org77fcec5"><span class="section-number-3">9.2.</span> 关联子查询&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AS">AS</span></span></h3>
+<div id="outline-container-orgb5febe6" class="outline-3">
+<h3 id="orgb5febe6"><span class="section-number-3">9.2.</span> 关联子查询&#xa0;&#xa0;&#xa0;<span class="tag"><span class="AS">AS</span></span></h3>
 <div class="outline-text-3" id="text-9-2">
 <p>
 E.g., 我们要选出各“品类”下 \( \text{售价} \le \text{品类均价} \) 的商品<sup><a id="fnr.54" class="footref" href="#fn.54" role="doc-backlink">54</a></sup>, 可能会想这么写:
@@ -2731,7 +2755,7 @@ E.g., 我们要选出各“品类”下 \( \text{售价} \le \text{品类均价}
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;37&nbsp; </span>从“Products”表中选取 \( \text{售价} \le \text{品类均价} \) 的商品</label><pre class="src src-sql" id="org0808dc0"><span style="color: #5317ac;">SELECT</span> product_type,
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;37&nbsp; </span>从“Products”表中选取 \( \text{售价} \le \text{品类均价} \) 的商品</label><pre class="src src-sql" id="orgb4b3dc3"><span style="color: #5317ac;">SELECT</span> product_type,
        product_name,
        sale_price
 <span style="color: #5317ac;">FROM</span> Products <span style="color: #505050;">/* AS ProductsAlias */</span>
@@ -2742,70 +2766,14 @@ E.g., 我们要选出各“品类”下 \( \text{售价} \le \text{品类均价}
 </pre>
 </div>
 
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-
-<col  class="org-right" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">product<sub>type</sub></th>
-<th scope="col" class="org-left">product<sub>name</sub></th>
-<th scope="col" class="org-right">sale<sub>price</sub></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">衣服</td>
-<td class="org-left">T恤衫</td>
-<td class="org-right">1000</td>
-</tr>
-
-<tr>
-<td class="org-left">衣服</td>
-<td class="org-left">运动T恤</td>
-<td class="org-right">4000</td>
-</tr>
-
-<tr>
-<td class="org-left">厨房用具</td>
-<td class="org-left">叉子</td>
-<td class="org-right">500</td>
-</tr>
-
-<tr>
-<td class="org-left">厨房用具</td>
-<td class="org-left">擦菜板</td>
-<td class="org-right">880</td>
-</tr>
-
-<tr>
-<td class="org-left">办公用品</td>
-<td class="org-left">圆珠笔</td>
-<td class="org-right">100</td>
-</tr>
-
-<tr>
-<td class="org-left">办公用品</td>
-<td class="org-left">印章</td>
-<td class="org-right">95</td>
-</tr>
-</tbody>
-</table>
-
 <p>
 其中 <code>ProductsOfType</code> 是子查询为自己的“Products”表起的别名, 子查询使用这个别名在 <code>WHERE</code> 子句中指定关联条件.  (Table 的​<i>别名</i>​会 <a href="https://wikipedia.org/wiki/Variable_shadowing"><i>shadow</i></a> 原本的名<sup><a id="fnr.55" class="footref" href="#fn.55" role="doc-backlink">55</a></sup>, 所以在上述代码中, 出现在子查询的 <code>WHERE</code> 子句中的“Products”指的就是​<span class="underline">外层查询中的那张表</span>, 并不会产生歧义<sup><a id="fnr.56" class="footref" href="#fn.56" role="doc-backlink">56</a></sup>.)
 在该语境下, 别名被称为​<i>关联名称</i>, 子查询被称为​<i>关联子查询</i>.
 </p>
 </div>
 
-<div id="outline-container-orge30b78f" class="outline-4">
-<h4 id="orge30b78f"><span class="section-number-4">9.2.1.</span> 关联名称的作用域</h4>
+<div id="outline-container-org1535873" class="outline-4">
+<h4 id="org1535873"><span class="section-number-4">9.2.1.</span> 关联名称的作用域</h4>
 <div class="outline-text-4" id="text-9-2-1">
 <p>
 SQL 是按照“先内层子查询, 后外层查询”的顺序来执行的, 因此, 子查询执行结束时只会留下查询结果, 而 RDBMS 会忘记子查询中为 table 定义的别名.
@@ -2813,7 +2781,7 @@ IOW, 子查询内部设定的​<i>关联名称</i>, 只能在该子查询内部
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;38&nbsp; </span>(错误的写法[fn:: 正确的写法见<a href="#org0808dc0">37</a>]) 子查询中定义的​<i>关联名称</i>​出现在了其作用域 (scope) 以外</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_type,
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;38&nbsp; </span>(错误的写法[fn:: 正确的写法见<a href="#orgb4b3dc3">37</a>]) 子查询中定义的​<i>关联名称</i>​出现在了其作用域 (scope) 以外</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_type,
        product_name,
        sale_price
 <span style="color: #5317ac;">FROM</span> Products
@@ -2827,8 +2795,8 @@ IOW, 子查询内部设定的​<i>关联名称</i>, 只能在该子查询内部
 </div>
 </div>
 
-<div id="outline-container-orgbe24934" class="outline-2">
-<h2 id="orgbe24934"><span class="section-number-2">10.</span> 函数</h2>
+<div id="outline-container-org3e42fa2" class="outline-2">
+<h2 id="org3e42fa2"><span class="section-number-2">10.</span> 函数</h2>
 <div class="outline-text-2" id="text-10">
 <p>
 函数可以大致分类为
@@ -2838,16 +2806,16 @@ IOW, 子查询内部设定的​<i>关联名称</i>, 只能在该子查询内部
 <li>字符串函数</li>
 <li>日期函数</li>
 <li>转换函数 (转换 数据类型​/​值)</li>
-<li>聚合函数 (在第<a href="#org2a4bda2">5.1</a>节已经介绍过)</li>
-<li><a href="#org2a45702">谓词</a> (后文介绍)</li>
+<li>聚合函数 (在第<a href="#orgdcaa791">5.1</a>节已经介绍过)</li>
+<li><a href="#orgad64dd8">谓词</a> (后文介绍)</li>
 </ul>
 <p>
 本章介绍​<i>聚合函数</i>​/​<i>谓词</i>​以外的常规函数.  (下文的“函数”一词仅指代这些会在本章介绍的函数.)
 </p>
 </div>
 
-<div id="outline-container-orgba0baa3" class="outline-3">
-<h3 id="orgba0baa3"><span class="section-number-3">10.1.</span> 算术函数</h3>
+<div id="outline-container-org8dd4cac" class="outline-3">
+<h3 id="org8dd4cac"><span class="section-number-3">10.1.</span> 算术函数</h3>
 <div class="outline-text-3" id="text-10-1">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;39&nbsp; </span>新建示例用表“SampleMath”</label><pre class="src src-sql"><span style="color: #5317ac;">CREATE</span> <span style="color: #5317ac;">TABLE</span> <span style="color: #721045;">SampleMath</span> <span style="color: #000000;">(</span>
@@ -2873,12 +2841,12 @@ IOW, 子查询内部设定的​<i>关联名称</i>, 只能在该子查询内部
 </div>
 
 <p>
-(<a href="#org3f722d5"><i>算术运算符</i></a>也可以被看作​<i>算术函数</i>, 下文将不再单独介绍.)
+(<a href="#orgafc34e5"><i>算术运算符</i></a>也可以被看作​<i>算术函数</i>, 下文将不再单独介绍.)
 </p>
 </div>
 
-<div id="outline-container-org23d1505" class="outline-4">
-<h4 id="org23d1505"><span class="section-number-4">10.1.1.</span> <code>ABS</code> 函数</h4>
+<div id="outline-container-org443ea20" class="outline-4">
+<h4 id="org443ea20"><span class="section-number-4">10.1.1.</span> <code>ABS</code> 函数</h4>
 <div class="outline-text-4" id="text-10-1-1">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;40&nbsp; </span><code>ABS</code> 函数的用法示例</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> <span style="color: #5317ac;">m</span>,
@@ -2889,8 +2857,8 @@ IOW, 子查询内部设定的​<i>关联名称</i>, 只能在该子查询内部
 </div>
 </div>
 
-<div id="outline-container-org8e35ae0" class="outline-4">
-<h4 id="org8e35ae0"><span class="section-number-4">10.1.2.</span> <code>MOD</code> 函数</h4>
+<div id="outline-container-org2e1510a" class="outline-4">
+<h4 id="org2e1510a"><span class="section-number-4">10.1.2.</span> <code>MOD</code> 函数</h4>
 <div class="outline-text-4" id="text-10-1-2">
 <p>
 就是数学中的 <i>modulo</i>.
@@ -2987,8 +2955,8 @@ IOW, 子查询内部设定的​<i>关联名称</i>, 只能在该子查询内部
 </div>
 </div>
 
-<div id="outline-container-orge0af4e3" class="outline-4">
-<h4 id="orge0af4e3"><span class="section-number-4">10.1.3.</span> <code>ROUND</code> 函数</h4>
+<div id="outline-container-orgdf65b32" class="outline-4">
+<h4 id="orgdf65b32"><span class="section-number-4">10.1.3.</span> <code>ROUND</code> 函数</h4>
 <div class="outline-text-4" id="text-10-1-3">
 <p>
 I.e., <i><b>四舍五入</b></i>.
@@ -3095,8 +3063,8 @@ N.b., PostgreSQL 中 <code>ROUND</code> 函数的 1st 参数只接受 <code>NUME
 </div>
 </div>
 
-<div id="outline-container-orgdce9c0c" class="outline-3">
-<h3 id="orgdce9c0c"><span class="section-number-3">10.2.</span> <code>[20%]</code> 字符串函数</h3>
+<div id="outline-container-org1e161de" class="outline-3">
+<h3 id="org1e161de"><span class="section-number-3">10.2.</span> <code>[20%]</code> 字符串函数</h3>
 <div class="outline-text-3" id="text-10-2">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;43&nbsp; </span>新建示例用表“SampleString”</label><pre class="src src-sql"><span style="color: #5317ac;">CREATE</span> <span style="color: #5317ac;">TABLE</span> <span style="color: #721045;">SampleString</span> <span style="color: #000000;">(</span>s1 <span style="color: #005a5f;">VARCHAR</span><span style="color: #a8007f;">(</span>40<span style="color: #a8007f;">)</span>,
@@ -3120,8 +3088,8 @@ N.b., PostgreSQL 中 <code>ROUND</code> 函数的 1st 参数只接受 <code>NUME
 </div>
 </div>
 
-<div id="outline-container-org4bb9cec" class="outline-4">
-<h4 id="org4bb9cec"><span class="section-number-4">10.2.1.</span> <span class="done DONE">DONE</span> 拼接字符串&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CONCAT">CONCAT</span></span></h4>
+<div id="outline-container-org465fccb" class="outline-4">
+<h4 id="org465fccb"><span class="section-number-4">10.2.1.</span> <span class="done DONE">DONE</span> 拼接字符串&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CONCAT">CONCAT</span></span></h4>
 <div class="outline-text-4" id="text-10-2-1">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;44&nbsp; </span>演示如何拼接字符串</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> s1, s2, s3,
@@ -3238,21 +3206,21 @@ N.b., <code>||</code> 并没有特殊对待 <code>NULL</code>, i.e., 若 <code>N
 </div>
 </div>
 
-<div id="outline-container-orgc16941e" class="outline-4">
-<h4 id="orgc16941e"><span class="section-number-4">10.2.2.</span> <span class="todo TODO">TODO</span> 获取字符串长度&#xa0;&#xa0;&#xa0;<span class="tag"><span class="LENGTH">LENGTH</span></span></h4>
+<div id="outline-container-orgc1c612c" class="outline-4">
+<h4 id="orgc1c612c"><span class="section-number-4">10.2.2.</span> <span class="todo TODO">TODO</span> 获取字符串长度&#xa0;&#xa0;&#xa0;<span class="tag"><span class="LENGTH">LENGTH</span></span></h4>
 </div>
-<div id="outline-container-org1864f4e" class="outline-4">
-<h4 id="org1864f4e"><span class="section-number-4">10.2.3.</span> <span class="todo TODO">TODO</span> 大小写转换&#xa0;&#xa0;&#xa0;<span class="tag"><span class="LOWER">LOWER</span>&#xa0;<span class="UPPER">UPPER</span></span></h4>
+<div id="outline-container-org7829d98" class="outline-4">
+<h4 id="org7829d98"><span class="section-number-4">10.2.3.</span> <span class="todo TODO">TODO</span> 大小写转换&#xa0;&#xa0;&#xa0;<span class="tag"><span class="LOWER">LOWER</span>&#xa0;<span class="UPPER">UPPER</span></span></h4>
 </div>
-<div id="outline-container-org214f392" class="outline-4">
-<h4 id="org214f392"><span class="section-number-4">10.2.4.</span> <span class="todo TODO">TODO</span> 文本替换&#xa0;&#xa0;&#xa0;<span class="tag"><span class="REPLACE">REPLACE</span></span></h4>
+<div id="outline-container-orgfbed08a" class="outline-4">
+<h4 id="orgfbed08a"><span class="section-number-4">10.2.4.</span> <span class="todo TODO">TODO</span> 文本替换&#xa0;&#xa0;&#xa0;<span class="tag"><span class="REPLACE">REPLACE</span></span></h4>
 </div>
-<div id="outline-container-orgf13a694" class="outline-4">
-<h4 id="orgf13a694"><span class="section-number-4">10.2.5.</span> <span class="todo TODO">TODO</span> 字符串的子串&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SUBSTRING">SUBSTRING</span></span></h4>
+<div id="outline-container-orgc406b15" class="outline-4">
+<h4 id="orgc406b15"><span class="section-number-4">10.2.5.</span> <span class="todo TODO">TODO</span> 字符串的子串&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SUBSTRING">SUBSTRING</span></span></h4>
 </div>
 </div>
-<div id="outline-container-orgfa4bd15" class="outline-3">
-<h3 id="orgfa4bd15"><span class="section-number-3">10.3.</span> <code>[0%]</code> 日期函数</h3>
+<div id="outline-container-orga7cf514" class="outline-3">
+<h3 id="orga7cf514"><span class="section-number-3">10.3.</span> <code>[0%]</code> 日期函数</h3>
 <div class="outline-text-3" id="text-10-3">
 <p>
 大部分​<i>日期函数</i>​的接口与行为都是实现相关的, 因此无法统一说明.
@@ -3260,25 +3228,25 @@ N.b., <code>||</code> 并没有特殊对待 <code>NULL</code>, i.e., 若 <code>N
 </p>
 </div>
 
-<div id="outline-container-org24cf0ca" class="outline-4">
-<h4 id="org24cf0ca"><span class="section-number-4">10.3.1.</span> <span class="todo TODO">TODO</span> 获取当前日期&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CURRENT_DATE">CURRENT_DATE</span></span></h4>
+<div id="outline-container-orged086d0" class="outline-4">
+<h4 id="orged086d0"><span class="section-number-4">10.3.1.</span> <span class="todo TODO">TODO</span> 获取当前日期&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CURRENT_DATE">CURRENT_DATE</span></span></h4>
 </div>
-<div id="outline-container-orgd836ca5" class="outline-4">
-<h4 id="orgd836ca5"><span class="section-number-4">10.3.2.</span> <span class="todo TODO">TODO</span> 获取当前时间&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CURRENT_TIME">CURRENT_TIME</span></span></h4>
+<div id="outline-container-org10b570d" class="outline-4">
+<h4 id="org10b570d"><span class="section-number-4">10.3.2.</span> <span class="todo TODO">TODO</span> 获取当前时间&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CURRENT_TIME">CURRENT_TIME</span></span></h4>
 </div>
-<div id="outline-container-orgedc1848" class="outline-4">
-<h4 id="orgedc1848"><span class="section-number-4">10.3.3.</span> <span class="todo TODO">TODO</span> 获取当前时间戳&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</span></span></h4>
+<div id="outline-container-orge2b8e2e" class="outline-4">
+<h4 id="orge2b8e2e"><span class="section-number-4">10.3.3.</span> <span class="todo TODO">TODO</span> 获取当前时间戳&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</span></span></h4>
 </div>
-<div id="outline-container-orgce9cf82" class="outline-4">
-<h4 id="orgce9cf82"><span class="section-number-4">10.3.4.</span> <span class="todo TODO">TODO</span> 提取指定时间单位的值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="EXTRACT">EXTRACT</span></span></h4>
+<div id="outline-container-org2a28659" class="outline-4">
+<h4 id="org2a28659"><span class="section-number-4">10.3.4.</span> <span class="todo TODO">TODO</span> 提取指定时间单位的值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="EXTRACT">EXTRACT</span></span></h4>
 </div>
 </div>
-<div id="outline-container-orgab87fb8" class="outline-3">
-<h3 id="orgab87fb8"><span class="section-number-3">10.4.</span> 转换函数</h3>
+<div id="outline-container-org3c27e5a" class="outline-3">
+<h3 id="org3c27e5a"><span class="section-number-3">10.4.</span> 转换函数</h3>
 <div class="outline-text-3" id="text-10-4">
 </div>
-<div id="outline-container-org47fb2e6" class="outline-4">
-<h4 id="org47fb2e6"><span class="section-number-4">10.4.1.</span> 数据类型的转换&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CAST">CAST</span></span></h4>
+<div id="outline-container-orgb55c47f" class="outline-4">
+<h4 id="orgb55c47f"><span class="section-number-4">10.4.1.</span> 数据类型的转换&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CAST">CAST</span></span></h4>
 <div class="outline-text-4" id="text-10-4-1">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;45&nbsp; </span><code>CAST</code> 函数的用法示例: 字符串 &rarr; 数值</label><pre class="src src-sql"><span style="color: #505050;">-- </span><span style="color: #505050;">SQL Server &#21644; PostgreSQL:</span>
@@ -3337,11 +3305,18 @@ N.b., <code>||</code> 并没有特殊对待 <code>NULL</code>, i.e., 若 <code>N
 </tr>
 </tbody>
 </table>
+
+<hr />
+
+<p>
+N.b., <b>书写 SQL 时必须要保证<a id="orgca63e9c"></a>查询结果中的所有行在同一列上的数据类型是一致的!*</b>
+这也是 <code>CAST</code> 函数的另一个用武之地.
+</p>
 </div>
 </div>
 
-<div id="outline-container-org60d5a68" class="outline-4">
-<h4 id="org60d5a68"><span class="section-number-4">10.4.2.</span> 返回第一个 non-<code>NULL</code> 值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="COALESCE">COALESCE</span></span></h4>
+<div id="outline-container-orgbb29faf" class="outline-4">
+<h4 id="orgbb29faf"><span class="section-number-4">10.4.2.</span> 返回第一个 non-<code>NULL</code> 值&#xa0;&#xa0;&#xa0;<span class="tag"><span class="COALESCE">COALESCE</span></span></h4>
 <div class="outline-text-4" id="text-10-4-2">
 <p>
 将 <code>NULL</code> 作为参数时, 绝大多数函数的返回值都仍是 <code>NULL</code>.
@@ -3470,16 +3445,16 @@ N.b., 在 PostgreSQL 中, <code>COALESCE</code> 函数只接受相同类型的�
 </div>
 </div>
 
-<div id="outline-container-org2a45702" class="outline-2">
-<h2 id="org2a45702"><span class="section-number-2">11.</span> 谓词</h2>
+<div id="outline-container-orgad64dd8" class="outline-2">
+<h2 id="orgad64dd8"><span class="section-number-2">11.</span> 谓词</h2>
 <div class="outline-text-2" id="text-11">
 <p>
-谓词 (predicate) 就是返回值是 <a href="#org6caa96b"><i>boolean</i></a> 的函数, e.g., <a href="#org7f72118">比较运算符</a>就被称为​<i>比较谓词</i>.
+谓词 (predicate) 就是返回值是 <a href="#orgc96348d"><i>boolean</i></a> 的函数, e.g., <a href="#orge05294a">比较运算符</a>就被称为​<i>比较谓词</i>.
 </p>
 </div>
 
-<div id="outline-container-orgc30ab02" class="outline-3">
-<h3 id="orgc30ab02"><span class="section-number-3">11.1.</span> 字符串的模式匹配&#xa0;&#xa0;&#xa0;<span class="tag"><span class="LIKE">LIKE</span></span></h3>
+<div id="outline-container-org4adf697" class="outline-3">
+<h3 id="org4adf697"><span class="section-number-3">11.1.</span> 字符串的模式匹配&#xa0;&#xa0;&#xa0;<span class="tag"><span class="LIKE">LIKE</span></span></h3>
 <div class="outline-text-3" id="text-11-1">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;49&nbsp; </span>新建示例用表“SampleLike”</label><pre class="src src-sql"><span style="color: #5317ac;">CREATE</span> <span style="color: #5317ac;">TABLE</span> <span style="color: #721045;">SampleLike</span> <span style="color: #000000;">(</span>s <span style="color: #005a5f;">VARCHAR</span><span style="color: #a8007f;">(</span>6<span style="color: #a8007f;">)</span> <span style="color: #5317ac;">PRIMARY</span> <span style="color: #5317ac;">KEY</span><span style="color: #000000;">)</span>;
@@ -3496,8 +3471,8 @@ N.b., 在 PostgreSQL 中, <code>COALESCE</code> 函数只接受相同类型的�
 </div>
 </div>
 
-<div id="outline-container-org9df5ea3" class="outline-4">
-<h4 id="org9df5ea3"><span class="section-number-4">11.1.1.</span> 视为任意文本的通配符</h4>
+<div id="outline-container-org48cdda0" class="outline-4">
+<h4 id="org48cdda0"><span class="section-number-4">11.1.1.</span> 视为任意文本的通配符</h4>
 <div class="outline-text-4" id="text-11-1-1">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;50&nbsp; </span>通配符 <code>'%'</code> 的用法示例</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> s <span style="color: #5317ac;">AS</span> " ddd&#8230;" <span style="color: #5317ac;">FROM</span> SampleLike <span style="color: #5317ac;">WHERE</span> s <span style="color: #5317ac;">LIKE</span> <span style="color: #2544bb;">'ddd%'</span> ; \qecho
@@ -3574,8 +3549,8 @@ N.b., 在 PostgreSQL 中, <code>COALESCE</code> 函数只接受相同类型的�
 </div>
 </div>
 
-<div id="outline-container-org383d81e" class="outline-4">
-<h4 id="org383d81e"><span class="section-number-4">11.1.2.</span> 视为单一字符的通配符</h4>
+<div id="outline-container-orgc3ee8a9" class="outline-4">
+<h4 id="orgc3ee8a9"><span class="section-number-4">11.1.2.</span> 视为单一字符的通配符</h4>
 <div class="outline-text-4" id="text-11-1-2">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;51&nbsp; </span>通配符 <code>'_'</code> 的用法示例</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> s <span style="color: #5317ac;">AS</span> "abc__ " <span style="color: #5317ac;">FROM</span> SampleLike <span style="color: #5317ac;">WHERE</span> s <span style="color: #5317ac;">LIKE</span> <span style="color: #2544bb;">'abc__'</span> ; \qecho
@@ -3616,8 +3591,8 @@ N.b., 在 PostgreSQL 中, <code>COALESCE</code> 函数只接受相同类型的�
 </div>
 </div>
 
-<div id="outline-container-org4172234" class="outline-3">
-<h3 id="org4172234"><span class="section-number-3">11.2.</span> 值是否在​<i>闭区间</i>​内&#xa0;&#xa0;&#xa0;<span class="tag"><span class="BETWEEN">BETWEEN</span></span></h3>
+<div id="outline-container-org37da489" class="outline-3">
+<h3 id="org37da489"><span class="section-number-3">11.2.</span> 值是否在​<i>闭区间</i>​内&#xa0;&#xa0;&#xa0;<span class="tag"><span class="BETWEEN">BETWEEN</span></span></h3>
 <div class="outline-text-3" id="text-11-2">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;52&nbsp; </span>选取 \( 100 \le \text{售价} \le 1000 \) 的商品</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_name,
@@ -3671,8 +3646,8 @@ N.b., 在 PostgreSQL 中, <code>COALESCE</code> 函数只接受相同类型的�
 </div>
 </div>
 
-<div id="outline-container-org8cbe8e6" class="outline-3">
-<h3 id="org8cbe8e6"><span class="section-number-3">11.3.</span> 值是否为 <code>NULL</code>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="IS">IS</span>&#xa0;<span class="NOT">NOT</span>&#xa0;<span class="NULL">NULL</span></span></h3>
+<div id="outline-container-orgdcc5c11" class="outline-3">
+<h3 id="orgdcc5c11"><span class="section-number-3">11.3.</span> 值是否为 <code>NULL</code>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="IS">IS</span>&#xa0;<span class="NOT">NOT</span>&#xa0;<span class="NULL">NULL</span></span></h3>
 <div class="outline-text-3" id="text-11-3">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;53&nbsp; </span>仅选取记录了“进价”的商品</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_name, purchase_price
@@ -3740,11 +3715,11 @@ N.b., 在 PostgreSQL 中, <code>COALESCE</code> 函数只接受相同类型的�
 </div>
 </div>
 
-<div id="outline-container-org1eb7326" class="outline-3">
-<h3 id="org1eb7326"><span class="section-number-3">11.4.</span> 值是否在集合中&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NOT">NOT</span>&#xa0;<span class="IN">IN</span></span></h3>
+<div id="outline-container-org3602c5e" class="outline-3">
+<h3 id="org3602c5e"><span class="section-number-3">11.4.</span> 值是否在集合中&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NOT">NOT</span>&#xa0;<span class="IN">IN</span></span></h3>
 <div class="outline-text-3" id="text-11-4">
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;54&nbsp; </span>选出“进价”是 \( 320 \)/\( 500 \)/\( 5000 \)元 的商品</label><pre class="src src-sql" id="orgcc6c19f"><span style="color: #5317ac;">SELECT</span> product_name,
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;54&nbsp; </span>选出“进价”是 \( 320 \)/\( 500 \)/\( 5000 \)元 的商品</label><pre class="src src-sql" id="org61e9810"><span style="color: #5317ac;">SELECT</span> product_name,
        purchase_price
 <span style="color: #5317ac;">FROM</span> Products
 <span style="color: #5317ac;">WHERE</span> purchase_price <span style="color: #5317ac;">IN</span> <span style="color: #000000;">(</span>320, 500, 5000<span style="color: #000000;">)</span>;
@@ -3784,7 +3759,7 @@ N.b., 在 PostgreSQL 中, <code>COALESCE</code> 函数只接受相同类型的�
 </table>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;55&nbsp; </span>选出“进价”不是 \( 320 \)/\( 500 \)/\( 5000 \)元 的商品</label><pre class="src src-sql" id="orgf230a50"><span style="color: #5317ac;">SELECT</span> product_name,
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;55&nbsp; </span>选出“进价”不是 \( 320 \)/\( 500 \)/\( 5000 \)元 的商品</label><pre class="src src-sql" id="org02343f3"><span style="color: #5317ac;">SELECT</span> product_name,
        purchase_price
 <span style="color: #5317ac;">FROM</span> Products
 <span style="color: #5317ac;">WHERE</span> purchase_price <span style="color: #5317ac;">NOT</span> <span style="color: #5317ac;">IN</span> <span style="color: #000000;">(</span>320, 500, 5000<span style="color: #000000;">)</span>;
@@ -3834,15 +3809,15 @@ N.b., 在 PostgreSQL 中, <code>COALESCE</code> 函数只接受相同类型的�
 </table>
 </div>
 
-<div id="outline-container-org09fa8b3" class="outline-4">
-<h4 id="org09fa8b3"><span class="section-number-4">11.4.1.</span> <code>IN</code> 无法判断值是否为 <code>NULL</code>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span></h4>
+<div id="outline-container-orgae0f611" class="outline-4">
+<h4 id="orgae0f611"><span class="section-number-4">11.4.1.</span> <code>IN</code> 无法判断值是否为 <code>NULL</code>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="NULL">NULL</span></span></h4>
 <div class="outline-text-4" id="text-11-4-1">
 <p>
 不管是 <code>IN</code> 还是 <code>NOT IN</code> 都无法判断值是否为 <code>NULL</code>.
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;56&nbsp; </span>将前文中 <a href="#orgcc6c19f"><code>IN</code> 的例子</a>和 <a href="#orgf230a50"><code>NOT IN</code> 的例子</a>中的行数相加, 会发现并不等于 \( \text{商品总数} \)</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> <span style="color: #000000;">(</span><span style="color: #5317ac;">SELECT</span> <span style="color: #8f0075;">COUNT</span><span style="color: #a8007f;">(</span>*<span style="color: #a8007f;">)</span>
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;56&nbsp; </span>将前文中 <a href="#org61e9810"><code>IN</code> 的例子</a>和 <a href="#org02343f3"><code>NOT IN</code> 的例子</a>中的行数相加, 会发现并不等于 \( \text{商品总数} \)</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> <span style="color: #000000;">(</span><span style="color: #5317ac;">SELECT</span> <span style="color: #8f0075;">COUNT</span><span style="color: #a8007f;">(</span>*<span style="color: #a8007f;">)</span>
         <span style="color: #5317ac;">FROM</span> Products
         <span style="color: #5317ac;">WHERE</span> purchase_price <span style="color: #5317ac;">IN</span> <span style="color: #a8007f;">(</span>320, 500, 5000<span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>
        + <span style="color: #000000;">(</span><span style="color: #5317ac;">SELECT</span> <span style="color: #8f0075;">COUNT</span><span style="color: #a8007f;">(</span>*<span style="color: #a8007f;">)</span>
@@ -3874,7 +3849,7 @@ N.b., 在 PostgreSQL 中, <code>COALESCE</code> 函数只接受相同类型的�
 <hr />
 
 <p>
-但集合中是可以含 <code>NULL</code> 的, 根据<a href="#org6caa96b">真值表</a>计算布尔值即可.
+但集合中是可以含 <code>NULL</code> 的, 根据<a href="#orgc96348d">真值表</a>计算布尔值即可.
 E.g.,
 </p>
 
@@ -3918,8 +3893,8 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-org8944ac9" class="outline-4">
-<h4 id="org8944ac9"><span class="section-number-4">11.4.2.</span> 将​<i>子查询</i>​作为 <code>IN</code> 的宾语&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SELECT">SELECT</span></span></h4>
+<div id="outline-container-org7d2cff3" class="outline-4">
+<h4 id="org7d2cff3"><span class="section-number-4">11.4.2.</span> 将​<i>子查询</i>​作为 <code>IN</code> 的宾语&#xa0;&#xa0;&#xa0;<span class="tag"><span class="SELECT">SELECT</span></span></h4>
 <div class="outline-text-4" id="text-11-4-2">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;57&nbsp; </span>新建示例用表“ShopsInventory”</label><pre class="src src-sql"><span style="color: #5317ac;">CREATE</span> <span style="color: #5317ac;">TABLE</span> <span style="color: #721045;">ShopsInventory</span> <span style="color: #000000;">(</span>
@@ -3998,8 +3973,8 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-orgfda6f6d" class="outline-3">
-<h3 id="orgfda6f6d"><span class="section-number-3">11.5.</span> 表中是否存在记录&#xa0;&#xa0;&#xa0;<span class="tag"><span class="EXISTS">EXISTS</span></span></h3>
+<div id="outline-container-org35179bd" class="outline-3">
+<h3 id="org35179bd"><span class="section-number-3">11.5.</span> 表中是否存在记录&#xa0;&#xa0;&#xa0;<span class="tag"><span class="EXISTS">EXISTS</span></span></h3>
 <div class="outline-text-3" id="text-11-5">
 <p>
 <code>EXISTS</code>​/​<code>NOT EXISTS</code> 用于判断表是否非空 (i.e., \( \text{行数} \gt 0 \)).
@@ -4056,12 +4031,12 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-org68a567a" class="outline-2">
-<h2 id="org68a567a"><span class="section-number-2">12.</span> 条件分支&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CASE">CASE</span>&#xa0;<span class="WHEN">WHEN</span>&#xa0;<span class="THEN">THEN</span>&#xa0;<span class="ELSE">ELSE</span>&#xa0;<span class="END">END</span></span></h2>
+<div id="outline-container-org268c007" class="outline-2">
+<h2 id="org268c007"><span class="section-number-2">12.</span> 条件分支&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CASE">CASE</span>&#xa0;<span class="WHEN">WHEN</span>&#xa0;<span class="THEN">THEN</span>&#xa0;<span class="ELSE">ELSE</span>&#xa0;<span class="END">END</span></span></h2>
 <div class="outline-text-2" id="text-12">
 </div>
-<div id="outline-container-orgd271301" class="outline-3">
-<h3 id="orgd271301"><span class="section-number-3">12.1.</span> 搜索型 <code>CASE</code> 表达式</h3>
+<div id="outline-container-orga214a6f" class="outline-3">
+<h3 id="orga214a6f"><span class="section-number-3">12.1.</span> 搜索型 <code>CASE</code> 表达式</h3>
 <div class="outline-text-3" id="text-12-1">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;60&nbsp; </span>搜索型 <code>CASE</code> 表达式的基本结构</label><pre class="src src-sql"><span style="color: #5317ac;">CASE</span>
@@ -4185,8 +4160,8 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-org909bcf2" class="outline-3">
-<h3 id="org909bcf2"><span class="section-number-3">12.2.</span> 简单 <code>CASE</code> 表达式</h3>
+<div id="outline-container-orgf8fc670" class="outline-3">
+<h3 id="orgf8fc670"><span class="section-number-3">12.2.</span> 简单 <code>CASE</code> 表达式</h3>
 <div class="outline-text-3" id="text-12-2">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;63&nbsp; </span>简单 <code>CASE</code> 表达式的基本结构</label><pre class="src src-sql"><span style="color: #5317ac;">CASE</span> &lt;&#34920;&#36798;&#24335;_Z&gt;
@@ -4218,8 +4193,8 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-orga73e3e4" class="outline-3">
-<h3 id="orga73e3e4"><span class="section-number-3">12.3.</span> <span class="todo TODO">TODO</span> <span class="priority">[C]</span> 某些方言特有的条件分支&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DECODE">DECODE</span>&#xa0;<span class="IF">IF</span></span></h3>
+<div id="outline-container-org5a062be" class="outline-3">
+<h3 id="org5a062be"><span class="section-number-3">12.3.</span> <span class="todo TODO">TODO</span> <span class="priority">[C]</span> 某些方言特有的条件分支&#xa0;&#xa0;&#xa0;<span class="tag"><span class="DECODE">DECODE</span>&#xa0;<span class="IF">IF</span></span></h3>
 <div class="outline-text-3" id="text-12-3">
 <ul class="org-ul">
 <li>Oracle 中的 <code>DECODE</code> 函数</li>
@@ -4229,12 +4204,12 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-orgc4a90e4" class="outline-2">
-<h2 id="orgc4a90e4"><span class="section-number-2">13.</span> 集合运算</h2>
+<div id="outline-container-org8ae13b8" class="outline-2">
+<h2 id="org8ae13b8"><span class="section-number-2">13.</span> 多表查询</h2>
 <div class="outline-text-2" id="text-13">
 </div>
-<div id="outline-container-org1e1ae96" class="outline-3">
-<h3 id="org1e1ae96"><span class="section-number-3">13.1.</span> 表的加减法</h3>
+<div id="outline-container-orgf6c1acc" class="outline-3">
+<h3 id="orgf6c1acc"><span class="section-number-3">13.1.</span> 表的加减法</h3>
 <div class="outline-text-3" id="text-13-1">
 <p>
 此处的“加减法”指的是对​<b>查询结果</b><sup><a id="fnr.58" class="footref" href="#fn.58" role="doc-backlink">58</a></sup>作
@@ -4245,8 +4220,8 @@ E.g.,
 <li>差集 <code>EXCEPT</code></li>
 </ul>
 <p>
-运算.
-可以想象成将两张表<a id="org1ede76c"></a>纵向拼接的 \( 3 \) 种方式<sup><a id="fnr.59" class="footref" href="#fn.59" role="doc-backlink">59</a></sup>, 因此, 需要保证两张表的结构相同<sup><a id="fnr.60" class="footref" href="#fn.60" role="doc-backlink">60</a></sup>:
+运算, <b>这些运算符的​<i>结合性</i>​同数学</b>.
+可以想象成将两张表<a id="org2fd85a1"></a>纵向拼接的 \( 3 \) 种方式<sup><a id="fnr.59" class="footref" href="#fn.59" role="doc-backlink">59</a></sup>, 因此, 需要保证两张表的结构相同<sup><a id="fnr.60" class="footref" href="#fn.60" role="doc-backlink">60</a></sup>:
 </p>
 <ul class="org-ul">
 <li>列数相同;</li>
@@ -4257,8 +4232,8 @@ E.g.,
 和数学中的集合运算一样, 运算结果中
 </p>
 <ul class="org-ul">
-<li><span class="underline">不包含重复行, 除非在​<i>集合运算符</i>​后书写 <code>ALL</code> 关键字.</span></li>
-<li>行与行之间没有顺序关系, 因此, <b><code>ORDER BY</code> 子句只能写成最后一句, 作用于整个运算结果<sup><a id="fnr.62" class="footref" href="#fn.62" role="doc-backlink">62</a></sup>.</b></li>
+<li><span class="underline">不包含重复行, 除非在​<i>集合运算符</i>​后书写 <code>ALL</code> 关键字.<sup><a id="fnr.62" class="footref" href="#fn.62" role="doc-backlink">62</a></sup></span></li>
+<li>行与行之间没有顺序关系, 因此, <b><code>ORDER BY</code> 子句只能写成最后一句, 作用于整个运算结果<sup><a id="fnr.63" class="footref" href="#fn.63" role="doc-backlink">63</a></sup>.</b></li>
 </ul>
 
 <div class="org-src-container">
@@ -4282,8 +4257,8 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-orgf45144c" class="outline-4">
-<h4 id="orgf45144c"><span class="section-number-4">13.1.1.</span> 表的加法&#xa0;&#xa0;&#xa0;<span class="tag"><span class="UNION">UNION</span></span></h4>
+<div id="outline-container-org5a47a80" class="outline-4">
+<h4 id="org5a47a80"><span class="section-number-4">13.1.1.</span> 表的加法&#xa0;&#xa0;&#xa0;<span class="tag"><span class="UNION">UNION</span></span></h4>
 <div class="outline-text-4" id="text-13-1-1">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;65&nbsp; </span>合并“Products”和“Products2”</label><pre class="src src-sql">  <span style="color: #5317ac;">SELECT</span> product_id, product_name
@@ -4297,8 +4272,8 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-org1c3f7cb" class="outline-4">
-<h4 id="org1c3f7cb"><span class="section-number-4">13.1.2.</span> 选取同时出现在多张表中的行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="INTERSECT">INTERSECT</span></span></h4>
+<div id="outline-container-orge2fd598" class="outline-4">
+<h4 id="orge2fd598"><span class="section-number-4">13.1.2.</span> 选取同时出现在多张表中的行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="INTERSECT">INTERSECT</span></span></h4>
 <div class="outline-text-4" id="text-13-1-2">
 <p>
 (MySQL 尚不支持该功能.)
@@ -4315,8 +4290,8 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-orgb3ecc8a" class="outline-4">
-<h4 id="orgb3ecc8a"><span class="section-number-4">13.1.3.</span> 排除也出现在其它表中的行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="EXCEPT">EXCEPT</span>&#xa0;<span class="MINUS">MINUS</span></span></h4>
+<div id="outline-container-org7dc04a9" class="outline-4">
+<h4 id="org7dc04a9"><span class="section-number-4">13.1.3.</span> 排除也出现在其它表中的行&#xa0;&#xa0;&#xa0;<span class="tag"><span class="EXCEPT">EXCEPT</span>&#xa0;<span class="MINUS">MINUS</span></span></h4>
 <div class="outline-text-4" id="text-13-1-3">
 <p>
 (MySQL 尚不支持该功能; Oracle 使用 <code>MINUS</code> 关键字而非 <code>EXCEPT</code>.)
@@ -4334,20 +4309,20 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-org0e80081" class="outline-3">
-<h3 id="org0e80081"><span class="section-number-3">13.2.</span> 联结: 表的多种乘法&#xa0;&#xa0;&#xa0;<span class="tag"><span class="JOIN">JOIN</span>&#xa0;<span class="ON">ON</span></span></h3>
+<div id="outline-container-org5de1fba" class="outline-3">
+<h3 id="org5de1fba"><span class="section-number-3">13.2.</span> 联结: 表的多种乘法&#xa0;&#xa0;&#xa0;<span class="tag"><span class="JOIN">JOIN</span>&#xa0;<span class="ON">ON</span></span></h3>
 <div class="outline-text-3" id="text-13-2">
 <p>
 可以把​<i>联结</i>​想象成将两张表横向拼接<sup><a id="fnr.59.100" class="footref" href="#fn.59" role="doc-backlink">59</a></sup>.
-作为对比, “<a href="#org1ede76c">纵向拼接</a>”要求列数相同, 而​<i>联结</i>​对行数没有要求.
+作为对比, “<a href="#org2fd85a1">纵向拼接</a>”要求列数相同, 而​<i>联结</i>​对行数没有要求.
 </p>
 </div>
 
-<div id="outline-container-org1334b96" class="outline-4">
-<h4 id="org1334b96"><span class="section-number-4">13.2.1.</span> 内联结&#xa0;&#xa0;&#xa0;<span class="tag"><span class="INNER">INNER</span></span></h4>
+<div id="outline-container-org528d214" class="outline-4">
+<h4 id="org528d214"><span class="section-number-4">13.2.1.</span> 内联结&#xa0;&#xa0;&#xa0;<span class="tag"><span class="INNER">INNER</span></span></h4>
 <div class="outline-text-4" id="text-13-2-1">
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;68&nbsp; </span>整合“ShopsInventory”表和“Products”表的数据, 取出 商品的部分信息 与 各家店中该商品的在售数量.  <span class="underline">若某条记录表明, 某店正在销售的商品不在“Products”表​<b>内</b> / 某商品不被“ShopsInventory”表​<b>内</b>​的任何一家店铺售卖, 则忽略该条记录.</span></label><pre class="src src-sql" id="org68d9f7a"> <span style="color: #5317ac;">SELECT</span> shop_id, shop_name,
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;68&nbsp; </span>整合“ShopsInventory”表和“Products”表的数据, 取出 商品的部分信息 与 各家店中该商品的在售数量.  <span class="underline">若某条记录表明, 某店正在销售的商品不在“Products”表​<b>内</b> / 某商品不被“ShopsInventory”表​<b>内</b>​的任何一家店铺售卖, 则忽略该条记录.</span></label><pre class="src src-sql" id="orgf7e4fc9"> <span style="color: #5317ac;">SELECT</span> shop_id, shop_name,
         ShopsInventory.product_id,
         product_name, sale_price
 <span style="color: #5317ac;">FROM</span> ShopsInventory  <span style="color: #505050;">-- </span><span style="color: #505050;">&#32852;&#32467;&#38190;: vvvvvvvvvv                  vvvvvvvvvv</span>
@@ -4488,18 +4463,18 @@ E.g.,
 </table>
 
 <p>
-(上述的内联结示例代码还有一种过时的写法, 见脚注<sup><a id="fnr.63" class="footref" href="#fn.63" role="doc-backlink">63</a></sup>.  虽然能在所有的 RDBMS 中执行, 但早晚会被淘汰.)
+(上述的内联结示例代码还有一种过时的写法, 见脚注<sup><a id="fnr.64" class="footref" href="#fn.64" role="doc-backlink">64</a></sup>.  虽然能在所有的 RDBMS 中执行, 但早晚会被淘汰.)
 </p>
 
 <p>
-联结时, <code>ON</code> 子句指出​<b><i>联结条件</i></b><sup><a id="fnr.64" class="footref" href="#fn.64" role="doc-backlink">64</a></sup>, <i>联结条件</i>​所涉及的列称为​<b><i>联结键</i></b>.
+联结时, <code>ON</code> 子句指出​<b><i>联结条件</i></b><sup><a id="fnr.65" class="footref" href="#fn.65" role="doc-backlink">65</a></sup>, <i>联结条件</i>​所涉及的列称为​<b><i>联结键</i></b>.
 <code>INNER JOIN &lt;表名&gt; ON</code> 必须写在 <code>FROM</code> 子句中, 因为它也是用来指出从哪张表中选取记录的.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgbc0f4b4" class="outline-4">
-<h4 id="orgbc0f4b4"><span class="section-number-4">13.2.2.</span> 外联结&#xa0;&#xa0;&#xa0;<span class="tag"><span class="OUTER">OUTER</span>&#xa0;<span class="LEFT">LEFT</span>&#xa0;<span class="RIGHT">RIGHT</span></span></h4>
+<div id="outline-container-orgd0f329f" class="outline-4">
+<h4 id="orgd0f329f"><span class="section-number-4">13.2.2.</span> 外联结&#xa0;&#xa0;&#xa0;<span class="tag"><span class="OUTER">OUTER</span>&#xa0;<span class="LEFT">LEFT</span>&#xa0;<span class="RIGHT">RIGHT</span></span></h4>
 <div class="outline-text-4" id="text-13-2-2">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;69&nbsp; </span>整合“ShopsInventory”表和“Products”表的数据, 取出 商品的部分信息 与 各家店中该商品的在售数量.  若某条记录表明, 某店正在销售的商品在“Products”表以​<b>外</b> <del>某商品只被“ShopsInventory”表以​<b>外</b>​的店铺售卖</del>, 则忽略该条记录.</label><pre class="src src-sql"> <span style="color: #5317ac;">SELECT</span> shop_id, shop_name,
@@ -4673,18 +4648,18 @@ E.g.,
 </table>
 
 <p>
-上述结果与<a href="#orgb3f4b59">内联结的查询示例</a>的结果相比, 不同点显而易见:
+上述结果与<a href="#org2151e42">内联结的查询示例</a>的结果相比, 不同点显而易见:
 <i>右外联结</i>​的查询结果引用了“Products”表中的​<b>所有</b>​记录.
 </p>
 
 <p>
-<i>左/​右外联结</i>​以 <code>OUTER JOIN</code> 左​/​右侧的表为​<b><i>主表</i></b>; <i>主表</i>​中的所有记录都会被外联结的查询结果所引用.<sup><a id="fnr.65" class="footref" href="#fn.65" role="doc-backlink">65</a></sup>
+<i>左/​右外联结</i>​以 <code>OUTER JOIN</code> 左​/​右侧的表为​<b><i>主表</i></b>; <i>主表</i>​中的所有记录都会被外联结的查询结果所引用.<sup><a id="fnr.66" class="footref" href="#fn.66" role="doc-backlink">66</a></sup>
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgb066d5f" class="outline-4">
-<h4 id="orgb066d5f"><span class="section-number-4">13.2.3.</span> 交叉联结&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CROSS">CROSS</span></span></h4>
+<div id="outline-container-org66e8c61" class="outline-4">
+<h4 id="org66e8c61"><span class="section-number-4">13.2.3.</span> 交叉联结&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CROSS">CROSS</span></span></h4>
 <div class="outline-text-4" id="text-13-2-3">
 <p>
 <i>交叉联结</i>​是所有联结运算的基础.
@@ -4751,14 +4726,14 @@ E.g.,
 <code>INNER</code> 与 <code>OUTER</code> 的解释:
 </p>
 <ul class="org-ul">
-<li><a href="#org1334b96"><i>内联结</i></a>是​<i>交叉联结</i>​的结果的​<i><b>子</b>​集</i>;</li>
-<li><a href="#orgbc0f4b4"><i>外联结</i></a>是​<i>交叉联结</i>​的结果的​<i><b>超</b>​集</i>.</li>
+<li><a href="#org528d214"><i>内联结</i></a>是​<i>交叉联结</i>​的结果的​<i><b>子</b>​集</i>;</li>
+<li><a href="#orgd0f329f"><i>外联结</i></a>是​<i>交叉联结</i>​的结果的​<i><b>超</b>​集</i>.</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1730ffc" class="outline-4">
-<h4 id="org1730ffc"><span class="section-number-4">13.2.4.</span> 联结三张以上的表</h4>
+<div id="outline-container-org8ab9817" class="outline-4">
+<h4 id="org8ab9817"><span class="section-number-4">13.2.4.</span> 联结三张以上的表</h4>
 <div class="outline-text-4" id="text-13-2-4">
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;71&nbsp; </span>新建示例用表“WarehouseInventory”: 货仓库存</label><pre class="src src-sql"><span style="color: #5317ac;">CREATE</span> <span style="color: #5317ac;">TABLE</span> <span style="color: #721045;">WarehouseInventory</span> <span style="color: #000000;">(</span>
@@ -4803,11 +4778,11 @@ E.g.,
 </div>
 </div>
 
-<div id="outline-container-orgdcf1f81" class="outline-3">
-<h3 id="orgdcf1f81"><span class="section-number-3">13.3.</span> <span class="todo TODO">TODO</span> 关系代数中的除法操作</h3>
+<div id="outline-container-org34daf22" class="outline-3">
+<h3 id="org34daf22"><span class="section-number-3">13.3.</span> 关系代数中的除法操作</h3>
 <div class="outline-text-3" id="text-13-3">
 <p>
-集合运算中的除法通常称为 <i>Division Operation in Relational Algebra</i>, SQL 并没有定义类似地运算符.
+集合运算中的除法通常称为 <i>Division Operation in Relational Algebra</i>, SQL 并没有定义类似的运算符.
 不过, 我们可以使用已有的 SQL 关键字来实现这种运算, e.g.,
 </p>
 
@@ -4855,23 +4830,911 @@ E.g.,
 <div class="org-src-container">
 <label class="org-src-name"><span class="listing-number">&#20195;&#30721;75&nbsp; </span>有资格升职的员工</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> <span style="color: #5317ac;">DISTINCT</span> employee
 <span style="color: #5317ac;">FROM</span> EmployeesSkills <span style="color: #5317ac;">AS</span> ES1
-<span style="color: #5317ac;">WHERE</span> <span style="color: #5317ac;">NOT</span> <span style="color: #5317ac;">EXISTS</span> <span style="color: #000000;">(</span>  <span style="color: #5317ac;">SELECT</span> skill
-                    <span style="color: #5317ac;">FROM</span> PromotionNeededSkills
-                  <span style="color: #5317ac;">EXCEPT</span>
-                    <span style="color: #5317ac;">SELECT</span> skill
-                    <span style="color: #5317ac;">FROM</span> EmployeesSkills <span style="color: #5317ac;">AS</span> ES2
-                  <span style="color: #5317ac;">WHERE</span> ES1.employee = ES2.employee<span style="color: #000000;">)</span>;
+<span style="color: #5317ac;">WHERE</span> <span style="color: #5317ac;">NOT</span> <span style="color: #5317ac;">EXISTS</span> <span style="color: #000000;">(</span><span style="color: #5317ac;">SELECT</span> skill
+                  <span style="color: #5317ac;">FROM</span> PromotionNeededSkills
+                <span style="color: #5317ac;">EXCEPT</span>
+                  <span style="color: #5317ac;">SELECT</span> skill
+                  <span style="color: #5317ac;">FROM</span> EmployeesSkills <span style="color: #5317ac;">AS</span> ES2
+                <span style="color: #5317ac;">WHERE</span> ES1.employee = ES2.employee<span style="color: #000000;">)</span>;
 </pre>
 </div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8d6bcdc" class="outline-2">
+<h2 id="org8d6bcdc"><span class="section-number-2">14.</span> OLAP</h2>
+<div class="outline-text-2" id="text-14">
+<p>
+全称 <i>OnLine Analytical Processing</i>.
+</p>
+</div>
+
+<div id="outline-container-org45d6351" class="outline-3">
+<h3 id="org45d6351"><span class="section-number-3">14.1.</span> 窗口函数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="OVER">OVER</span>&#xa0;<span class="PARTITION">PARTITION</span>&#xa0;<span class="BY">BY</span>&#xa0;<span class="ORDER">ORDER</span>&#xa0;<span class="BY">BY</span>&#xa0;<span class="ASC">ASC</span>&#xa0;<span class="DESC">DESC</span></span></h3>
+<div class="outline-text-3" id="text-14-1">
+<p>
+有时需要对表中的记录进行分类<sup><a id="fnr.67" class="footref" href="#fn.67" role="doc-backlink">67</a></sup>但不汇总 (i.e., 行数不变<sup><a id="fnr.68" class="footref" href="#fn.68" role="doc-backlink">68</a></sup>), 我们称该操作为 <i>partition</i>, 称 同一类别下的记录 属于一个 <i>window</i><sup><a id="fnr.69" class="footref" href="#fn.69" role="doc-backlink">69</a></sup>.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;76&nbsp; </span><i>window function</i> 的语法</label><pre class="src src-sql">&lt;&#31383;&#21475;&#20989;&#25968;&gt;<span style="color: #000000;">(</span>&#21442;&#25968;&#8230;<span style="color: #000000;">)</span> OVER <span style="color: #000000;">(</span>
+  <span style="color: #a8007f;">[</span>PARTITION <span style="color: #5317ac;">BY</span> &lt;&#20379; partition &#21442;&#32771;&#30340;&#21015;&#28165;&#21333;&gt;<span style="color: #a8007f;">]</span>
+       <span style="color: #5317ac;">ORDER</span> <span style="color: #5317ac;">BY</span> &lt;&#20379;   &#25490;&#24207;    &#21442;&#32771;&#30340;&#21015;&#28165;&#21333;&gt; <span style="color: #a8007f;">[</span><span style="color: #5317ac;">ASC</span>|<span style="color: #5317ac;">DESC</span><span style="color: #a8007f;">]</span>
+  <span style="color: #a8007f;">[</span><span style="color: #5317ac;">ROWS</span> &#8230; PRECEDING|FOLLOWING &#8230;<span style="color: #a8007f;">]</span>    <span style="color: #505050;">-- </span><span style="color: #505050;">&#40664;&#35748;: ^^^</span>
+<span style="color: #000000;">)</span> <span style="color: #505050;">-- </span><span style="color: #505050;">^^^^^^^^^^^^^^^^^^^^^^^^ &#20379;&#20805;&#24403;&#31383;&#21475;&#20989;&#25968;&#30340;&#32858;&#21512;&#20989;&#25968;&#20351;&#29992;</span>
+</pre>
+</div>
+
+<p>
+<b><i>窗口函数</i></b>​就是为了实现 OLAP 而添加的标准 SQL 功能, 因此又称 <i>OLAP 函数</i><sup><a id="fnr.70" class="footref" href="#fn.70" role="doc-backlink">70</a></sup>.
+</p>
+</div>
+
+<div id="outline-container-org364ffb5" class="outline-4">
+<h4 id="org364ffb5"><span class="section-number-4">14.1.1.</span> <span class="priority">[A]</span> 专用窗口函数<sup><a id="fnr.71" class="footref" href="#fn.71" role="doc-backlink">71</a></sup></h4>
+<div class="outline-text-4" id="text-14-1-1">
+</div>
+<ol class="org-ol">
+<li><a id="org8049b95"></a>为每一行提供有序编号&#xa0;&#xa0;&#xa0;<span class="tag"><span class="RANK">RANK</span>&#xa0;<span class="ROW_NUMBER">ROW_NUMBER</span>&#xa0;<span class="DENSE_RANK">DENSE_RANK</span></span><br />
+<div class="outline-text-5" id="text-14-1-1-1">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_name, product_type, sale_price,
+       RANK<span style="color: #000000;">()</span> OVER <span style="color: #000000;">(</span>PARTITION <span style="color: #5317ac;">BY</span> product_type <span style="color: #5317ac;">ORDER</span> <span style="color: #5317ac;">BY</span> sale_price<span style="color: #000000;">)</span>
+<span style="color: #5317ac;">FROM</span> Products;
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">product<sub>name</sub></th>
+<th scope="col" class="org-left">product<sub>type</sub></th>
+<th scope="col" class="org-right">sale<sub>price</sub></th>
+<th scope="col" class="org-right">rank</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">No name</td>
+<td class="org-left">Other Type</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-left">印章</td>
+<td class="org-left">办公用品</td>
+<td class="org-right">95</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-left">圆珠笔</td>
+<td class="org-left">办公用品</td>
+<td class="org-right">100</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-left">打孔器</td>
+<td class="org-left">办公用品</td>
+<td class="org-right">500</td>
+<td class="org-right">3</td>
+</tr>
+
+<tr>
+<td class="org-left">叉子</td>
+<td class="org-left">厨房用具</td>
+<td class="org-right">500</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-left">擦菜板</td>
+<td class="org-left">厨房用具</td>
+<td class="org-right">880</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-left">菜刀</td>
+<td class="org-left">厨房用具</td>
+<td class="org-right">3000</td>
+<td class="org-right">3</td>
+</tr>
+
+<tr>
+<td class="org-left">高压锅</td>
+<td class="org-left">厨房用具</td>
+<td class="org-right">6800</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-left">T恤衫</td>
+<td class="org-left">衣服</td>
+<td class="org-right">1000</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-left">运动T恤</td>
+<td class="org-left">衣服</td>
+<td class="org-right">4000</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-left">羽绒服</td>
+<td class="org-left">衣服</td>
+<td class="org-right">19600</td>
+<td class="org-right">3</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+上述代码中, 我们
+</p>
+<ul class="org-ul">
+<li>使用 <code>PARTITION BY</code>, 将记录按照 <code>product_type</code> 分隔成多个窗口;</li>
+<li>然后使用 <code>ORDER BY</code>, 分别为各窗口内的记录按照 <code>sale_price</code> 的升序提供编号.</li>
+</ul>
+<p>
+N.b.,
+</p>
+<pre class="example">
+RANK() OVER (… ORDER BY …)
+</pre>
+
+<p>
+并不保证查询结果中记录之间的顺序, 它只负责提供编号.<sup><a id="fnr.72" class="footref" href="#fn.72" role="doc-backlink">72</a></sup>
+</p>
+
+<hr />
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;77&nbsp; </span>\( 3 \) 种常见的编号方式: <code>RANK</code>, <code>ROW_NUMBER</code>, and <code>DENSE_RANK</code></label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_name, sale_price,
+             RANK<span style="color: #000000;">()</span> OVER <span style="color: #000000;">(</span><span style="color: #5317ac;">ORDER</span> <span style="color: #5317ac;">BY</span> sale_price<span style="color: #000000;">)</span>,
+       ROW_NUMBER<span style="color: #000000;">()</span> OVER <span style="color: #000000;">(</span><span style="color: #5317ac;">ORDER</span> <span style="color: #5317ac;">BY</span> sale_price<span style="color: #000000;">)</span>,
+       DENSE_RANK<span style="color: #000000;">()</span> OVER <span style="color: #000000;">(</span><span style="color: #5317ac;">ORDER</span> <span style="color: #5317ac;">BY</span> sale_price<span style="color: #000000;">)</span>
+<span style="color: #5317ac;">FROM</span> Products
+<span style="color: #5317ac;">WHERE</span> sale_price <span style="color: #5317ac;">BETWEEN</span> 100 <span style="color: #5317ac;">AND</span> 999;
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">product<sub>name</sub></th>
+<th scope="col" class="org-right">sale<sub>price</sub></th>
+<th scope="col" class="org-right">rank</th>
+<th scope="col" class="org-right">row<sub>number</sub></th>
+<th scope="col" class="org-right">dense<sub>rank</sub></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">圆珠笔</td>
+<td class="org-right">100</td>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-left">打孔器</td>
+<td class="org-right">500</td>
+<td class="org-right">2</td>
+<td class="org-right">2</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-left">叉子</td>
+<td class="org-right">500</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-left">擦菜板</td>
+<td class="org-right">880</td>
+<td class="org-right">4</td>
+<td class="org-right">4</td>
+<td class="org-right">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ol>
+</div>
+
+<div id="outline-container-org2a22977" class="outline-4">
+<h4 id="org2a22977"><span class="section-number-4">14.1.2.</span> <span class="priority">[B]</span> 书写​<i>窗口函数</i>​的位置</h4>
+<div class="outline-text-4" id="text-14-1-2">
+<p>
+通常是书写在 <code>SELECT</code> 子句中.<sup><a id="fnr.73" class="footref" href="#fn.73" role="doc-backlink">73</a></sup>
+</p>
+
+<p>
+IOW, 它不能在 <code>WHERE</code>​/​<code>GROUP BY</code> 子句中使用.  <br />
+这是因为, 在 RDBMS 内部, <i>窗口函数</i>​是对 <code>WHERE</code>​/​<code>GROUP BY</code> 子句处理后的“结果”进行的操作.
+以 <code>RANK</code> 为例, 在得到用户想要的结果之前, 即使进行了排序处理以获取编号, 那样的编号也是错误的; 在得到编号之后, 如果通过 <code>WHERE</code> 子句过滤掉了某些记录, 或者使
+用 <code>GROUP BY</code> 子句进行了汇总处理, 那么先前得到的排序结果就没有参考价值了.  <br />
+也正因如此, 在 <code>SELECT</code> 子句之外使用​<i>窗口函数</i>​是没有意义的.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3917782" class="outline-4">
+<h4 id="org3917782"><span class="section-number-4">14.1.3.</span> <span class="priority">[A]</span> <i>聚合函数</i>​充当窗口函数&#xa0;&#xa0;&#xa0;<span class="tag"><span class="COUNT">COUNT</span>&#xa0;<span class="AVG">AVG</span>&#xa0;<span class="SUM">SUM</span>&#xa0;<span class="MIN">MIN</span>&#xa0;<span class="MAX">MAX</span></span></h4>
+<div class="outline-text-4" id="text-14-1-3">
+<p>
+只有部分​<i>聚合函数</i>​能作为​<i>窗口函数</i>​使用<sup><a id="fnr.74" class="footref" href="#fn.74" role="doc-backlink">74</a></sup>, 本节仅以 <code>AVG</code> 举例.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;78&nbsp; </span>以“当前记录”为基准, 计算 \( \text{product_id} \le \text{当前的 product_id} \) 的商品们的平均售价</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_id, product_name, sale_price,
+       <span style="color: #8f0075;">AVG</span><span style="color: #000000;">(</span>sale_price<span style="color: #000000;">)</span> OVER <span style="color: #000000;">(</span><span style="color: #5317ac;">ORDER</span> <span style="color: #5317ac;">BY</span> product_id<span style="color: #000000;">)</span>,  <span style="color: #505050;">-- </span><span style="color: #505050;">&#8216;AVG&#8217;&#20381;&#26087;&#20250;&#24573;&#35270;&#8216;NULL&#8217;&#20540;.</span>
+       <span style="color: #2544bb;">'&#21069; '</span> || <span style="color: #8f0075;">CAST</span><span style="color: #000000;">(</span>ROW_NUMBER<span style="color: #a8007f;">()</span> OVER <span style="color: #a8007f;">(</span><span style="color: #5317ac;">ORDER</span> <span style="color: #5317ac;">BY</span> product_id<span style="color: #a8007f;">)</span>
+                     <span style="color: #5317ac;">AS</span> <span style="color: #005a5f;">VARCHAR</span><span style="color: #000000;">)</span> || <span style="color: #2544bb;">' &#20214;&#21830;&#21697;&#30340;&#24179;&#22343;&#21806;&#20215;'</span>
+<span style="color: #5317ac;">FROM</span> Products
+<span style="color: #5317ac;">ORDER</span> <span style="color: #5317ac;">BY</span> product_id;
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">product<sub>id</sub></th>
+<th scope="col" class="org-left">product<sub>name</sub></th>
+<th scope="col" class="org-right">sale<sub>price</sub></th>
+<th scope="col" class="org-right">avg</th>
+<th scope="col" class="org-left">?column?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">0001</td>
+<td class="org-left">T恤衫</td>
+<td class="org-right">1000</td>
+<td class="org-right">1000.0000000000000000</td>
+<td class="org-left">前 1 件商品的平均售价</td>
+</tr>
+
+<tr>
+<td class="org-right">0002</td>
+<td class="org-left">打孔器</td>
+<td class="org-right">500</td>
+<td class="org-right">750.0000000000000000</td>
+<td class="org-left">前 2 件商品的平均售价</td>
+</tr>
+
+<tr>
+<td class="org-right">0003</td>
+<td class="org-left">运动T恤</td>
+<td class="org-right">4000</td>
+<td class="org-right">1833.3333333333333333</td>
+<td class="org-left">前 3 件商品的平均售价</td>
+</tr>
+
+<tr>
+<td class="org-right">0004</td>
+<td class="org-left">菜刀</td>
+<td class="org-right">3000</td>
+<td class="org-right">2125.0000000000000000</td>
+<td class="org-left">前 4 件商品的平均售价</td>
+</tr>
+
+<tr>
+<td class="org-right">0005</td>
+<td class="org-left">高压锅</td>
+<td class="org-right">6800</td>
+<td class="org-right">3060.0000000000000000</td>
+<td class="org-left">前 5 件商品的平均售价</td>
+</tr>
+
+<tr>
+<td class="org-right">0006</td>
+<td class="org-left">叉子</td>
+<td class="org-right">500</td>
+<td class="org-right">2633.3333333333333333</td>
+<td class="org-left">前 6 件商品的平均售价</td>
+</tr>
+
+<tr>
+<td class="org-right">0007</td>
+<td class="org-left">擦菜板</td>
+<td class="org-right">880</td>
+<td class="org-right">2382.8571428571428571</td>
+<td class="org-left">前 7 件商品的平均售价</td>
+</tr>
+
+<tr>
+<td class="org-right">0008</td>
+<td class="org-left">圆珠笔</td>
+<td class="org-right">100</td>
+<td class="org-right">2097.5000000000000000</td>
+<td class="org-left">前 8 件商品的平均售价</td>
+</tr>
+
+<tr>
+<td class="org-right">0009</td>
+<td class="org-left">印章</td>
+<td class="org-right">95</td>
+<td class="org-right">1875.0000000000000000</td>
+<td class="org-left">前 9 件商品的平均售价</td>
+</tr>
+
+<tr>
+<td class="org-right">1001</td>
+<td class="org-left">No name</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">1875.0000000000000000</td>
+<td class="org-left">前 10 件商品的平均售价</td>
+</tr>
+
+<tr>
+<td class="org-right">1010</td>
+<td class="org-left">羽绒服</td>
+<td class="org-right">19600</td>
+<td class="org-right">3647.5000000000000000</td>
+<td class="org-left">前 11 件商品的平均售价</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<ol class="org-ol">
+<li><a id="orgcbe78b0"></a>在​<i>窗口</i>​中滑动​<i>框架</i>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ROWS">ROWS</span>&#xa0;<span class="PRECEDING">PRECEDING</span>&#xa0;<span class="FOLLOWING">FOLLOWING</span>&#xa0;<span class="BETWEEN">BETWEEN</span>&#xa0;<span class="AND">AND</span></span><br />
+<div class="outline-text-5" id="text-14-1-3-1">
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;79&nbsp; </span>计算“Products”表中 上方两个 和 自身 的平均售价 (i.e., 统计学中的​<i>移动平均</i>)</label><pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> product_id, product_name, sale_price,
+       <span style="color: #8f0075;">AVG</span><span style="color: #000000;">(</span>sale_price<span style="color: #000000;">)</span> OVER <span style="color: #000000;">(</span><span style="color: #5317ac;">ORDER</span> <span style="color: #5317ac;">BY</span> product_id
+                             <span style="color: #5317ac;">ROWS</span> 2 PRECEDING<span style="color: #000000;">)</span> <span style="color: #5317ac;">AS</span> "moving average"
+<span style="color: #5317ac;">FROM</span> Products;
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">product<sub>id</sub></th>
+<th scope="col" class="org-left">product<sub>name</sub></th>
+<th scope="col" class="org-right">sale<sub>price</sub></th>
+<th scope="col" class="org-right">moving average</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">0001</td>
+<td class="org-left">T恤衫</td>
+<td class="org-right">1000</td>
+<td class="org-right">1000.0000000000000000</td>
+</tr>
+
+<tr>
+<td class="org-right">0002</td>
+<td class="org-left">打孔器</td>
+<td class="org-right">500</td>
+<td class="org-right">750.0000000000000000</td>
+</tr>
+
+<tr>
+<td class="org-right">0003</td>
+<td class="org-left">运动T恤</td>
+<td class="org-right">4000</td>
+<td class="org-right">1833.3333333333333333</td>
+</tr>
+
+<tr>
+<td class="org-right">0004</td>
+<td class="org-left">菜刀</td>
+<td class="org-right">3000</td>
+<td class="org-right">2500.0000000000000000</td>
+</tr>
+
+<tr>
+<td class="org-right">0005</td>
+<td class="org-left">高压锅</td>
+<td class="org-right">6800</td>
+<td class="org-right">4600.0000000000000000</td>
+</tr>
+
+<tr>
+<td class="org-right">0006</td>
+<td class="org-left">叉子</td>
+<td class="org-right">500</td>
+<td class="org-right">3433.3333333333333333</td>
+</tr>
+
+<tr>
+<td class="org-right">0007</td>
+<td class="org-left">擦菜板</td>
+<td class="org-right">880</td>
+<td class="org-right">2726.6666666666666667</td>
+</tr>
+
+<tr>
+<td class="org-right">0008</td>
+<td class="org-left">圆珠笔</td>
+<td class="org-right">100</td>
+<td class="org-right">493.3333333333333333</td>
+</tr>
+
+<tr>
+<td class="org-right">0009</td>
+<td class="org-left">印章</td>
+<td class="org-right">95</td>
+<td class="org-right">358.3333333333333333</td>
+</tr>
+
+<tr>
+<td class="org-right">1001</td>
+<td class="org-left">No name</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">97.5000000000000000</td>
+</tr>
+
+<tr>
+<td class="org-right">1010</td>
+<td class="org-left">羽绒服</td>
+<td class="org-right">19600</td>
+<td class="org-right">9847.5000000000000000</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<i>框架</i>​宽度为 \( 3 \) 且包含当前记录时, <code>ROWS</code> 子句有三种写法:
+</p>
+<ul class="org-ul">
+<li><pre class="example">
+ROWS 2 PRECEDING
+</pre>
+
+<p>
+上上一个 + 上一个 + 当前记录.
+</p></li>
+<li><pre class="example">
+ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING
+</pre>
+
+<p>
+上一个 + 当前记录 + 下一个.
+</p></li>
+<li><pre class="example">
+ROWS 2 FOLLOWING
+</pre>
+
+<p>
+当前记录 + 下一个 + 下下一个.
+</p></li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org4ecd3f5" class="outline-3">
+<h3 id="org4ecd3f5"><span class="section-number-3">14.2.</span> 大分组复用小分组&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUP">GROUP</span>&#xa0;<span class="BY">BY</span></span></h3>
+<div class="outline-text-3" id="text-14-2">
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;80&nbsp; </span>计算出小分组与大分组的售价总和</label><pre class="src src-sql">  <span style="color: #5317ac;">SELECT</span> <span style="color: #2544bb;">'&#25152;&#26377;&#21697;&#31867; &#21512;&#35745;'</span> <span style="color: #5317ac;">AS</span> product_type, <span style="color: #8f0075;">SUM</span><span style="color: #000000;">(</span>sale_price<span style="color: #000000;">)</span>
+  <span style="color: #5317ac;">FROM</span> Products
+<span style="color: #5317ac;">UNION</span> <span style="color: #5317ac;">ALL</span>
+  <span style="color: #5317ac;">SELECT</span> product_type || <span style="color: #2544bb;">' &#21512;&#35745;'</span>, <span style="color: #8f0075;">SUM</span><span style="color: #000000;">(</span>sale_price<span style="color: #000000;">)</span>
+  <span style="color: #5317ac;">FROM</span> Products
+  <span style="color: #5317ac;">GROUP</span> <span style="color: #5317ac;">BY</span> product_type;
+</pre>
+</div>
+
+<p>
+注意到, 上述代码中的大分组 (i.e., 所有品类下的商品的售价的总和) 其实就是所有小分组 (i.e., 单个品类下的商品的售价的总和) 的总和.
+IOW, 计算大分组时, 我们或许应该寻找某种能复用小分组的计算结果的方法, 从而避免重新地扫描整张表.
+</p>
+
+<p>
+为了解决类似的问题, 标准 SQL 引入了 \( 3 \) 个 <code>GROUPING</code> <i>运算符</i>:
+</p>
+<ul class="org-ul">
+<li><code>ROLLUP</code></li>
+<li><code>CUBE</code></li>
+<li><code>GROUPING SETS</code></li>
+</ul>
+</div>
+
+<div id="outline-container-org909b31a" class="outline-4">
+<h4 id="org909b31a"><span class="section-number-4">14.2.1.</span> 由小计得出合计&#xa0;&#xa0;&#xa0;<span class="tag"><span class="ROLLUP">ROLLUP</span></span></h4>
+<div class="outline-text-4" id="text-14-2-1">
+<p>
+我们可以使用
+</p>
+<pre class="example">
+GROUP BY ROLLUP(列名_1, 列名_2, …)
+</pre>
+
+<p>
+计算出小分组, 再根据小分组计算出中分组, 再根据中分组计算出更大的分组的售价总和:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;81&nbsp; </span>计算: &bull; <span class="underline">各品类下不同日期</span>​登记的商品售价的总和; &bull; <span class="underline">各品类下所有日期</span>​登记的商品售价的总和; &bull; <span class="underline">所有品类下所有日期</span>​登记的商品售价的总和</label><pre class="src src-sql" id="org3688e59">  <span style="color: #5317ac;">SELECT</span> product_type,
+         regist_date,
+         <span style="color: #8f0075;">SUM</span><span style="color: #000000;">(</span>sale_price<span style="color: #000000;">)</span>
+  <span style="color: #5317ac;">FROM</span> Products
+<span style="color: #505050;">-- </span><span style="color: #505050;">Oracle, SQL Server, DB2, and PostgreSQL:</span>
+  <span style="color: #5317ac;">GROUP</span> <span style="color: #5317ac;">BY</span> <span style="color: #5317ac;">ROLLUP</span><span style="color: #000000;">(</span>product_type, regist_date<span style="color: #000000;">)</span> <span style="color: #505050;">/*</span>
+<span style="color: #505050;">MySQL:</span>
+<span style="color: #505050;">  GROUP BY product_type, regist_date WITH ROLLUP</span>
+<span style="color: #505050;">*/</span>;
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">product<sub>type</sub></th>
+<th scope="col" class="org-right">regist<sub>date</sub></th>
+<th scope="col" class="org-right">sum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">36475</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">Other Type</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">办公用品</td>
+<td class="org-right">2009-11-30</td>
+<td class="org-right">95</td>
+</tr>
+
+<tr>
+<td class="org-left">衣服</td>
+<td class="org-right">2023-12-21</td>
+<td class="org-right">19600</td>
+</tr>
+
+<tr>
+<td class="org-left">衣服</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">4000</td>
+</tr>
+
+<tr>
+<td class="org-left">厨房用具</td>
+<td class="org-right">2008-04-28</td>
+<td class="org-right">880</td>
+</tr>
+
+<tr>
+<td class="org-left">衣服</td>
+<td class="org-right">2009-09-20</td>
+<td class="org-right">1000</td>
+</tr>
+
+<tr>
+<td class="org-left">办公用品</td>
+<td class="org-right">2009-11-11</td>
+<td class="org-right">100</td>
+</tr>
+
+<tr>
+<td class="org-left">厨房用具</td>
+<td class="org-right">2009-01-15</td>
+<td class="org-right">6800</td>
+</tr>
+
+<tr>
+<td class="org-left">办公用品</td>
+<td class="org-right">2009-09-11</td>
+<td class="org-right">500</td>
+</tr>
+
+<tr>
+<td class="org-left">厨房用具</td>
+<td class="org-right">2009-09-20</td>
+<td class="org-right">3500</td>
+</tr>
+
+<tr>
+<td class="org-left">衣服</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">24600</td>
+</tr>
+
+<tr>
+<td class="org-left">Other Type</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">办公用品</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">695</td>
+</tr>
+
+<tr>
+<td class="org-left">厨房用具</td>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">11180</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+从结果中看, 上述代码相当于分别执行了
+</p>
+<ol class="org-ol">
+<li><p>
+按“品类”和“登记日期”分组
+</p>
+<pre class="example">
+GROUP BY product_type, regist_date
+</pre></li>
+<li><p>
+按“品类”分组
+</p>
+<pre class="example">
+GROUP BY product_type
+</pre></li>
+<li><p>
+不分组
+</p>
+<pre class="example">
+GROUP BY ()
+</pre></li>
+</ol>
+<p>
+这三种情况下的聚合查询.
+</p>
+
+<p>
+由此容易得出 <span class="underline"><code>GROUP BY ROLLUP(聚合键清单)</code> 会按 &vert;聚合键清单&vert;+1 种方式对表进行分组</span>, 从最细粒度的聚合集逐步扩大到将整个表作为一个聚合单位.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbc41f1d" class="outline-4">
+<h4 id="orgbc41f1d"><span class="section-number-4">14.2.2.</span> 超级分组记录&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUPING">GROUPING</span></span></h4>
+<div class="outline-text-4" id="text-14-2-2">
+<p>
+之前提到过<a href="#org8b07586">不要在 <code>SELECT</code> 子句中包含非聚合键的列</a>, 而代码<a href="#org3c60af4">2</a>却作为特例无视这一规则.
+</p>
+
+<p>
+E.g., 在
+</p>
+<pre class="example">
+GROUP BY ROLLUP(product_type, regist_date)
+</pre>
+
+<p>
+所产生的一种分组方式
+</p>
+<pre class="example">
+GROUP BY product_type
+</pre>
+
+<p>
+中, <code>regist_date</code> 明显不是​<i>聚合键</i>, 但仍然出现在了 <code>SELECT</code> 子句中, RDBMS 也只好把它打印为 <code>NULL</code>, 我们将这样的记录称为 <i>super group row</i>.
+</p>
+
+<p>
+然而, 把 <code>regist_date</code> 打印为 <code>NULL</code> 是可能导致歧义的.
+因为在
+</p>
+<pre class="example">
+GROUP BY ROLLUP(product_type, regist_date)
+</pre>
+
+<p>
+所产生的另一种分组方式
+</p>
+<pre class="example">
+GROUP BY product_type, regist_date
+</pre>
+
+<p>
+中, <code>regist_date</code> 确实是​<i>聚合键</i>, 而且聚合后的值确实可能是 <code>NULL</code>, e.g., 代码<a href="#org3c60af4">2</a>的结果中就出现了两条符合
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>product_type</code></td>
+<td class="org-left"><code>regist_date</code></td>
+</tr>
+
+<tr>
+<td class="org-left">衣服</td>
+<td class="org-left"><code>NULL</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>
+的记录.
+这样, 我们就分辨不出哪条才是 <i>super group row</i> 了.
+</p>
+
+<p>
+为了避免这样的混淆, 我们可以使用 <code>GROUPING</code> 函数判断 <code>SELECT</code> 子句中的某列
+</p>
+<ul class="org-ul">
+<li>若使该条记录成为 <i>super group row</i>, 则返回 \( 1 \);</li>
+<li>否则返回 \( 0 \).</li>
+</ul>
+
+<p>
+将代码<a href="#org3c60af4">2</a>修改一下, 使用 <code>GROUPING</code> 函数:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5317ac;">SELECT</span> <span style="color: #8f0075;">CAST</span><span style="color: #000000;">(</span><span style="color: #5317ac;">GROUPING</span><span style="color: #a8007f;">(</span>product_type<span style="color: #a8007f;">)</span> <span style="color: #5317ac;">AS</span> <span style="color: #005a5f;">CHAR</span><span style="color: #000000;">)</span> || <span style="color: #2544bb;">' '</span> || <span style="color: #8f0075;">COALESCE</span><span style="color: #000000;">(</span>product_type, <span style="color: #2544bb;">' '</span><span style="color: #000000;">)</span>,
+       <span style="color: #8f0075;">CAST</span><span style="color: #000000;">(</span><span style="color: #5317ac;">GROUPING</span><span style="color: #a8007f;">(</span>regist_date<span style="color: #a8007f;">)</span>  <span style="color: #5317ac;">AS</span> <span style="color: #005a5f;">CHAR</span><span style="color: #000000;">)</span> || <span style="color: #2544bb;">' '</span> || <span style="color: #8f0075;">COALESCE</span><span style="color: #000000;">(</span><span style="color: #8f0075;">CAST</span><span style="color: #a8007f;">(</span>regist_date <span style="color: #5317ac;">AS</span> <span style="color: #005a5f;">VARCHAR</span><span style="color: #a8007f;">)</span>, <span style="color: #2544bb;">' '</span><span style="color: #000000;">)</span>,
+       <span style="color: #8f0075;">SUM</span><span style="color: #000000;">(</span>sale_price<span style="color: #000000;">)</span>
+<span style="color: #5317ac;">FROM</span> Products
+<span style="color: #5317ac;">GROUP</span> <span style="color: #5317ac;">BY</span> <span style="color: #5317ac;">ROLLUP</span><span style="color: #000000;">(</span>product_type, regist_date<span style="color: #000000;">)</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf2e1aad" class="outline-4">
+<h4 id="orgf2e1aad"><span class="section-number-4">14.2.3.</span> &vert;幂集&vert;个分组方式&#xa0;&#xa0;&#xa0;<span class="tag"><span class="CUBE">CUBE</span></span></h4>
+<div class="outline-text-4" id="text-14-2-3">
+<p>
+<span class="underline"><code>GROUP BY CUBE(聚合键清单)</code> 会按 2<sup>&vert;聚合键清单&vert;</sup> 种方式对表进行分组</span>, e.g.,
+</p>
+<pre class="example">
+GROUP BY CUBE(product_type, regist_date)
+</pre>
+
+<p>
+将记录按照
+</p>
+<ul class="org-ul">
+<li><pre class="example">
+GROUP BY (                         )
+</pre></li>
+<li><pre class="example">
+GROUP BY (              regist_date)
+</pre></li>
+<li><pre class="example">
+GROUP BY (product_type             )
+</pre></li>
+<li><pre class="example">
+GROUP BY (product_type, regist_date)
+</pre></li>
+</ul>
+<p>
+这 \( 4 \) 种方式分组.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4142a14" class="outline-4">
+<h4 id="org4142a14"><span class="section-number-4">14.2.4.</span> 每种分组仅参考单个​<i>聚合键</i>&#xa0;&#xa0;&#xa0;<span class="tag"><span class="GROUPING">GROUPING</span>&#xa0;<span class="SETS">SETS</span></span></h4>
+<div class="outline-text-4" id="text-14-2-4">
+<p>
+<span class="underline"><code>GROUP BY GROUPING SETS(聚合键清单)</code> 会按 &vert;聚合键清单&vert; 种方式对表进行分组</span>, e.g.,
+</p>
+<pre class="example">
+GROUP BY GROUPING SETS(product_type, regist_date)
+</pre>
+
+<p>
+将记录按照
+</p>
+<ul class="org-ul">
+<li><pre class="example">
+GROUP BY (              regist_date)
+</pre></li>
+<li><pre class="example">
+GROUP BY (product_type             )
+</pre></li>
+</ul>
+<p>
+这两种方式分组.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5d39941" class="outline-2">
+<h2 id="org5d39941"><span class="section-number-2">15.</span> <span class="todo TODO">TODO</span> 应用程序通过 API 访问 RDBMS</h2>
+<div class="outline-text-2" id="text-15">
 <p>
 
 </p>
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">&#20195;&#30721;76&nbsp; </span>File Local Variables (如果不使用 Emacs, 请忽略它.)</label><pre class="src src-emacs-lisp">Local Variables&#58;
-eval: <span style="color: #000000;">(</span>w32-notification-close
-       <span style="color: #a8007f;">(</span>w32-notification-notify <span style="color: #8f0075;">:title</span> <span style="color: #2544bb;">"&#35835;&#21040;&#20102;&#31532; 276 &#39029;"</span>
-                                <span style="color: #8f0075;">:body</span> <span style="color: #2544bb;">" "</span><span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>
-eval: <span style="color: #000000;">(</span>browse-url-default-browser <span style="color: #2544bb;">"file://localhost/D:/Desktop/ToRead/SQL&#22522;&#30784;&#25945;&#31243;-MICK/TextBook.pdf"</span><span style="color: #000000;">)</span>
+<label class="org-src-name"><span class="listing-number">&#20195;&#30721;82&nbsp; </span>File Local Variables (非 Emacs 用户请忽略它)</label><pre class="src src-emacs-lisp">Local Variables&#58;
+eval: '<span style="color: #000000;">(</span>progn
+         <span style="color: #a8007f;">(</span>browse-url-default-browser <span style="color: #2544bb;">"file://localhost/D:/Desktop/ToRead/SQL&#22522;&#30784;&#25945;&#31243;-MICK/TextBook.pdf"</span><span style="color: #a8007f;">)</span>
+         <span style="color: #a8007f;">(</span>w32-notification-close
+          <span style="color: #005f88;">(</span>w32-notification-notify <span style="color: #8f0075;">:title</span> <span style="color: #2544bb;">"&#35835;&#21040;&#20102;&#31532; 296 &#39029;"</span>
+                                   <span style="color: #8f0075;">:body</span> <span style="color: #2544bb;">" "</span><span style="color: #005f88;">)</span><span style="color: #a8007f;">)</span><span style="color: #000000;">)</span>
 eval: <span style="color: #000000;">(</span><span style="color: #5317ac;">require</span> '<span style="color: #0000c0;">ob-sql</span><span style="color: #000000;">)</span>
 org-confirm-babel-evaluate: nil
 sql-postgres-program: <span style="color: #2544bb;">"D:/Progs/PostgreSQL/16/bin/psql.exe"</span>
@@ -4917,7 +5780,6 @@ End:
 </div>
 </div>
 </div>
-</div>
 <div id="footnotes">
 <h2 class="footnotes">&#33050;&#27880;: </h2>
 <div id="text-footnotes">
@@ -4930,7 +5792,7 @@ End:
 
 <div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">MySQL 中需要在 <code>--</code> 之后加空格, 否则不会被认为是注释.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5" role="doc-backlink">5</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">对于 <code>BEGIN TRANSACTION;</code> 这行, 在 MySQL 中使用 <code>START TRANSACTION;</code>; 在 Oracle 和 DB2 中不需要这句, 后文不再赘述.  见<a href="#orgd335f9c">7.4</a>.</p></div></div>
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5" role="doc-backlink">5</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">对于 <code>BEGIN TRANSACTION;</code> 这行, 在 MySQL 中使用 <code>START TRANSACTION;</code>; 在 Oracle 和 DB2 中不需要这句, 后文不再赘述.  见<a href="#org9f9e6ec">7.4</a>.</p></div></div>
 
 <div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6" role="doc-backlink">6</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">一个字符通常需要 1​-​3 bytes 来表示.</p></div></div>
 
@@ -4950,11 +5812,11 @@ End:
 
 <div class="footdef"><sup><a id="fn.14" class="footnum" href="#fnr.14" role="doc-backlink">14</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">有很多 RDBMS 把 <code>!=</code> 作为该运算符的同义词, 但这是不被标准 SQL 所承认的.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.15" class="footnum" href="#fnr.15" role="doc-backlink">15</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">该规则对<a href="#orgddd4f30">定长字符串</a>和<a href="#org461491d">可变长字符串</a>都适用.</p></div></div>
+<div class="footdef"><sup><a id="fn.15" class="footnum" href="#fnr.15" role="doc-backlink">15</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">该规则对<a href="#org0a77ba9">定长字符串</a>和<a href="#orgcb8d271">可变长字符串</a>都适用.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.16" class="footnum" href="#fnr.16" role="doc-backlink">16</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">参见 <a href="#org397a539"><code>Products</code> 的建表语句</a>.</p></div></div>
+<div class="footdef"><sup><a id="fn.16" class="footnum" href="#fnr.16" role="doc-backlink">16</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">参见 <a href="#orgfcc74fc"><code>Products</code> 的建表语句</a>.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.17" class="footnum" href="#fnr.17" role="doc-backlink">17</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">更具体的分析, <a href="#org6caa96b">参见后文</a></p></div></div>
+<div class="footdef"><sup><a id="fn.17" class="footnum" href="#fnr.17" role="doc-backlink">17</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">更具体的分析, <a href="#orgc96348d">参见后文</a></p></div></div>
 
 <div class="footdef"><sup><a id="fn.18" class="footnum" href="#fnr.18" role="doc-backlink">18</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">当指定单分组列时, 从结果上看, <code>SELECT regist_date FROM Products GROUP BY regist_date;</code> 与 <code>SELECT DISTINCT regist_date FROM Products;</code> 是一样的 (包括它们对待 <code>NULL</code> 的方式), 甚至执行速度<sup><a id="fnr.19" class="footref" href="#fn.19" role="doc-backlink">19</a></sup>也差不多.  但是它们的​<i>语义</i>​不一样, 注意根据实际意义选择合适的写法, 不要本末倒置.</p></div></div>
 
@@ -4970,7 +5832,7 @@ End:
 
 <div class="footdef"><sup><a id="fn.24" class="footnum" href="#fnr.24" role="doc-backlink">24</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">不确定是否可以在 <code>SELECT</code> 子句的 后半部分 中引用 前半部分 定义的别名, 见 <a href="https://stackoverflow.com/q/77709854/20212483">Question: “Can I use alias name in <code>SELECT</code> clause?”</a>.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.25" class="footnum" href="#fnr.25" role="doc-backlink">25</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">其实这是容易推理出来的, <a href="#org7157e4e">前文</a>说过, <code>GROUP BY</code> 子句可以指定多个分组列.  如果这些列的某一种组合中包含一个 <code>NULL</code> 列, 从情理上讲, 我们当然不应该舍弃这种组合; 而按照单列进行分组, 不过是按照多列的组合来进行分组的一种特例.</p></div></div>
+<div class="footdef"><sup><a id="fn.25" class="footnum" href="#fnr.25" role="doc-backlink">25</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">其实这是容易推理出来的, <a href="#orgab2dc4f">前文</a>说过, <code>GROUP BY</code> 子句可以指定多个分组列.  如果这些列的某一种组合中包含一个 <code>NULL</code> 列, 从情理上讲, 我们当然不应该舍弃这种组合; 而按照单列进行分组, 不过是按照多列的组合来进行分组的一种特例.</p></div></div>
 
 <div class="footdef"><sup><a id="fn.26" class="footnum" href="#fnr.26" role="doc-backlink">26</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">这与语法所规定的书写顺序并不相同.  就是这样的, SQL 的书写顺序 和 RDBMS 内部的执行顺序并不相同.</p></div></div>
 
@@ -4990,7 +5852,7 @@ End:
 
 <div class="footdef"><sup><a id="fn.34" class="footnum" href="#fnr.34" role="doc-backlink">34</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">1992 年制定的 SQL 标准.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.35" class="footnum" href="#fnr.35" role="doc-backlink">35</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">但也仅仅是原则而已, 其实很多 RDBMS 都支持一次性插入多行数据, 这样的功能称为“multi row <code>INSERT</code>​”.  See <a href="#org198c6df">7.1.1.3</a>.</p></div></div>
+<div class="footdef"><sup><a id="fn.35" class="footnum" href="#fnr.35" role="doc-backlink">35</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">但也仅仅是原则而已, 其实很多 RDBMS 都支持一次性插入多行数据, 这样的功能称为“multi row <code>INSERT</code>​”.  See <a href="#orgff856b2">7.1.1.3</a>.</p></div></div>
 
 <div class="footdef"><sup><a id="fn.36" class="footnum" href="#fnr.36" role="doc-backlink">36</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">在书写没有参照表的 <code>SELECT</code> 语句时, 写在 <code>FROM</code> 子句中的表并没有实际意义.  它不保存任何数据, 不能作为 <code>INSERT</code>​/​<code>UPDATE</code> 的宾语.</p></div></div>
 
@@ -4998,7 +5860,7 @@ End:
 
 <div class="footdef"><sup><a id="fn.38" class="footnum" href="#fnr.38" role="doc-backlink">38</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">虽说如此, 但使用 <code>ORDER BY</code> 是没有意义的, 因为无法保证表内部记录的顺序与插入顺序是一致的.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.39" class="footnum" href="#fnr.39" role="doc-backlink">39</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">若要将整个表连同数据都删除, 参见<a href="#org5675572">3.3</a>.</p></div></div>
+<div class="footdef"><sup><a id="fn.39" class="footnum" href="#fnr.39" role="doc-backlink">39</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">若要将整个表连同数据都删除, 参见<a href="#org32d6795">3.3</a>.</p></div></div>
 
 <div class="footdef"><sup><a id="fn.40" class="footnum" href="#fnr.40" role="doc-backlink">40</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">与 <code>SELECT</code> 语句不同的是, <code>DELETE</code> 语句中不能使用 <code>GROUP BY</code>, <code>HAVING</code>, 和 <code>ORDER BY</code> 三类子句, 而只能使用 <code>WHERE</code> 子句.  因为 <code>GROUP BY</code> 和 <code>HAVING</code> 是用来改变查询时的数据抽取形式的, <code>ORDER BY</code> 是用来指定取得的结果的显示顺序的, 而在删除旧行时, 这些子句都起不到什么作用.</p></div></div>
 
@@ -5010,25 +5872,25 @@ End:
 
 <div class="footdef"><sup><a id="fn.44" class="footnum" href="#fnr.44" role="doc-backlink">44</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">实际上, <code>DELETE</code> 语句的耗时在 DML 中确实算比较久的.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.45" class="footnum" href="#fnr.45" role="doc-backlink">45</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">See <a href="#orgd81af3a">4.2.2</a> for <code>WHERE</code> 子句的语法.</p></div></div>
+<div class="footdef"><sup><a id="fn.45" class="footnum" href="#fnr.45" role="doc-backlink">45</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">See <a href="#org2c7c1ef">4.2.2</a> for <code>WHERE</code> 子句的语法.</p></div></div>
 
 <div class="footdef"><sup><a id="fn.46" class="footnum" href="#fnr.46" role="doc-backlink">46</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">为什么不能使用 <code>ORDER BY</code> 子句呢?  因为视图和表一样, 行都是没有顺序的.  虽然有些 RDBMS 没有该限制, 但这并不是通用的语法.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.47" class="footnum" href="#fnr.47" role="doc-backlink">47</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">第<a href="#org9c01c6f">4</a>章只介绍了如何查询 \( 1 \) 张表的数据, 实际上 \( 1 \) 条 <code>SELECT</code> 语句可以同时查询多张表.</p></div></div>
+<div class="footdef"><sup><a id="fn.47" class="footnum" href="#fnr.47" role="doc-backlink">47</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">第<a href="#org25d8232">4</a>章只介绍了如何查询 \( 1 \) 张表的数据, 实际上 \( 1 \) 条 <code>SELECT</code> 语句可以同时查询多张表.</p></div></div>
 
 <div class="footdef"><sup><a id="fn.48" class="footnum" href="#fnr.48" role="doc-backlink">48</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">所以肯定也没使用 <code>HAVING</code> 子句.</p></div></div>
 
 <div class="footdef"><sup><a id="fn.49" class="footnum" href="#fnr.49" role="doc-backlink">49</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">DB2 和 MySQL 等其它 RDBMS 则不需要.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.50" class="footnum" href="#fnr.50" role="doc-backlink">50</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">所以, 子查询当然也是可以嵌套的, 就像<a href="#org31a2ed3">视图“ProductsTypeInfoOffice”</a>那样.</p></div></div>
+<div class="footdef"><sup><a id="fn.50" class="footnum" href="#fnr.50" role="doc-backlink">50</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">所以, 子查询当然也是可以嵌套的, 就像<a href="#org77ecfac">视图“ProductsTypeInfoOffice”</a>那样.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.51" class="footnum" href="#fnr.51" role="doc-backlink">51</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">除了<a href="#org686b6bb">标量子查询</a>, 其余主要是写到 <code>FROM</code> 子句中.</p></div></div>
+<div class="footdef"><sup><a id="fn.51" class="footnum" href="#fnr.51" role="doc-backlink">51</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">除了<a href="#org7ab945f">标量子查询</a>, 其余主要是写到 <code>FROM</code> 子句中.</p></div></div>
 
 <div class="footdef"><sup><a id="fn.52" class="footnum" href="#fnr.52" role="doc-backlink">52</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">不考虑用来显示列的名字的那一行.</p></div></div>
 
 <div class="footdef"><sup><a id="fn.53" class="footnum" href="#fnr.53" role="doc-backlink">53</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">但未必会获得预期的结果, e.g., <a href="https://stackoverflow.com/q/77698620/20212483">Question: “~ORDER BY~ a <i>scalar subquery</i>​”</a>.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.54" class="footnum" href="#fnr.54" role="doc-backlink">54</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">作为对比, 选出 \( \text{售价} \le \text{均价} \) 的代码, 见<a href="#orgf6f245e">35</a></p></div></div>
+<div class="footdef"><sup><a id="fn.54" class="footnum" href="#fnr.54" role="doc-backlink">54</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">作为对比, 选出 \( \text{售价} \le \text{均价} \) 的代码, 见<a href="#orgeb57a3a">35</a></p></div></div>
 
 <div class="footdef"><sup><a id="fn.55" class="footnum" href="#fnr.55" role="doc-backlink">55</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">见 <a href="https://stackoverflow.com/a/15318375/20212483">https://stackoverflow.com/a/15318375/20212483</a>.</p></div></div>
 
@@ -5038,26 +5900,44 @@ End:
 
 <div class="footdef"><sup><a id="fn.58" class="footnum" href="#fnr.58" role="doc-backlink">58</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">查询结果看上去就是一张表.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.59" class="footnum" href="#fnr.59" role="doc-backlink">59</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">A4 纸​<span class="underline">上下对折</span>, 上半张填入 <code>table_1</code>, 下半张填入 <code>table_2</code>, 就像 emoji‘⊟’, 此为纵向拼接.  同理, 横向拼接就是​<span class="underline">左右对折</span>, 就像 emoji‘◫’.</p></div></div>
+<div class="footdef"><sup><a id="fn.59" class="footnum" href="#fnr.59" role="doc-backlink">59</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">A4 纸​<span class="underline">上下对折</span>, 上半张填入 <code>table_1</code>, 下半张填入 <code>table_2</code>, 就像 Unicode 字符‘⊟’, 此为纵向拼接.  同理, 横向拼接就是​<span class="underline">左右对折</span>, 就像 Unicode 字符‘◫’.</p></div></div>
 
 <div class="footdef"><sup><a id="fn.60" class="footnum" href="#fnr.60" role="doc-backlink">60</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">(TODO) 对列名似乎没有要求?</p></div></div>
 
 <div class="footdef"><sup><a id="fn.61" class="footnum" href="#fnr.61" role="doc-backlink">61</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">如果类型不同, 此时有些 RDBMS 会进行隐式类型转换.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.62" class="footnum" href="#fnr.62" role="doc-backlink">62</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">即使能写在中间, 也没有意义, 因为集合运算可能会打乱原本的顺序.</p></div></div>
+<div class="footdef"><sup><a id="fn.62" class="footnum" href="#fnr.62" role="doc-backlink">62</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">所以, 包含 <code>ALL</code> 时性能更好, 因为此时不需要对查询结果进行排序​/​比较.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.63" class="footnum" href="#fnr.63" role="doc-backlink">63</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara"><code>SELECT shop_id, shop_name, ShopsInventory.product_id, product_name, sale_price FROM ShopsInventory, Products WHERE Products.product_id = ShopsInventory.product_id /* AND sale_price &gt; 900 */;</code></p></div></div>
+<div class="footdef"><sup><a id="fn.63" class="footnum" href="#fnr.63" role="doc-backlink">63</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">即使能写在中间, 也没有意义, 因为集合运算可能会打乱原本的顺序.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.64" class="footnum" href="#fnr.64" role="doc-backlink">64</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">可以用 与​/​或​/​非 组合多个​<i>联结条件</i>.</p></div></div>
+<div class="footdef"><sup><a id="fn.64" class="footnum" href="#fnr.64" role="doc-backlink">64</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara"><code>SELECT shop_id, shop_name, ShopsInventory.product_id, product_name, sale_price FROM ShopsInventory, Products WHERE Products.product_id = ShopsInventory.product_id /* AND sale_price &gt; 900 */;</code></p></div></div>
 
-<div class="footdef"><sup><a id="fn.65" class="footnum" href="#fnr.65" role="doc-backlink">65</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">因此, <code>&lt;表1&gt; LEFT OUTER JOIN &lt;表2&gt;</code> 与 <code>&lt;表2&gt; RIGHT OUTER JOIN &lt;表1&gt;</code> 没啥区别, 通常使用 <code>LEFT</code> 的情况会多一些.</p></div></div>
+<div class="footdef"><sup><a id="fn.65" class="footnum" href="#fnr.65" role="doc-backlink">65</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">可以用 与​/​或​/​非 组合多个​<i>联结条件</i>.</p></div></div>
+
+<div class="footdef"><sup><a id="fn.66" class="footnum" href="#fnr.66" role="doc-backlink">66</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">因此, <code>&lt;表1&gt; LEFT OUTER JOIN &lt;表2&gt;</code> 与 <code>&lt;表2&gt; RIGHT OUTER JOIN &lt;表1&gt;</code> 没啥区别, 通常使用 <code>LEFT</code> 的情况会多一些.</p></div></div>
+
+<div class="footdef"><sup><a id="fn.67" class="footnum" href="#fnr.67" role="doc-backlink">67</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">跟 <code>GROUP BY</code> 一样, 是​<span class="underline">不重复, 不遗漏</span>​地分割查询结果.</p></div></div>
+
+<div class="footdef"><sup><a id="fn.68" class="footnum" href="#fnr.68" role="doc-backlink">68</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">作为对比, <code>GROUP BY</code> 就会多出一个汇总的操作, 可能导致行数发生改变.</p></div></div>
+
+<div class="footdef"><sup><a id="fn.69" class="footnum" href="#fnr.69" role="doc-backlink">69</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">含义跟 <i>group</i> 很像, 这么称呼其实是为了避免混淆 <code>PARTITION</code> 与 <code>GROUP BY</code>.</p></div></div>
+
+<div class="footdef"><sup><a id="fn.70" class="footnum" href="#fnr.70" role="doc-backlink">70</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara"><i>窗口函数</i>​在 Oracle 和 SQL Server 中也称为​<i>分析函数</i>.</p></div></div>
+
+<div class="footdef"><sup><a id="fn.71" class="footnum" href="#fnr.71" role="doc-backlink">71</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">标准 SQL 定义的 OLAP 专用函数.</p></div></div>
+
+<div class="footdef"><sup><a id="fn.72" class="footnum" href="#fnr.72" role="doc-backlink">72</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">虽然经常见到的情况是, 查询结果被有序地打印了出来.</p></div></div>
+
+<div class="footdef"><sup><a id="fn.73" class="footnum" href="#fnr.73" role="doc-backlink">73</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">语法上讲, <i>窗口函数</i>​除了能在 <code>SELECT</code> 子句中, 还能在 <code>ORDER BY</code> 和 <code>UPDATE</code>​’s <code>SET</code> 子句中书写.  后二者跟 <code>SELECT</code> 一样都符合下文将解释的原因, 只不过, 它们使用​<i>窗口函数</i>​并没有实际意义.</p></div></div>
+
+<div class="footdef"><sup><a id="fn.74" class="footnum" href="#fnr.74" role="doc-backlink">74</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">这些聚合函数列在本节标题后的 tag 清单中.</p></div></div>
 
 
 </div>
 </div></div>
 <div id="postamble" class="status">
 <p class="author">&#20316;&#32773;: <a href="https://github.com/shynur"><i>谢骐</i></a></p>
-<p class="date">Created: 2023-12-27 周三 00:51</p>
+<p class="date">Created: 2023-12-28 周四 16:58</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
