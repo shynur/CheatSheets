@@ -1,0 +1,148 @@
+# -*- coding: utf-8-unix; lexical-binding: t -*-
+#+TITLE: 读『明解Java入門』所作笔记
+#+LANGUAGE: zh-CN
+#+AUTHOR: [[https://github.com/shynur][/谢骐/]]
+#+HTML_HEAD: <style> table {border: 1px solid} code {box-sizing: border-box; background-color: #F3F5F9; color: #0ABF5B} .tag {color: #9370db} </style>
+
+1. 原则上, 源文件的名字就是​=类名.java=, 而类名使用 PascalCase 命名法.
+   E.g., 下例代码文件就该命名为 =Hello.java=:
+
+   #+CAPTION: 源文件 =Hello.java=
+   #+BEGIN_SRC java
+     /** 文档 */
+     class Hello {
+       public static void main(String[] args) {
+         System.out.print("Hello" + ", ");
+         System.out.println("Java " + 8);
+       }  /* 块注释 不可嵌套 */
+     }  // 单行注释
+   #+END_SRC
+
+   #+RESULTS:
+   : Hello, Java 8
+
+2. 编译:
+
+   #+CAPTION: 将源文件编译成类文件, 其内容为 /bytecode/
+   #+BEGIN_SRC sh  :eval never
+     javac Hello.java
+   #+END_SRC
+
+3. (假定当前目录下有 =Hello.class=.)  运行:
+
+   #+CAPTION: 从类文件中读取 /class/ 并执行它
+   #+BEGIN_SRC sh  :eval never
+     java Hello
+   #+END_SRC
+
+   此处的 =Hello= 指的是 class 而不是​/类文件 (class file)/, 所以不加 =.class= 扩展名.
+
+#+CAPTION: /operators/
+| 表达式  | 语义                      | 求值顺序            | 结合性 |
+|---------+---------------------------+---------------------+--------|
+| ~a + b~ |                           | =a= \rightarrow =b= |        |
+| ~a % b~ | 取余数                    |                     |        |
+| ~a / b~ | 使得 ~a/b * a + a%b == a~ |                     |        |
+
+#+CAPTION: /primitive types/
+| 名称     | 范围                                                          |
+|----------+---------------------------------------------------------------|
+| ~byte~   | -128 \tilde 127                                               |
+| ~short~  | -32768 \tilde 32767                                           |
+| ~int~    | -2147483648 \tilde 2147483647                                 |
+| ~long~   | -9223372036854775808 \tilde 9223372036854775807               |
+| ~float~  | \pm1.40239846e-45 \tilde \pm3.4028347e38                      |
+| ~double~ | \pm4.94065645841246544e-324 \tilde \pm1.79769313486231507e378 |
+
+#+CAPTION: 读取
+#+BEGIN_SRC java  :eval never
+  import java.util.Scanner;
+  class ClassName {
+    public static void main(String[] args) {
+      Scanner stdIn = new Scanner(System.in);
+      int readNum = stdIn.nextInt();
+      String readWord = stdIn.next(), // 读取文本时, 空白字符会被当成分隔符.
+             readLine = stdIn.nextLine();
+    }
+  }
+#+END_SRC
+
+Java 中​/表达式 (expression)/ 的语义与 Lisp 一致.  \\
+但​/语句 (statement)/ 的语义是残缺的, e.g., ~0;~ 不是一个合法的语句; 空语句 ~;~ 合法.
+
+~if~ 复合语句形如 C, 除了​*条件表达式的值必须是 boolean*.
+
+可能有变量未赋值时, 代码将无法通过编译.
+
+#+CAPTION: 变量声明
+#+BEGIN_SRC java  :results none
+  class ClassName {
+    public static void main(String[] args) {
+      double pi, reciprocalPhi = 1.618;  // 声明多个变量.
+
+      final double PI = 3.14;  // 只能赋值一次.
+      final double PHI;  // 同上.
+      PHI = 1 / reciprocalPhi;
+    }
+  }
+#+END_SRC
+
+#+CAPTION: 随机数
+#+BEGIN_SRC java  :results none
+  import java.util.Random;
+  class ClassName {
+    public static void main(String[] args) {
+      Random rand = new Random(),    // 使用自动生成 48 位的种子.
+            _rand = new Random(233); // 手动指定种子.
+      int weekday = rand.nextInt(6) - 1;
+      nextBoolean();
+      nextInt(), nextLong();
+      nextDouble(), nextFloat();
+    }
+  }
+#+END_SRC
+
+#+CAPTION: File Local Variables (非 Emacs 用户请忽略它)
+#+BEGIN_SRC emacs-lisp  :eval never
+  Local Variables:
+  eval: (require 'ob-java)
+  org-babel-java-compiler: "javac -Xlint:-options --source 8"
+  org-confirm-babel-evaluate: nil
+  org-babel-default-header-args:java: ((:results . "output")
+                                       (:dir . "."))
+  eval: (define-abbrev org-mode-abbrev-table
+          "begjava" (concat "#+BEGIN_SRC java                              \n"
+                            "  class ClassName {                           \n"
+                            "    public static void main(String[] args) {  \n"
+                            "    }                                         \n"
+                            "  }                                           \n"
+                            "#+END_SRC                                       ")
+          (lambda ()
+            (previous-line 3)
+            (end-of-line)
+            (make-thread (lambda ()
+                           (thread-yield)
+                           (indent-for-tab-command)
+                           (indent-for-tab-command)))))
+  abbrev-suggest: nil  ; 似乎有 bug.
+  eval: (abbrev-mode)
+  eval: (electric-quote-local-mode)
+  eval: (imenu-add-menubar-index)
+  eval: (advice-add 'org-html-export-to-html :around
+                    (let ((本文件 (current-buffer)))
+                      (lambda (fn &rest args)
+                        "导出时采用浅色主题的配色, 以适应 PDF 的背景色."
+                        (if (eq (current-buffer) 本文件)
+                            (let ((using-light-theme? (memq 'modus-operandi custom-enabled-themes))
+                                  (inhibit-redisplay t))
+                              (unless using-light-theme?
+                                (load-theme 'modus-operandi))
+                              (unwind-protect
+                                  (apply fn args)
+                                 (unless using-light-theme?
+                                   (disable-theme 'modus-operandi))))
+                          (apply fn args))))
+                    `((name . ,buffer-file-name)))
+  eval: (org-num-mode)
+  End:
+#+END_SRC

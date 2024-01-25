@@ -1,0 +1,57 @@
+# -*- coding: utf-8-unix; lexical-binding: t; -*-
+#+TITLE: 常用的命令
+#+LANGUAGE: zh-CN
+#+AUTHOR: [[https://github.com/shynur][=shynur=]]
+
+#+NAME: strip首4行尾2行
+#+BEGIN_SRC emacs-lisp  :var cmd.exe-outputs='(("_"))  :results none
+  (nthcdr 4 (butlast cmd.exe-outputs 2))
+#+END_SRC
+
+#+CAPTION: =MS-Windows= 显示 socket 内容
+#+BEGIN_SRC shell  :post strip首4行尾2行(*this*)
+  NETSTAT.EXE -ano
+#+END_SRC
+
+#+CAPTION: =MS-Windows= 显示路由表 (Routing Table)
+#+BEGIN_SRC shell  :post strip首4行尾2行(*this*)
+  ROUTE.EXE print
+#+END_SRC
+
+#+CAPTION: =MS-Windows= 显示 ARP 缓存内容
+#+BEGIN_SRC shell  :post strip首4行尾2行(*this*)
+  ARP.EXE -a
+#+END_SRC
+
+#+CAPTION: =MS-Windows= (sudo) 删除 ARP 缓存内容
+#+BEGIN_SRC shell  :post strip首4行尾2行(*this*)
+  ARP.EXE -d
+#+END_SRC
+
+#+BEGIN_SRC shell  :post strip首4行尾2行(*this*)
+  ARP.EXE -d
+#+END_SRC
+
+#+CAPTION: =测试=
+#+BEGIN_SRC shell  :post strip首4行尾2行(*this*)
+arp -a
+#+END_SRC
+
+
+#+CAPTION: Emacs File Local Variables
+#+BEGIN_SRC emacs-lisp  :eval never
+  Local Variables:
+  eval: (require 'ob-shell)
+  org-confirm-babel-evaluate: nil
+  org-babel-default-header-args:shell: ((:results . "table"))
+  before-save-hook: ((lambda ()
+                       (org-babel-remove-result-one-or-many "remove ALL"))
+                     t)
+  eval: (define-abbrev org-mode-abbrev-table
+          "begcmd" "#+CAPTION: =MS-Windows= \n#+BEGIN_SRC shell  :post strip首4行尾2行(*this*)\n#+END_SRC"
+          (lambda ()
+            (previous-line 1)
+            (end-of-line)))
+  eval: (abbrev-mode)
+  End:
+#+END_SRC

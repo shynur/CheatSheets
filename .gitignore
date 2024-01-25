@@ -1,3 +1,5 @@
+# -*- coding: utf-8-unix; -*-
+
 /*
 !/.gitignore
 !/index.org
@@ -6,27 +8,39 @@
 /BodyBuilding/*
 !/Bodybuilding/Bodybuilding.org
 
-!/HTML/
+!/ComputerNetworking/
+/ComputerNetworking/*
+!/ComputerNetworking/Commands.org
+
+!/HTML+CSS/
 /HTML/*
 !/HTML/HTML.html
+
+!/Java/
+/Java/*
+!/Java/柴田望洋-明解Java入門.org
 
 !/JavaScript/
 /JavaScript/*
 !/JavaScript/JavaScript.js
 
+!/Java/
+/Java/*
+!/Java/柴田望洋-明解Java入門.org
+
 !/MIPS/
 /MIPS/*
-!/MIPS/MIPS-32.asm
+!/MIPS/MIPS32.asm
 
 !/OpenMP/
 /OpenMP/*
 !/OpenMP/OpenMP.org
 
+!/OrgMode/
+/OrgMode/*
+!/OrgMode/Org.org
+
 !/SQL/
 /SQL/*
 !/SQL/SQL.sql
 !/SQL/PostgreSQL.org
-
-!/OrgMode/
-/OrgMode/*
-!/OrgMode/Org.org

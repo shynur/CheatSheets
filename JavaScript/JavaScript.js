@@ -32,7 +32,7 @@ Math.floor(Math.random() * 10);  // 返回随机的一位数.
 // 因此可以将函数放在文件的任何地方.
 my_func(arg);
 function my_func(arg /* 按值传递 */) {
-    // JavaScript 在函数开始执行时创建所有局部变量而不管它们是否已经声明 (这被称为提升).
+    // JavaScript 在函数开始执行时创建所有局部变量而不管它们的声明语句的位置.  (这被称为提升).
     var my_variable_1;  // 该声明 shadow 外层的同名变量.
     global_var = null;  // 首次使用未声明的变量时, 它将自动被视为全局的.  (即使是在函数体内, 正如此例.)
     alert("函数定义语句位于调用语句之后.");
@@ -41,7 +41,7 @@ function my_func(arg /* 按值传递 */) {
 /* 数组 */
 var my_arr = [], my_arr_0 = new Array(3);
 my_arr[1] = my_arr.length;  // 这下变成 sparse 数组了.
-my_arr.push('0');  // 此时 ‘my_arr’ 为 “[<1 empty item>, 0, '0']”.
+my_arr.push('0');  // 此时‘my_arr’为“[<1 empty item>, 0, '0']”.
 my_arr[0] == undefined;  // => true
 my_arr[0] = undefined;  // => [undefined, 0, '0']
 
@@ -49,17 +49,16 @@ my_arr[0] = undefined;  // => [undefined, 0, '0']
 var my_obj = {
     // 属性名可以是字符串, 不加引号时要遵循变量命名规则.
      property_1 : true,
-    'property_2': function(arg) {
-        this.property_1 = false;  // ‘this’ 是在方法被调用 (而非被定义) 时设置的.
-    }
-    'property-3': 3  // 不加多余的逗号以提高可移植性.
+    'property-2': function(arg) {
+        this.property_1 = false;  // ‘this’是在方法被调用 (而非被定义) 时设置的.
+    }  // 不加多余的逗号以提高可移植性.
 };
-// 若成功删除了, 则返回 ‘true’ (即使要删除的属性本就不存在), 否则 ‘false’ (e.g., 有些对象属于浏览器, 因而受到保护, 会删除失败).
-my_obj.property_4 = 'new property', delete my_obj.property_4;
+// 若成功删除了属性, 则返回‘true’(即使要删除的属性本就不存在), 否则‘false’(e.g., 有些对象属于浏览器, 因而受到保护, 会删除失败).
+my_obj.property_3 = 'new property', delete my_obj.property_3;
 // 另一种访问属性的办法:
 my_obj['property_1'];  // 更加灵活.
 
-/* DOM (Document Object Model) */  // 对象 ‘document’ 是浏览器提供的.
+/* DOM (Document Object Model) */  // 对象‘document’是浏览器提供的.
 var my_element = document.getElementById("element-id");  // 若 ID 不存在则返回 null.
 my_element.innerHTML, my_element.outerHTML;
 my_element.getAttribute("attr"),  // 若不存在则返回 null.
@@ -89,8 +88,4 @@ my_dog.substring(0, 3) === my_dog.substring(4);
 
 // Local Variables:
 // coding: utf-8-unix
-// eval: (browse-url-default-browser "file://localhost/D:/Desktop/ToRead/JavaScript.pdf")
-// eval: (w32-notification-close (w32-notification-notify :title "读到了第 367 页" :body " "))
-// eval: (start-process-shell-command "Node.js" nil "start node.exe")
-// eval: (find-file-noselect "D:/Desktop/ToRead/JavaScript/")
 // End:
