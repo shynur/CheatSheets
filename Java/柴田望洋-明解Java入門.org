@@ -4,6 +4,8 @@
 #+AUTHOR: [[https://github.com/shynur][/谢骐/]]
 #+HTML_HEAD: <style> table {border: 1px solid} code {box-sizing: border-box; background-color: #F3F5F9; color: #0ABF5B} .tag {color: #9370db} </style>
 
+* 程序源文件结构
+
 1. 原则上, 源文件的名字就是​=类名.java=, 而类名使用 PascalCase 命名法.
    E.g., 下例代码文件就该命名为 =Hello.java=:
 
@@ -12,10 +14,12 @@
      /** 文档 */
      class Hello {
        public static void main(String[] args) {
-         System.out.print("Hello" + ", ");
-         System.out.println("Java " + 8);
-       }  /* 块注释 不可嵌套 */
-     }  // 单行注释
+         /*
+          * 块注释 不可嵌套
+          **/
+         // 单行注释
+       }
+     }
    #+END_SRC
 
    #+RESULTS:
@@ -36,24 +40,161 @@
    #+END_SRC
 
    此处的 =Hello= 指的是 class 而不是​/类文件 (class file)/, 所以不加 =.class= 扩展名.
-
-#+CAPTION: /operators/
-| 表达式  | 语义                      | 求值顺序            | 结合性 |
-|---------+---------------------------+---------------------+--------|
-| ~a + b~ |                           | =a= \rightarrow =b= |        |
-| ~a % b~ | 取余数                    |                     |        |
-| ~a / b~ | 使得 ~a/b * a + a%b == a~ |                     |        |
 
-#+CAPTION: /primitive types/
-| 名称     | 范围                                                          |
-|----------+---------------------------------------------------------------|
-| ~byte~   | -128 \tilde 127                                               |
-| ~short~  | -32768 \tilde 32767                                           |
-| ~int~    | -2147483648 \tilde 2147483647                                 |
-| ~long~   | -9223372036854775808 \tilde 9223372036854775807               |
-| ~float~  | \pm1.40239846e-45 \tilde \pm3.4028347e38                      |
-| ~double~ | \pm4.94065645841246544e-324 \tilde \pm1.79769313486231507e378 |
-
+* 代码构成
+** 基本单元
+*** /表达式/​与​/语句/
+
+Java 中​/表达式 (expression)/ 的语义与 Lisp 一致.  \\
+但​/语句 (statement)/ 的语义是残缺的, 因为 ~0;~ 不是一个合法的语句; 空语句 ~;~ 和空块 ~{}~ 合法.
+
+*** Tokens
+**** Keywords
+
+#+CAPTION: /keywords/
+| abstract | assert       | boolean | break      | byte   | case       | catch   | char      | class    | const  |
+| continue | default      | do      | double     | else   | enum       | extends | final     | finally  | float  |
+| for      | goto         | if      | implements | import | instanceof | int     | interface | long     | native |
+| new      | package      | private | protected  | public | return     | short   | static    | strictfp | super  |
+| switch   | synchronized | this    | throw      | throws | transient  | try     | void      | volatile | while  |
+
+其中, ~const~ 和 ~goto~ 是预留的关键字.
+
+此外, 虽然 ~true~, ~false~, 和 ~null~ 这些字面量不是关键字, 但跟关键字一样不可以作为标识符.
+
+**** Identifiers
+
+变量名的第一个字必须是 Unicode 字母 (e.g., 汉字), ~_~, 或 ~$~;
+后续的字还可以包含数字.
+
+编译器生成的字节码内部会用到 ~$~, 所以不建议在源码中使用该字符.
+
+** 变量声明
+
+#+CAPTION: 变量声明
+#+BEGIN_SRC java  :results none
+  double pi, reciprocalPhi = 1.618;  // 声明多个变量.
+  final double PI = 3.14;  // 只能赋值一次.
+  final double PHI;  // 同上.
+  PHI = 1 / reciprocalPhi;
+#+END_SRC
+
+N.b., 可能有变量未赋值时, 代码将无法通过编译.
+
+** 决策分支
+
+~if~ 复合语句形如 C, <<条件表达式的类型>>除了​*条件表达式的值必须是 boolean*.
+
+~switch~ 复合语句形如 C, /条件表达式/​和​/枚举​*字面量*/​的数据类型必须是: \\
+~char~, ~byte~, ~short~, ~int~,
+~Character~, ~Byte~, ~Short~, ~Integer~,
+枚举类型, 或 ~String~.
+
+** 循环
+
+~do-while~ 语句, ~while~ 语句, 和 ~for~ 语句形如 C, 另见[[条件表达式的类型]] (后不赘述).
+
+*** 带标签跳转
+
+循环体中的 ~break~ 和 ~continue~ 是可以指定跳转目的地的.
+
+**** 带标签的 ~break~
+
+See [[*跳转: ~goto~ 语义的 ~break~]].
+
+**** 带标签的 ~continue~
+
+#+BEGIN_SRC java
+  String s = "";
+  Outer: for (int i = 1; i <= 9; i++)
+    Inner: while (true)
+      if (true) {
+        s += i;
+        continue Outer;
+      } else
+        continue Inner;  // 等价于“continue;”.
+  System.out.println(s);
+#+END_SRC
+
+#+RESULTS:
+: 123456789
+
+** 跳转: ~goto~ 语义的 ~break~
+
+#+CAPTION: 两个等价的语句块
+#+BEGIN_SRC java  :var i=2
+  MyLabel: {
+    if (i == 1)
+      break MyLabel;
+    System.out.println("MyLabel");
+  }  // 直接跳到末尾.
+
+  if (i == 1)
+    ;
+  else
+    System.out.println("{}");
+#+END_SRC
+
+#+CAPTION: 跳出多层循环
+#+BEGIN_SRC java  :results none
+  Outer:
+    while (true)
+      Inner:
+        for ( ; ; )
+          if (true)
+            break Outer;
+          else
+            break Inner;  // 等价于“break;”.
+#+END_SRC
+
+* 字面量
+** 数字
+*** 进制
+
+- 二进制:   =0b11=
+- 八进制:   =0567=
+- 十六进制: =0xEF=
+
+其中仅 =0x= 适用于​_浮点数_.
+
+*** 科学计数法
+
+表示浮点数.
+- 十进制:   =1.2e4=
+- 十六进制: =0x9ApEF=
+
+*** 位宽
+
+| 后缀 | 精度     |
+| =L=  | ~long~   |
+| =f=  | ~float~  |
+| =d=  | ~double~ |
+
+浮点数默认使用 ~double~.
+
+* I​/​O 操作
+
+#+CAPTION: 打印: ~print~ 和 ~println~
+#+BEGIN_SRC java  :exports both verbatim
+  System.out.print("Hello," + '\n');
+  System.out.println();
+  System.out.println("Java " + 8 + '!');
+#+END_SRC
+
+#+RESULTS:
+: Hello,
+:
+: Java 8!
+
+#+CAPTION: ~System.out.printf~ 的格式化参数
+| =%%=                   | 单个‘​=%=​’                                                 |
+| =%c=                   | 字符                                                      |
+| =%s=                   | 字符串                                                    |
+| =%o=, =%d=, =%x=​/​=%X= |                                                           |
+| =%5d=, =%5s=           | 最小显示宽度为 5, 右对齐                                  |
+| =%05d=                 | 同‘​=%5d=​’, 但是‘0’填充                                    |
+| =%6.2f=                | 含​/小数点/​的​*整体*​宽度为 6, 右对齐; 精确到小数点后 2 位 |
+
 #+CAPTION: 读取
 #+BEGIN_SRC java  :eval never
   import java.util.Scanner;
@@ -66,27 +207,9 @@
     }
   }
 #+END_SRC
-
-Java 中​/表达式 (expression)/ 的语义与 Lisp 一致.  \\
-但​/语句 (statement)/ 的语义是残缺的, e.g., ~0;~ 不是一个合法的语句; 空语句 ~;~ 合法.
 
-~if~ 复合语句形如 C, 除了​*条件表达式的值必须是 boolean*.
-
-可能有变量未赋值时, 代码将无法通过编译.
+* 数学计算
 
-#+CAPTION: 变量声明
-#+BEGIN_SRC java  :results none
-  class ClassName {
-    public static void main(String[] args) {
-      double pi, reciprocalPhi = 1.618;  // 声明多个变量.
-
-      final double PI = 3.14;  // 只能赋值一次.
-      final double PHI;  // 同上.
-      PHI = 1 / reciprocalPhi;
-    }
-  }
-#+END_SRC
-
 #+CAPTION: 随机数
 #+BEGIN_SRC java  :results none
   import java.util.Random;
@@ -101,22 +224,97 @@ Java 中​/表达式 (expression)/ 的语义与 Lisp 一致.  \\
     }
   }
 #+END_SRC
+
+* 附录
+
+#+CAPTION: /operators/
+| 表达式           | 语义                            | 结合性         | 优先级 |
+|------------------+---------------------------------+----------------+--------|
+| ~x[y]~           |                                 | 左             |      1 |
+| ~x(y)~           |                                 | 左             |      1 |
+| ~x.y~            |                                 | 左             |      1 |
+|------------------+---------------------------------+----------------+--------|
+| ~z++~            |                                 | 左             |      1 |
+| ~z--~            |                                 | 左             |      1 |
+| ~++z~            |                                 | 右             |      2 |
+| ~--z~            |                                 | 右             |      2 |
+| ~+z~             |                                 | 右             |      2 |
+| ~-z~             |                                 | 右             |      2 |
+| ~!z~             | 逻辑非                          | 右             |      2 |
+| ~~z~             | 按位取反                        | 右             |      2 |
+|------------------+---------------------------------+----------------+--------|
+| ~new Z()~        |                                 | 左             |      3 |
+| ~(Type)z~        | cast                            | 左             |      3 |
+|------------------+---------------------------------+----------------+--------|
+| ~x * y~          |                                 | 左             |      4 |
+| ~x % y~          | 取余数                          | 左             |      4 |
+| ~x / y~          | 对整数, 满足 ~x/y*x + x%y == x~ | 左             |      4 |
+| ~x + y~          |                                 | 左             |      5 |
+| ~x - y~          |                                 | 左             |      5 |
+| ~x << y~         | 算术左移​/​逻辑左移              | 左             |      6 |
+| ~x >> y~         | 算术右移                        | 左             |      6 |
+| ~x >>> y~        | 逻辑右移                        | 左             |      6 |
+|------------------+---------------------------------+----------------+--------|
+| ~x < y~          |                                 | 左             |      7 |
+| ~x > y~          |                                 | 左             |      7 |
+| ~x <= y~         |                                 | 左             |      7 |
+| ~x >= y~         |                                 | 左             |      7 |
+| ~x instanceof y~ |                                 | 左             |      7 |
+| ~x == y~         |                                 | 左             |      8 |
+| ~x != y~         |                                 | 左             |      8 |
+| ~x & y~          | 逻辑与​/​按位与                  | 左; +短路求值+ |      9 |
+| ~x ^ y~          | 逻辑异或​/​按位异或              | 左             |     10 |
+| ~x │ y~          | 逻辑或​/​按位或                  | 左; +短路求值+ |     11 |
+| ~x && y~         |                                 | 左; 短路求值   |     12 |
+| ~x ││ y~         |                                 | 左; 短路求值   |     13 |
+| ~z ? x : y~      |                                 | 左; 短路求值   |     14 |
+|------------------+---------------------------------+----------------+--------|
+| ~x = y~          |                                 | 右             |     15 |
+| ~x *= y~         |                                 | 右             |     15 |
+| ~x /= y~         |                                 | 右             |     15 |
+| ~x %= y~         |                                 | 右             |     15 |
+| ~x += y~         |                                 | 右             |     15 |
+| ~x -= y~         |                                 | 右             |     15 |
+| ~x <<= y~        |                                 | 右             |     15 |
+| ~x >>= y~        |                                 | 右             |     15 |
+| ~x >>>= y~       |                                 | 右             |     15 |
+| ~x &= y~         |                                 | 右             |     15 |
+| ~x ^= y~         |                                 | 右             |     15 |
+| ~x │= y~         |                                 | 右             |     15 |
+
+#+CAPTION: /primitive types/
+| ~byte~    |     | -128 \tilde 127                                               |
+| ~char~    | 16b | 0 \tilde 65535                                                |
+| ~short~   | 16b | -32768 \tilde 32767                                           |
+| ~int~     | 32b | -2147483648 \tilde 2147483647                                 |
+| ~long~    | 64b | -9223372036854775808 \tilde 9223372036854775807               |
+|-----------+-----+---------------------------------------------------------------|
+| ~float~   |     | \pm1.40239846e-45 \tilde \pm3.4028347e38                      |
+| ~double~  |     | \pm4.94065645841246544e-324 \tilde \pm1.79769313486231507e378 |
+|-----------+-----+---------------------------------------------------------------|
+| ~boolean~ |     |                                                               |
+
+#+CAPTION: /reference types/
+| 数组   |   |
+| 类     |   |
+| 接口   |   |
+| 空类型 |   |
 
 #+CAPTION: File Local Variables (非 Emacs 用户请忽略它)
 #+BEGIN_SRC emacs-lisp  :eval never
   Local Variables:
   eval: (require 'ob-java)
-  org-babel-java-compiler: "javac -Xlint:-options --source 8"
   org-confirm-babel-evaluate: nil
   org-babel-default-header-args:java: ((:results . "output")
-                                       (:dir . "."))
+                                       (:dir . ".")
+                                       (:cmpflag . " -Xlint:-options --source 8 "))
   eval: (define-abbrev org-mode-abbrev-table
-          "begjava" (concat "#+BEGIN_SRC java                              \n"
-                            "  class ClassName {                           \n"
-                            "    public static void main(String[] args) {  \n"
-                            "    }                                         \n"
-                            "  }                                           \n"
-                            "#+END_SRC                                       ")
+          "begjava" (concat "#+BEGIN_SRC java  :results none  \n"
+                            "  class ClassName {\n"
+                            "    public static void main(String[] args) {\n"
+                            "    }\n"
+                            "  }\n"
+                            "#+END_SRC")
           (lambda ()
             (previous-line 3)
             (end-of-line)

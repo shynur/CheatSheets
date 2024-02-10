@@ -15,6 +15,7 @@
 !/HTML+CSS/
 /HTML/*
 !/HTML/HTML.html
+!/HTML/static_Webpage.org
 
 !/Java/
 /Java/*
@@ -44,3 +45,7 @@
 /SQL/*
 !/SQL/SQL.sql
 !/SQL/PostgreSQL.org
+
+!/日本語/
+/日本語/*
+!/日本語/入門.md
