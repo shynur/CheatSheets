@@ -20,6 +20,11 @@ var a_plus_b = +a + +b  // +varname === Number(varname)
 0.1111111111111111
 ```
 
+```JavaScript
+> (4.2>>>0) + (6.9>>>0)  // bitwise-operator 把 double static_cast 到 int32_t 再执行 bitwise-operation.
+10
+```
+
 ___
 
 &copy; 2025  [谢骐](https://github.com/shynur) <shynur@outlook.com>.  All rights reserved.
