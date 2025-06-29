@@ -26,9 +26,22 @@ var a_plus_b = +a + +b  // +varname === Number(varname)
 ```
 
 ```JavaScript
-// null 和 undefined 使用恋人规则, 仅它俩相等 ('==').
+// null 和 undefined 使用恋人规则, 仅它俩可以通过相等性检查 ('==').
 console.assert(null == null && undefined == undefined && null == undefined)
 console.assert(null != 0 && undefined != 0)
+console.assert(null >= 0 && undefined >= 0)  // 比较运算符是另一回事.
+```
+
+```HTML
+<script><!--
+    'JavaScript 代码...'
+//--></script>
+```
+
+```JavaScript
+// NaN 通过不了任何相等性检查 ('==').
+console.assert(NaN != NaN)  // 它甚至自己都不 == 自己!
+console.assert(NaN <= 0 == false && NaN >= 0 == false)  // 更别谈参与 comparison 了.
 ```
 
 ___
