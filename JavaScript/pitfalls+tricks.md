@@ -25,6 +25,12 @@ var a_plus_b = +a + +b  // +varname === Number(varname)
 10
 ```
 
+```JavaScript
+// null 和 undefined 使用恋人规则, 仅它俩相等 ('==').
+console.assert(null == null && undefined == undefined && null == undefined)
+console.assert(null != 0 && undefined != 0)
+```
+
 ___
 
 &copy; 2025  [谢骐](https://github.com/shynur) <shynur@outlook.com>.  All rights reserved.
