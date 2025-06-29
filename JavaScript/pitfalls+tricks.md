@@ -46,4 +46,4 @@ console.assert(NaN <= 0 == false && NaN >= 0 == false)  // 更别谈参与 compa
 
 ___
 
-&copy; 2025  [谢骐](https://github.com/shynur) <shynur@outlook.com>.  All rights reserved.
+&copy; 2025  [谢骐](https://github.com/shynur) \<<shynur@outlook.com>\>.  All rights reserved.
