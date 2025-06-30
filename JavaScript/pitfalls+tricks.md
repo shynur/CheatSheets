@@ -63,7 +63,7 @@ false
         console.log('outer: before break')
         inner: {
             console.log('inner: before break')
-            break outer  // 'break labelName' 句式是用来跳出代码块的通用方法.  此处 'continue' 非法.
+            break outer  // 'break labelName' 句式是用来跳出代码块的通用方法.  此处 'continue' 非法 (它只在循环体内有效).
             console.log('inner: after break')
         }
         console.log('outer: after break')
