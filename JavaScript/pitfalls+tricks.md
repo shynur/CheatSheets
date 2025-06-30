@@ -49,6 +49,28 @@ console.assert(NaN <= 0 == false && NaN >= 0 == false)  // 更别谈参与 compa
 false
 ```
 
+```JavaScript
++function() {
+    labelName: for (let i=0; ; ++i)
+        for (let j=0; ; ++j) {
+            console.log(i, j)
+            break labelName  // break/continue 作用于 被 labelName 标记的 循环层级.
+        }
+}()
+
++function() {
+    outer: {
+        console.log('outer: before break')
+        inner: {
+            console.log('inner: before break')
+            break outer  // 'break labelName' 句式是用来跳出代码块的通用方法.  此处 'continue' 非法.
+            console.log('inner: after break')
+        }
+        console.log('outer: after break')
+    }
+}()
+```
+
 ___
 
 &copy; 2025  [谢骐](https://github.com/shynur) \<<shynur@outlook.com>\>.  All rights reserved.
