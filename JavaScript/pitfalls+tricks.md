@@ -44,6 +44,11 @@ console.assert(NaN != NaN)  // 它甚至自己都不 == 自己!
 console.assert(NaN <= 0 == false && NaN >= 0 == false)  // 更别谈参与 comparison 了.
 ```
 
+```JavaScript
+> !!''  //  用 '!!' 将值转换为 boolean.
+false
+```
+
 ___
 
 &copy; 2025  [谢骐](https://github.com/shynur) \<<shynur@outlook.com>\>.  All rights reserved.
