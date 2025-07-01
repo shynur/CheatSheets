@@ -94,6 +94,15 @@ function f() {
 </html>
 ```
 
+```JavaScript
+{[prompt('属性: ')]: 233}  // 计算属性 (computed property)
+```
+
+```js
+var name = 'shynur'
+{name, age: 22}  // 属性值简写 (property value shorthand)
+```
+
 ___
 
 &copy; 2025  [谢骐](https://github.com/shynur) \<<shynur@outlook.com>\>.  All rights reserved.
