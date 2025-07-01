@@ -81,6 +81,19 @@ false
 --
 ```
 
+```html
+<!DOCTYPE html>
+<html>
+<script>
+f()
+function f() {
+    var a = 1
+    debugger  // 设置断点.  仅在 F12 时生效, 对普通用户无影响.
+}
+</script>
+</html>
+```
+
 ___
 
 &copy; 2025  [谢骐](https://github.com/shynur) \<<shynur@outlook.com>\>.  All rights reserved.
