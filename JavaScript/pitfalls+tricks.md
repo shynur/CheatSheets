@@ -1,6 +1,6 @@
 ```js
-for (var k in globalThis.crypto)  // enumerate properties
-    console.log(k)
+for (var k in {'b':0, '10':0, 'a':0, '2':0})  // enumerate properties 的 顺序 是可预测的.
+    console.log(k)                            // 先是升序排列的自然数, 再是按插入顺序排列的 string.
 ```
 
 ```js
