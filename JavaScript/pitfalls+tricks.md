@@ -1,4 +1,8 @@
 ```js
+{0:233}['0']  /* 任何不是 string 或 symbol 的 property name 都被转为 string.  */
+```
+
+```js
 {for: 1, let: 2, return: 3}.return  // property name 可以是任何关键字, 毫无限制.
 ```
 
