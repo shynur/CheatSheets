@@ -71,6 +71,16 @@ false
 }()
 ```
 
+```JavaScript
+> function f(a=console.log('*')) {console.log('--')}
+> f(), f(undefined), f(null)  // 默认参数每次被传 undefined (或无值) 都会求值.
+*
+--
+*
+--
+--
+```
+
 ___
 
 &copy; 2025  [谢骐](https://github.com/shynur) \<<shynur@outlook.com>\>.  All rights reserved.
