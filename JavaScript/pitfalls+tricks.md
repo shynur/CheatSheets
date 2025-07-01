@@ -1,4 +1,9 @@
 ```js
+for (var k in globalThis.crypto)  // enumerate properties
+    console.log(k)
+```
+
+```js
 {0:233}['0']  /* 任何不是 string 或 symbol 的 property name 都被转为 string.  */
 ```
 
