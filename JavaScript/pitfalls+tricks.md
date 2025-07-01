@@ -1,3 +1,7 @@
+```js
+{for: 1, let: 2, return: 3}.return  // property name 可以是任何关键字, 毫无限制.
+```
+
 ```JavaScript
 console.assert(isNaN(NaN*0))  // 按理说 NaN 是有传播性的,
 console.assert(NaN**0 === 1)  // 但是...
