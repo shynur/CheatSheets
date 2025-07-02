@@ -1,4 +1,10 @@
 ```js
+// 尽量不要在 non-arrow function 里使用 this, 这在 (non-)strict modes 下行为不一致.
+!function() {              console.log(this)}()  // this === globalThis
+!function() {'use strict'; console.log(this)}()  // this === undefined
+```
+
+```js
 var o = {
     i: 0,
     f: function() {return ++this.i},
