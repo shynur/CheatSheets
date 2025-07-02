@@ -1,4 +1,12 @@
 ```js
+var o = {
+    i: 0,
+    f: function() {return ++this.i},
+    m() {return ++this.i},  // 方法定义使用 method shorthand, 和简单地把 function 赋给 property 有细微区别.
+}
+```
+
+```js
 > var d = {a:1}, s1 = {a:2, b:3, c:4}, s2 = {c:5, d:6}
 > Object.assign(d, s1, s2)  // 浅拷贝 (只包含 enumerable own properties), 最终 d 的 property value 是参数从右往左依次查找的结果.
 { a: 2, b: 3, c: 5, d: 6 }
