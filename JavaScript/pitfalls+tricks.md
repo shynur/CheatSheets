@@ -1,8 +1,10 @@
 ```ts
-function User(name: str) {
+// 一种省略 constructor 调用中的 'new' 的写法.
+var User = function User(name) {
     if (new.target === undefined)
         return new User(str)
     console.assert(new.target == arguments.callee)
+    this.name = name
 }
 ```
 
