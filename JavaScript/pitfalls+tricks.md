@@ -2,7 +2,7 @@
 // 一种省略 constructor 调用中的 'new' 的写法.
 var User = function User(name) {
     if (new.target === undefined)
-        return new User(str)
+        return new User(name)
     console.assert(new.target == arguments.callee)
     this.name = name
 }
