@@ -1,4 +1,16 @@
 ```ts
+function User(name: string) {
+    if (name)
+        this.name = name
+    else
+        return {default_name: 'Godzilla'}  // 被 new 时, 如果 return 后跟一个 non-null object, 则返回该 object 而不是 this;
+    return null                            // 否则, 立即返回 this.
+}
+console.log(new User)
+console.log(new User('shynur'))
+```
+
+```js
 // 一种省略 constructor 调用中的 'new' 的写法.
 var User = function User(name) {
     if (new.target === undefined)
