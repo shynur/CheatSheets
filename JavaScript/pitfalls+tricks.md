@@ -1,4 +1,4 @@
-```
+```js
 // 和 '??' 不一样, '?.' 是一种语法结构, 且短路时只返回 undefined.
 console.assert(null?.prop === null)
 var o = {m: ()=>233, i: [996]}
