@@ -3,7 +3,7 @@ function User(name: string) {
     if (name)
         this.name = name
     else
-        return {default_name: 'Godzilla'}  // 被 new 时, 如果 return 后跟一个 non-null object, 则返回该 object 而不是 this;
+        return {default_name: 'Godzilla'}  // 被 new 时, 如果 return 后跟一个 non-primitive, 则返回该 object 而不是 this;
     return null                            // 否则, 立即返回 this.
 }
 console.log(new User)
