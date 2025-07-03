@@ -1,4 +1,13 @@
 ```js
+const a = []
+for (const e of [1, 1n, true, '', Symbol(), undefined]) {
+    console.assert(typeof e != 'object')
+    a.__proto__ = e  // 将 non-object 赋给 __proto__ property 会被忽略.
+    console.log(a.__proto__)
+}
+```
+
+```js
 // 尽量不要在 non-arrow function 里使用 this, 这在 (non-)strict modes 下行为不一致.
 !function() {              console.log(this)}()  // this === globalThis
 !function() {'use strict'; console.log(this)}()  // this === undefined
