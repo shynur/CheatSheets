@@ -1,3 +1,11 @@
+```ts
+function User(name: str) {
+    if (new.target === undefined)
+        return new User(str)
+    console.assert(new.target == arguments.callee)
+}
+```
+
 ```js
 const a = []
 for (const e of [1, 1n, true, '', Symbol(), undefined]) {
