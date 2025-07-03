@@ -3,7 +3,7 @@ const a = []
 for (const e of [1, 1n, true, '', Symbol(), undefined]) {
     console.assert(typeof e != 'object')
     a.__proto__ = e  // 将 non-object 赋给 __proto__ property 会被忽略.
-    console.log(a.__proto__)
+    console.assert(a.__proto__ === Array.prototype)
 }
 ```
 
