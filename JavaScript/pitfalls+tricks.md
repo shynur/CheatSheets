@@ -1,5 +1,6 @@
 ```js
-// 和 '??' 不一样, '?.' 是一种语法结构, 且短路时只返回 undefined.
+// 和 '??' 不一样, '?.' 是一种语法结构.
+// 它在短路时返回 undefined, 否则就相当于对 property 的引用 (暗示它还可以用在 delete 后面).
 console.assert(null?.prop === null)
 var o = {m: ()=>233, i: [996]}
 console.log(o.m?.(), o.i?.[0])  // '?.' 还可以和 '()' '[]' 配合使用.
