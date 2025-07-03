@@ -1,3 +1,10 @@
+```
+// 和 '??' 不一样, '?.' 是一种语法结构, 且短路时只返回 undefined.
+console.assert(null?.prop === null)
+var o = {m: ()=>233, i: [996]}
+console.log(o.m?.(), o.i?.[0])  // '?.' 还可以和 '()' '[]' 配合使用.
+```
+
 ```ts
 function User(name: string) {
     if (name)
