@@ -63,7 +63,7 @@ for (var k in {'b':0, '10':0, 'a':0, '2':0})  // enumerate properties 的 顺序
 ```
 
 ```js
-{0:233}['0']  /* 任何不是 string 或 symbol 的 property name 都被转为 string.  */
+{0:233}['0']  /* 除了 symbol, 任何 property name 都会被转为 string.  */
 ```
 
 ```js
