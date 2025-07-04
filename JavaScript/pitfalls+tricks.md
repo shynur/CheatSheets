@@ -1,4 +1,15 @@
 ```js
+var id = Symbol()
+// Object.keys 和 for-in 等常规枚举方式都会忽略 symbol key:
+console.assert(Object.keys({[id]:0})+'' === '')
+for (const prop in {[id]:0}) {
+    console.assert(typeof prop != 'symbol')
+}
+// 但是 Object.assign 连 symbol key 也会复制:
+console.assert(Object.assign({}, {[id]:0})[id] != undefined)
+```
+
+```js
 // 和 '??' 不一样, '?.' 是一种语法结构.
 // 它在短路时返回 undefined, 否则就相当于对 property 的引用 (暗示它还可以用在 delete 后面).
 console.assert(null?.prop === null)
