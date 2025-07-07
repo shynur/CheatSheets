@@ -1,4 +1,10 @@
 ```js
+var o = {'':0}
+console.assert(o == '[object Object]')  // 对象的 toString() 默认就返回这个字符串.
+console.assert(o.valueOf() === o)  // valueOf() 默认返回自己.
+```
+
+```js
 var id = Symbol()
 // Object.keys 和 for-in 等常规枚举方式都会忽略 symbol key:
 console.assert(Object.keys({[id]:0})+'' === '')
