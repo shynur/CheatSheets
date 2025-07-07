@@ -1,3 +1,15 @@
+```ts
+// 由于历史原因, 如果 toString/valueOf 返回一个对象, 则不会出现 error, 只会表现得像没有定义该方法一样.
+// 但是 Symbiosis.toPrimitive 是严格的:
++{
+    [Symbol.toPrimitive](hint: string) {
+        switch (hint) {
+            case 'numbrt': return {}
+        }
+    }
+}
+```
+
 ```js
 var o = {'':0}
 console.assert(o == '[object Object]')  // 对象的 toString() 默认就返回这个字符串.
