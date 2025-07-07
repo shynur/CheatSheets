@@ -1,3 +1,8 @@
+```js
+> 123456..toString(36)  // 用两个点调用 number 的方法.
+2n9c
+```
+
 ```ts
 // `binary operator+` 和 与 string/number/symbol 进行 == 比较时, 使用 'default' hint.
 var o = {[Symbol.toPrimitive](hint: string) {console.log(hint)}}
