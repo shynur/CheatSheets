@@ -1,4 +1,4 @@
-```js
+```ts
 // `binary operator+` 和 与 string/number/symbol 进行 == 比较时, 使用 'default' hint.
 var o = {[Symbol.toPrimitive](hint: string) {console.log(hint)}}
 o + 1
