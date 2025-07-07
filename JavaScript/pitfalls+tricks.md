@@ -178,7 +178,7 @@ function f() {
 ```
 
 ```JavaScript
-{[prompt('属性: ')]: 233}  // 计算属性 (computed property)
+{[prompt('属性: ')]: 233, [prompt('方法: ')]() {}}  // 计算属性 (computed property)
 ```
 
 ```js
