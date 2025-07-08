@@ -1,9 +1,23 @@
 ```js
-// Unicode code point 相关方法:
+// UTF-16 / code point, UCS-2 / code unit
+var niu = '🐮'
+console.assert(niu.length == 2)  // JavaScript 中的字符串是按照 code unit (i.e. UCS-2) 进行索引的.
+console.assert(
+    eval(`'\\u${niu.charCodeAt(0).toString(16)}\\u${niu.charCodeAt(1).toString(16)}'`)
+    == niu
+)  // String.charCodeAt 和 String.fromCharCode 使用 UCS-2.
+console.assert(
+    eval(`'\\u{${niu.codePointAt(0).toString(16)}}'`)
+    == niu
+)  // String.codePointAt 和 String.fromCodePoint 使用 UTF-16.
+```
+
+```js
+// Unicode code unit 相关方法:
 function get_all_upper_case_letters() {
     let letters = ''
-    for (let point = 'A'.codePointAt(0); point <= 'Z'.codePointAt(0); ++point)
-        letters += String.fromCodePoint(point)
+    for (let point = 'A'.charCodeAt(0); point <= 'Z'.codePointAt(0); ++point)
+        letters += String.fromCharCode(point)
     return letters
 }
 console.log(get_all_upper_case_letters())
