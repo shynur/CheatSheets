@@ -1,14 +1,13 @@
 ```js
 // UTF-16 / code point, UCS-2 / code unit
-var niu = '🐮'
-console.assert(niu.length == 2)  // JavaScript 中的字符串是按照 code unit (i.e. UCS-2) 进行索引的.
+console.assert('🐮'.length == 2)  // JavaScript 中的字符串是按照 code unit (i.e. UCS-2) 进行索引的.
 console.assert(
-    eval(`'\\u${niu.charCodeAt(0).toString(16)}\\u${niu.charCodeAt(1).toString(16)}'`)
-    == niu
+    eval(`'\\u${'🐮'.charCodeAt(0).toString(16)}\\u${'🐮'.charCodeAt(1).toString(16)}'`)
+    === '🐮'
 )  // String.charCodeAt 和 String.fromCharCode 使用 UCS-2.
 console.assert(
-    eval(`'\\u{${niu.codePointAt(0).toString(16)}}'`)
-    == niu
+    eval(`'\\u{${'🐮'.codePointAt(0).toString(16)}}'`)
+    == '🐮'
 )  // String.codePointAt 和 String.fromCodePoint 使用 UTF-16.
 ```
 
