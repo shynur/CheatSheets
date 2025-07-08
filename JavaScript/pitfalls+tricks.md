@@ -1,4 +1,8 @@
 ```js
+console.assert(1.23.toFixed(4) === '1.2300')  // 精确到固定位.
+```
+
+```js
 > 123456..toString(36)  // 用两个点调用 number 的方法.
 '2n9c'
 ```
