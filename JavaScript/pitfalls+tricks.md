@@ -1,4 +1,9 @@
 ```js
+// isFinite 检查数字是否正常.
+console.assert(isFinite(1) && !isFinite(NaN) && !isFinite(Infinity))
+```
+
+```js
 console.assert(1.23.toFixed(4) === '1.2300')  // 精确到固定位.
 ```
 
