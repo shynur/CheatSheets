@@ -136,7 +136,12 @@ Object.keys({'b':0, '10':0, 'a':0, '2':0})  // 先是升序排列的自然数, �
 
 ```JavaScript
 console.assert(isNaN(NaN*0))  // 按理说 NaN 是有传播性的,
-console.assert(NaN**0 === 1)  // 但是...
+console.assert(NaN**0 === 1)  // 但是... 这是唯一违反 NaN 传播性的例外.
+```
+
+```js
+// 与 IEEE 754 不兼容的地方:
+console.assert(isNaN(1**NaN) && isNaN(1**Infinity))  // IEEE 754 指定结果应为 1.
 ```
 
 ```JavaScript
