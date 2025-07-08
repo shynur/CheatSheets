@@ -1,4 +1,11 @@
 ```js
+console.assert( Object.is(NaN, NaN))
+console.assert(!Object.is(+0, -0))
+// 除此以外, 'Object.is' 和 '===' 表现一致.
+// ES 标准称 'Object.is' 为 SameValue.
+```
+
+```js
 // isFinite 检查数字是否正常.
 console.assert(isFinite(1) && !isFinite(NaN) && !isFinite(Infinity))
 ```
