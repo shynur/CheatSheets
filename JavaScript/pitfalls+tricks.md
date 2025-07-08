@@ -1,4 +1,15 @@
 ```js
+// Unicode code point 相关方法:
+function get_all_upper_case_letters() {
+    let letters = ''
+    for (let point = 'A'.codePointAt(0); point <= 'Z'.codePointAt(0); ++point)
+        letters += String.fromCodePoint(point)
+    return letters
+}
+console.log(get_all_upper_case_letters())
+```
+
+```js
 console.assert( Object.is(NaN, NaN))
 console.assert(!Object.is(+0, -0))
 // 除此以外, 'Object.is' 和 '===' 表现一致.
