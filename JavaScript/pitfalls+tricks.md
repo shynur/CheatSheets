@@ -1,4 +1,15 @@
 ```js
+// new Array().length 是可写的.
+var arr = [1, 2, 3, 4, 5]
+
+arr.length = 3  // 截断数组.
+console.assert(arr == '1,2,3')
+
+arr.length = 0  // 清空数组.
+console.assert(arr == '')
+```
+
+```js
 // UTF-16 / code point, UCS-2 / code unit
 console.assert('🐮'.length == 2)  // JavaScript 中的字符串是按照 code unit (i.e. UCS-2) 进行索引的.
 console.assert(
