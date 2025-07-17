@@ -1,4 +1,18 @@
 ```js
+var arr = [1, 2]
+var arr_like = {0: 'A', 1: 'B', length: 2},
+    arr_like_concatspreadable = {
+        0: 'C', 1: 'D',
+        length: 2,
+        [Symbol.isConcatSpreadable]: true,  // 允许 concat array-like 对象.
+    }
+console.assert(
+    arr.concat(arr_like, arr_like_concatspreadable)
+    == '1,2,[object Object],C,D'
+)
+```
+
+```js
 var arr = [1, 2, 3]
 console.assert(arr.slice() == '1,2,3')  // 直接调用 'Array.prototype.slice' 可以获取 array 的副本.
 ```
