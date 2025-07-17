@@ -1,6 +1,6 @@
 ```js
 var arr = [1, 2, 3]
-console.assert(arr.slice == '1,2,3')  // 直接调用 'Array.prototype.slice' 可以获取 array 的副本.
+console.assert(arr.slice() == '1,2,3')  // 直接调用 'Array.prototype.slice' 可以获取 array 的副本.
 ```
 
 ```js
