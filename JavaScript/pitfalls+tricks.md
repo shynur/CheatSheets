@@ -20,11 +20,11 @@ console.assert('🐮'.length == 2)  // JavaScript 中的字符串是按照 code 
 console.assert(
     eval(`'\\u${'🐮'.charCodeAt(0).toString(16)}\\u${'🐮'.charCodeAt(1).toString(16)}'`)
     === '🐮'
-)  // String.charCodeAt 和 String.fromCharCode 使用 UCS-2.
+)  // String.prototype.charCodeAt 和 String.prototype.fromCharCode 使用 UCS-2.
 console.assert(
     eval(`'\\u{${'🐮'.codePointAt(0).toString(16)}}'`)
     == '🐮'
-)  // String.codePointAt 和 String.fromCodePoint 使用 UTF-16.
+)  // String.prototype.codePointAt 和 String.prototype.fromCodePoint 使用 UTF-16.
 ```
 
 ```js
