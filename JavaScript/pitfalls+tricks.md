@@ -1,4 +1,8 @@
 ```js
+console.assert(Array.isArray([]))
+```
+
+```js
 var arr = [1, 2]
 var arr_like = {0: 'A', 1: 'B', length: 2},
     arr_like_concatspreadable = {
