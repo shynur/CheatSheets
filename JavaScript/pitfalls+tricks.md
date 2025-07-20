@@ -1,4 +1,15 @@
 ```js
+// 约定 parameter thisArg 表示传入的 callback 的 this 值.
+// E.g., Array.prototype.filter(callbackFn, thisArg)
+console.assert(
+    ['Qi', 'shynur', 'Bob', 'Alice'].filter(
+        function(name) {return name.length >= this},
+        new Number(4)
+    ) == 'shynur,Alice'
+)
+```
+
+```js
 console.assert(Array.isArray([]))
 ```
 
