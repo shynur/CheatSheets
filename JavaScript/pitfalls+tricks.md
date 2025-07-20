@@ -1,4 +1,17 @@
 ```js
+// Array.prototype.includes 使用 [SameValueZero](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero),
+// 所以最直观的判等方式是:
+console.assert(
+        [     0   ].includes(     -0  )
+    &&  [   NaN   ].includes(    NaN  )
+    &&  [   NaN   ].includes(   -NaN  )
+    &&  [  null   ].includes(   null  )
+    &&  [undefined].includes(undefined)
+    && ![  null   ].includes(undefined)
+)
+```
+
+```js
 // 约定 parameter thisArg 表示传入的 callback 的 this 值.
 // E.g., Array.prototype.filter(callbackFn, thisArg)
 console.assert(
