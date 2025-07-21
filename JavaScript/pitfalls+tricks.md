@@ -1,4 +1,12 @@
 ```js
+// 获取字符串的 Unicode Point 数量:
+console.assert(
+        '𝒳😂'.length == 4
+        && [...'𝒳😂'].length == 2
+)
+```
+
+```js
 // Array.prototype.includes 使用 [SameValueZero](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero),
 // 所以最直观的判等方式是:
 console.assert(
