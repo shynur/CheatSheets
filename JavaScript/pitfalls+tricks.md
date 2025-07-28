@@ -1,4 +1,12 @@
 ```js
+// Map 的迭代保留了插入顺序.
+console.assert(
+        [...(new Map).set(3, 'A').set(1, 'B').set(2, 'C')]
+        == '3,A,1,B,2,C'
+)
+```
+
+```js
 // Map.prototype.set 可以链式调用.
 var m = (new Map).set(0, 'A').set(1, 'B')
 console.assert(m.has(0) && m.has(1))
