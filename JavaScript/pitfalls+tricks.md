@@ -1,4 +1,10 @@
 ```js
+// Map.prototype.set 可以链式调用.
+var m = (new Map).set(0, 'A').set(1, 'B')
+console.assert(m.has(0) && m.has(1))
+```
+
+```js
 // 获取字符串的 Unicode Point 数量:
 console.assert(
         '𝒳😂'.length == 4
