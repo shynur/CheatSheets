@@ -1,4 +1,10 @@
 ```js
+// 从 object 创建 Map:
+> new Map(Object.entries({name: "John", age: 30}))
+Map(2) { "name" => "John", "age" => 30 }
+```
+
+```js
 // Map 的迭代保留了插入顺序.
 console.assert(
         [...(new Map).set(3, 'A').set(1, 'B').set(2, 'C')]
