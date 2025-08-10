@@ -1,7 +1,13 @@
 ```js
-// 从 object 创建 Map:
-> new Map(Object.entries({name: "John", age: 30}))
+> var o = {name: "John", age: 30}
+
+// 从 object 创建 map:
+> var m = new Map(Object.entries(o)); m
 Map(2) { "name" => "John", "age" => 30 }
+
+// 从 map 创建 object:
+> Object.fromEntries(m)
+{ name: 'John', age: 30 }
 ```
 
 ```js
