@@ -1,4 +1,11 @@
 ```js
+// 转换对象
+> var prices = { banana: 1, orange: 2, meat: 4 }
+> Object.fromEntries(Object.entries(prices).map(([k, v]) => [k, 2*v]))
+{ banana: 2, orange: 4, meat: 8 }
+```
+
+```js
 > var o = {name: "John", age: 30}
 
 // 从 object 创建 map:
