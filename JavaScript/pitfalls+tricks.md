@@ -5,10 +5,16 @@
  * 
  */
 var [
+    /*  */ {title, width, height},
     /*  */ q1 = prompt('Q1'), q2 = prompt('Q2'),
     /*  */ firstName, , title,
     /*  */ ...rest
 ] = [
+    /*  */ {
+        title: "Menu",
+        width: 100,
+        height: 200,
+    },
     /*  */ 'A1', ,
     /*  */ "Julius", "Caesar", "Consul",
     /*  */ "of the Roman Republic", "something else"
