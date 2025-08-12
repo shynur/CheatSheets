@@ -2,22 +2,23 @@
 /*
  * - 解构 array 可以用 逗号 忽略部分赋值
  * - 解构 array 时等号右侧可以是任何 iterable (本质是 for-of 语法糖)
- * 
  */
 var [
-    /*  */ {width, height: H = prompt("高度"), title: menu_title, unknown},
-    /*  */ q1 = prompt('Q1'), q2 = prompt('Q2'),
-    /*  */ firstName, , title,
-    /*  */ ...rest
+    /* 1 */ {width, height: H = prompt("高度"), title: menu_title, unknown},
+    /* 2 */ {...obj},
+    /* 3 */ q1 = prompt('Q1'), q2 = prompt('Q2'),
+    /* 4 */ firstName, , title,
+    /* 5 */ ...rest
 ] = [
-    /*  */ {
+    /* 1 */ {
         title: "Menu",
         width: 100,
         height: 200,
     },
-    /*  */ 'A1', ,
-    /*  */ "Julius", "Caesar", "Consul",
-    /*  */ "of the Roman Republic", "something else"
+    /* 2 */ {a: 1, b: 2},
+    /* 3 */ 'A1', ,
+    /* 4 */ "Julius", "Caesar", "Consul",
+    /* 5 */ "of the Roman Republic", "something else"
 ].values()
 ```
 
