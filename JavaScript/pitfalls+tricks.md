@@ -5,11 +5,11 @@
  * 
  */
 var [
-    /*  */ q1 = prompt('Q1'), q2 = prompt('Q2')
+    /*  */ q1 = prompt('Q1'), q2 = prompt('Q2'),
     /*  */ firstName, , title,
     /*  */ ...rest
 ] = [
-    /*  */ null, ,
+    /*  */ 'A1', ,
     /*  */ "Julius", "Caesar", "Consul",
     /*  */ "of the Roman Republic", "something else"
 ].values()
