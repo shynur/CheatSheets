@@ -5,7 +5,7 @@
  * 
  */
 var [
-    /*  */ {width, height: H = prompt("高度"), title: menu_title},
+    /*  */ {width, height: H = prompt("高度"), title: menu_title, unknown},
     /*  */ q1 = prompt('Q1'), q2 = prompt('Q2'),
     /*  */ firstName, , title,
     /*  */ ...rest
@@ -19,7 +19,6 @@ var [
     /*  */ "Julius", "Caesar", "Consul",
     /*  */ "of the Roman Republic", "something else"
 ].values()
-console.assert(rest == "of the Roman Republic,something else")
 ```
 
 ```js
