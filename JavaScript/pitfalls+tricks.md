@@ -1,11 +1,11 @@
 ```js
 /*
- * - 数组结构可以用 逗号 忽略部分赋值
- * - 等号右侧可以是任何 iterable (本质是 for-of 语法糖)
+ * - 解构 array 可以用 逗号 忽略部分赋值
+ * - 解构 array 时等号右侧可以是任何 iterable (本质是 for-of 语法糖)
  * 
  */
 var [
-    /*  */ {title, width, height},
+    /*  */ {width, height: H = prompt("高度"), title: menu_title},
     /*  */ q1 = prompt('Q1'), q2 = prompt('Q2'),
     /*  */ firstName, , title,
     /*  */ ...rest
