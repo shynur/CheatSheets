@@ -1,4 +1,22 @@
 ```js
+/*
+ * - 数组结构可以用 逗号 忽略部分赋值
+ * - 等号右侧可以是任何 iterable (本质是 for-of 语法糖)
+ * 
+ */
+var [
+    /*  */ q1 = prompt('Q1'), q2 = prompt('Q2')
+    /*  */ firstName, , title,
+    /*  */ ...rest
+] = [
+    /*  */ null, ,
+    /*  */ "Julius", "Caesar", "Consul",
+    /*  */ "of the Roman Republic", "something else"
+].values()
+console.assert(rest == "of the Roman Republic,something else")
+```
+
+```js
 // 转换对象
 > var prices = { banana: 1, orange: 2, meat: 4 }
 > Object.fromEntries(
