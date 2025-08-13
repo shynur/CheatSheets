@@ -1,4 +1,16 @@
 ```js
+function printNow() {
+    const now = new Date
+    const now_str = `本地时间 (UTC${(now.getTimezoneOffset()/60 + '').replace(/^(?=\d)/, '+')}) 现在是
+${now.getFullYear()} 年 ${now.getMonth()+1} 月 ${now.getDate()} 日
+星期 ${now.getDay() || 7}
+${now.getHours()}:${(now.getMinutes()+'').padStart(2, '0')}:${(now.getSeconds()+'').padStart(2, '0')}.${(now.getMilliseconds()+'').padStart(3, '0')}`
+
+    console.log(now_str)
+}
+```
+
+```js
 new Date  // 当前时间
 new Date(- 24 * 3600 * 1000)  // UNIX 纪元的前一天
 (new Date).getTime() / 1000  // UNIX epoch (秒)
