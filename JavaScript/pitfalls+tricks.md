@@ -18,7 +18,8 @@ ${now.getHours()}:${(now.getMinutes()+'').padStart(2, '0')}:${(now.getSeconds()+
 ```
 
 ```js
-new Date  // 当前时间
+var now = new Date  // 当前时间
+console.assert(now.getTime() == +now)
 new Date(- 24 * 3600 * 1000)  // UNIX 纪元的前一天
 (new Date).getTime() / 1000  // UNIX epoch (秒)
 ```
