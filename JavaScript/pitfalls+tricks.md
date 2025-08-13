@@ -1,4 +1,25 @@
 ```js
+> var me = {
+      toJSON() {
+          return Object.fromEntries(
+              Object.entries(this).map(
+                  ([k, v]) => [k, k.startsWith('_') ? undefined : v]
+              )
+          )
+      },
+      name: 'shynur',
+      _age: 22,
+      gender: 'male',
+      _gf: 'xml'
+  }
+> console.log(JSON.stringify(me, null, 4))
+{
+    "name": "shynur",
+    "gender": "male"
+}
+```
+
+```js
 // 自动时间校准
 var date = new Date('2002-12-10T00:00:00+08:00')
 date.setDate(date.getDate() + 365)  // 并不代表 12 月 375 日, 也不会溢出, 而是时间向后增长.
