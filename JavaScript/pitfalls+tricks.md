@@ -1,4 +1,11 @@
 ```js
+// 自动时间校准
+var date = new Date('2002-12-10T00:00:00+08:00')
+date.setDate(date.getDate() + 365)  // 并不代表 12 月 375 日, 也不会溢出, 而是时间向后增长.
+console.log(data)
+```
+
+```js
 function printNow() {
     const now = new Date
     const now_str = `本地时间 (UTC${(-now.getTimezoneOffset()/60 + '').replace(/^(?=\d)/, '+')}) 现在是
