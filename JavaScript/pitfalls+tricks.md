@@ -1,4 +1,10 @@
 ```js
+new Date  // 当前时间
+new Date(- 24 * 3600 * 1000)  // UNIX 纪元的前一天
+(new Date).getTime() / 1000  // UNIX epoch (秒)
+```
+
+```js
 /*
  * - 解构 array 可以用 逗号 忽略部分赋值
  * - 解构 array 时等号右侧可以是任何 iterable (本质是 for-of 语法糖)
