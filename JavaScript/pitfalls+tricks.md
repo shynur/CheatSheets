@@ -4,7 +4,12 @@
  * - 解构 array 时等号右侧可以是任何 iterable (本质是 for-of 语法糖)
  */
 var [
-    /* 1 */ {width, height: H = prompt("高度"), title: menu_title, unknown},
+    /* 1 */ {
+        width,
+        height: H = prompt("高度"),
+        title: menu_title,
+        unknown
+    },
     /* 2 */ {...obj},
     /* 3 */ q1 = prompt('Q1'), q2 = prompt('Q2'),
     /* 4 */ firstName, , title,
