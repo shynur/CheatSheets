@@ -1,4 +1,9 @@
 ```js
+// new Function 指定形参的方式有这些:
+console.assert( new Function('a, b', 'c', '').length == 3 )
+```
+
+```js
 // new Function 可以访问可能被 shadow 的全局变量:
 > let x = 42
 > new Function('x')()
