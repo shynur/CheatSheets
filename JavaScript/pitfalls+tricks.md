@@ -1,4 +1,15 @@
 ```js
+// Method Borrowing (方法借用)
+> +function() {
+      console.log(
+          // arguments 可以借用 Array.prototype 的 方法:
+          [].join.call(arguments, '.')
+      )
+   }(192, 168, 9, 91)
+192.168.9.91
+```
+
+```js
 // wrapper
 var o = {
     m(...args) {console.log(...args)}
