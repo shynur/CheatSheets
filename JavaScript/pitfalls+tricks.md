@@ -1,18 +1,28 @@
 ```js
-setTimeout(
-    function() {
-        const intervals = []
-        let t = Date.now()
-        return function f() {
-            intervals.push(Date.now() - t)
-            console.log(intervals)
-            if (intervals.length >= 8)
-                return
-            t = Date.now()
-            setTimeout(f)
-        }
-    }()
-)
+// 浏览器环境中 setTimeout 经过 5 重嵌套之后, 时间间隔被强制设定为 >=4ms :
+> setTimeout(
+      function() {
+          const intervals = []
+          let t = performance.now()
+          return function f() {
+              intervals.push(performance.now() - t)
+              console.log(intervals)
+              if (intervals.length >= 8)
+                  return
+              t = performance.now()
+              setTimeout(f)
+          }
+      }()
+  )  // Firefox
+Array(1) [ 0 ]
+Array(2) [ 0, 0 ]
+Array(3) [ 0, 0, 0 ]
+Array(4) [ 0, 0, 0, 0 ]
+Array(5) [ 0, 0, 0, 0, 4 ]
+Array(6) [ 0, 0, 0, 0, 4, 16 ]
+Array(7) [ 0, 0, 0, 0, 4, 16, 15 ]
+
+// setInterval timer 以 0 延时执行几次任务后, 也会强制设定间隔 >=4ms.
 ```
 
 ```js
