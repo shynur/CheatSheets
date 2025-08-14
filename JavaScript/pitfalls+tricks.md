@@ -1,4 +1,14 @@
 ```js
+// var 和 function 声明的全局符号会挂到 globalThis 对象上.
+var x = {}
+function f() {}
+console.assert(
+    globalThis.x === x
+    && globalThis.f === f
+)
+```
+
+```js
 > var x = null
 > var f = function() {
       return function(n) {
