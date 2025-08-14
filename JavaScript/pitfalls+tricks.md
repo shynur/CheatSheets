@@ -12,7 +12,12 @@
   enumerable: false,
   configurable: true
 }
-
+// 更新 property flag:
+> var arr = [1]
+> Object.keys(Object.defineProperty(arr, 0, {enumerable: false}))
+[]
+> Object.keys(Object.defineProperty(arr, 0, {enumerable: true}))
+[1]
 ```
 
 ```js
