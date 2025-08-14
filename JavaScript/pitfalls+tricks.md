@@ -4,8 +4,10 @@ var o = {
     m(...args) {console.log(...args)}
 }
 o.m = function(f) {
-    /* 某些预处理... */
-    return f.apply(this, arguments)
+    return function() {
+        /* 某些预处理... */
+        return f.apply(this, arguments)
+    }
 }(o.m)
 ```
 
