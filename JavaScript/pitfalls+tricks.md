@@ -1,4 +1,24 @@
 ```js
+> var x = null
+> var f = function() {
+      return function(n) {
+          const old_x = x
+          if (x === undefined)
+              x = 0
+          x += n
+          console.log(`${old_x} -> ${x}`)
+      }
+
+      if (false) {
+          var x  // 无论 var 声明语句位于何处, 都会被提升.
+      }
+  }()
+> f(0), f(3)
+undefined -> 0
+0 -> 3
+```
+
+```js
 // Spread iterable objects.
 [...'𝒳😂']  // 按照 for-of 迭代.
 ```
