@@ -422,7 +422,7 @@ console.assert(o.valueOf() === o)  // valueOf() 默认返回自己.
 ```js
 var id = Symbol()
 
-// Object.keys/values/entries 和 for-in 等常规枚举方式都会忽略 symbol key:
+// Object.keys/values/entries 和 for-in 等常规枚举方式都会忽略 Symbol-key 和 non-enumerable:
 console.assert(Object.keys({[id]:0})+'' === '')
 for (const prop in {[id]:0}) {
     console.assert(typeof prop != 'symbol')
