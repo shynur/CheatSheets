@@ -1,4 +1,12 @@
 ```js
+// Function.prototype.bind 可以绑定部分参数.  对于 'function() {...}', 还能设定 this.
+function f(a, b, ...c) {return [this, a, b, ...c]}
+f.bind('kfc', 'v').bind('this 不能再被 bound 了', 'me', 50)()
+// bind 的返回值是 *exotic object*,
+// 它的 this binding 是 hard-fixed, 无法被 re-bound.
+```
+
+```js
 // Method Borrowing (方法借用)
 > +function() {
       console.log(
