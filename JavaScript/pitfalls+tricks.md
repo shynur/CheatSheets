@@ -1,4 +1,15 @@
 ```js
+// wrapper
+var o = {
+    m(...args) {console.log(...args)}
+}
+o.m = function(f) {
+    /* 某些预处理... */
+    return f.apply(this, arguments)
+}(o.m)
+```
+
+```js
 // 设定 function 的 this
 function makeMsgTo(text, to) {
     return `${this.name} -> ${to}: ${text}`
