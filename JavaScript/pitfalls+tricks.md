@@ -1,7 +1,16 @@
 ```js
 // 设定 function 的 this
-> +function(text) {console.log(`${this.name}: ${text}`)}.call({name: 'shynur'}, 'Hello!')
-shynur: Hello!
+function makeMsgTo(text, to) {
+    return `${this.name} -> ${to}: ${text}`
+}
+console.assert(
+    makeMsgTo.call({name: 'shynur'}, 'Hello!', 'LL')
+    ===  "shynur -> LL: Hello!"
+)
+console.assert(
+    makeMsgTo.apply({name: 'shynur'}, ['Hello!', 'LL'])  // 只接受 array-like, 不接受 iterable.
+    ===  "shynur -> LL: Hello!"
+)
 ```
 
 ```js
