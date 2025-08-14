@@ -12,12 +12,25 @@
   enumerable: false,
   configurable: true
 }
+
 // 更新 property flag:
 > var arr = [1]
 > Object.keys(Object.defineProperty(arr, 0, {enumerable: false}))
 []
 > Object.keys(Object.defineProperty(arr, 0, {enumerable: true}))
 [1]
+
+// 新建 property:
+> var const_x = Object.defineProperty({}, 'x', {enumerable: true, value: 42})  // 未写明的 attributes 默认是 false.
+> +function() {
+      'use strict'
+      try {
+          const_x.x = 123
+      } catch (e) {
+          console.log([e+''])
+      }
+  }()
+["TypeError: Cannot assign to read only property 'x' of object '#<Object>'"]
 ```
 
 ```js
