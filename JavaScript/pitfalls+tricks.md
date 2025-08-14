@@ -1,4 +1,10 @@
 ```js
+// 箭头函数没有自己的 arguments:
+(function() {return ()=>arguments})(1,2,3)()
+// arguments 是 iterable array-like object.
+```
+
+```js
 > var me = {
       toJSON() {
           return Object.fromEntries(
