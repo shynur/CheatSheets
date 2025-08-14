@@ -1,4 +1,20 @@
 ```js
+// Function: contextual name (上下文命名)
+> (function() {}).name
+""
+> function f1() {}; f1.name
+"f1"
+> var f2 = ()=>{}; f2.name
+"f2"
+> ((x = ()=>{})=>x.name)()
+"x"
+> {m() {}}.m.name
+"m"
+> {f: ()=>{}}.f.name
+"f"
+```
+
+```js
 // var 和 function 声明的全局符号会挂到 globalThis 对象上.
 var x = {}
 function f() {}
