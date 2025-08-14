@@ -1,4 +1,9 @@
 ```js
+// Named Function Expression
+
+```
+
+```js
 // 函数参数数量 (除剩余参数)
 > ((a, b, c, ..._)=>{}).length
 3
