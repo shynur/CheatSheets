@@ -1,4 +1,10 @@
 ```js
+// 设定 function 的 this
+> +function(text) {console.log(`${this.name}: ${text}`)}.call({name: 'shynur'}, 'Hello!')
+shynur: Hello!
+```
+
+```js
 // 浏览器环境中 setTimeout 经过 5 重嵌套之后, 时间间隔被强制设定为 >=4ms :
 > setTimeout(
       function() {
