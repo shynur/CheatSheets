@@ -1,6 +1,10 @@
 ```js
-// Named Function Expression
-
+// new Function 可以访问可能被 shadow 的全局变量:
+> let x = 42
+> new Function('x')()
+9
+> globalThis.x
+undefined
 ```
 
 ```js
