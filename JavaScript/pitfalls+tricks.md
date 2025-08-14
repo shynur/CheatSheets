@@ -1,4 +1,21 @@
 ```js
+setTimeout(
+    function() {
+        const intervals = []
+        let t = Date.now()
+        return function f() {
+            intervals.push(Date.now() - t)
+            console.log(intervals)
+            if (intervals.length >= 8)
+                return
+            t = Date.now()
+            setTimeout(f)
+        }
+    }()
+)
+```
+
+```js
 var timerDescriptor = setTimeout('console.log(233)', 9999)
 clearTimeout(timerDescriptor)  // 取消定时任务
 ```
