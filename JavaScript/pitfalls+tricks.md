@@ -1,4 +1,10 @@
 ```js
+// 函数参数数量 (除剩余参数)
+> ((a, b, c, ..._)=>{}).length
+3
+```
+
+```js
 // Function: contextual name (上下文命名)
 > (function() {}).name
 ""
