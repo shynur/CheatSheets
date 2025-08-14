@@ -1,4 +1,9 @@
 ```js
+// Spread iterable objects.
+[...'𝒳😂']  // 按照 for-of 迭代.
+```
+
+```js
 // 箭头函数没有自己的 arguments:
 (function() {return ()=>arguments})(1,2,3)()
 // arguments 是 iterable array-like object.
