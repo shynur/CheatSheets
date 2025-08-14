@@ -1,6 +1,17 @@
 <https://zh.javascript.info/callbacks#chu-li-error>
 
 ```js
+/* Property Flag
+ * 对象的 property 由 value 和 3 attributes (writable, enumerable, 和 configurable) 组成.  */
+
+// 获取 property 的 flag:
+> Object.getOwnPropertyDescriptor({}, 'toString')
+{
+  value: [Function: toString],
+  writable: true,
+  enumerable: false,
+  configurable: true
+}
 
 ```
 
