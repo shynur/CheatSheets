@@ -1,3 +1,9 @@
+<https://zh.javascript.info/callbacks#chu-li-error>
+
+```js
+
+```
+
 ```js
 // Function.prototype.bind 可以绑定部分参数.  对于 'function() {...}', 还能设定 this.
 function f(a, b, ...c) {return [this, a, b, ...c]}
