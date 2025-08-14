@@ -336,6 +336,8 @@ var o = {
 > var d = {a:1}, s1 = {a:2, b:3, c:4}, s2 = {c:5, d:6}
 > Object.assign(d, s1, s2)  // 浅拷贝 (只包含 enumerable own properties), 最终 d 的 property value 是参数从右往左依次查找的结果.
 { a: 2, b: 3, c: 5, d: 6 }
+> {...d, ...s1, ...s2}
+{ a: 2, b: 3, c: 5, d: 6 }
 ```
 
 ```js
