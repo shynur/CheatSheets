@@ -1,4 +1,9 @@
 ```js
+var timerDescriptor = setTimeout('console.log(233)', 9999)
+clearTimeout(timerDescriptor)  // 取消定时任务
+```
+
+```js
 // new Function 指定形参的方式有这些:
 console.assert( new Function('a, b', 'c', '').length == 3 )
 ```
