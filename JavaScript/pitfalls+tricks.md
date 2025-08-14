@@ -12,6 +12,8 @@
 "f1"
 > var f2 = ()=>{}; f2.name
 "f2"
+> var f = function g() {}; f.name
+"g"
 > ((x = ()=>{})=>x.name)()
 "x"
 > {m() {}}.m.name
