@@ -1,8 +1,51 @@
 <https://zh.javascript.info/callbacks#chu-li-error>
 
 ```js
+/* Accessor Property */
+> var me = {
+      name: "shynur", surname: "Xie",
+      get fullName() {
+          return `${this.name} ${this.surname}`
+      },
+      set fullName(value) {
+          [this.name, this.surname] = value.split(" ")
+      },
+  }
+> Object.getOwnPropertyDescriptor(me, 'fullName')
+{
+  get() {return /*...*/},
+  set(value) {/*...*/},
+  enumerable: true,
+  configurable: true,
+}  // 一个 property 要么是 *data property* 要么是 *accessor property*.
+```
+
+```js
+Object.preventExtensions({})  // 🈲新建 property
+Object.seal({})               // non-extensible, non-configurable
+Object.freeze({})             // 🈲任何变更
+// preventExtensions < seal < freeze
+```
+
+```js
+// “flags-aware” way of cloning an object
+> +function() {
+      'use strict'
+      try {
+          Object.defineProperties(
+              {},
+              Object.getOwnPropertyDescriptors(Math)  // 涵盖 *Symbol or non-enumerable* properties.
+          ).PI = 3
+      } catch (e) {
+          console.log([e+''])
+      }
+  }()
+["TypeError: Cannot assign to read only property 'PI' of object '#<Object>'"]
+```
+
+```js
 /* Property Flag
- * 对象的 property 由 value 和 3 attributes (writable, enumerable, 和 configurable) 组成.  */
+ * 对象的 *data property* 由 value and 3 attributes (writable, enumerable, 和 configurable) 组成.  */
 
 // 获取 property 的 flag:
 > Object.getOwnPropertyDescriptor({}, 'toString')
