@@ -1,4 +1,16 @@
 ```js
+// 所有的内置 Error 都有 name/message property.
+try {
+    +function() {
+        'use strict'
+        Math.PI = 3
+    }()
+} catch (e) {
+    console.log(`${e.name}: ${e.message}`)
+}
+```
+
+```js
 /* constructor.prototype */
 // function 有默认的 prototype, 其 constructor property 指向 function 自身.
 > Object.getOwnPropertyDescriptors(function User() {}.prototype)
