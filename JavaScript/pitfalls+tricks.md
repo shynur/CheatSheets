@@ -1,4 +1,21 @@
 ```js
+/* Global Catch */
+globalThis.window.onerror = function(
+    msg,
+    /* 发生 error 的脚本的 URL */ url,
+    /* error 的抛出位置 */ line, col,
+    error
+) {/*...*/}
+```
+
+```js
+// try 结构
+try {} catch {}
+try {} finally {/* 无论如何都会执行 */}
+try {} catch (e) {} catch () {} finally {}
+```
+
+```js
 // 所有的内置 Error 都有 name/message property.
 try {
     +function() {
