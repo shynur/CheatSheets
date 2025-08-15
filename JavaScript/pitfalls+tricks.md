@@ -1,4 +1,4 @@
-<https://zh.javascript.info/callbacks#chu-li-error>
+Non-pure-dictionary 对象的 `__proto__` 在 specification 中被称为 *`[[Prototype]]`*, 它只能是 object.
 
 ```js
 /* Accessor Property */
@@ -688,6 +688,9 @@ var name = 'shynur'
 {name, age: 22}  // 属性值简写 (property value shorthand)
 ```
 
-___
-
-&copy; 2025  [谢骐](https://github.com/shynur) \<<shynur@outlook.com>\>.  All rights reserved.
+<footer>
+    <small>
+        Copyright &copy; 2025  谢骐 &lt;<a href='mailto:shynur@outlook.com'>shynur@outlook.com</a>&gt;.
+        All rights reserved.
+    </small>
+</footer>
