@@ -1,4 +1,23 @@
-Non-pure-dictionary 对象的 `__proto__` 在 specification 中被称为 *`[[Prototype]]`*, 它只能是 object.
+```js
+/* constructor.prototype */
+// function 有默认的 prototype, 其 constructor property 指向 function 自身.
+> Object.getOwnPropertyDescriptors(function User() {}.prototype)
+{
+    constructor: {
+        value: [Function: User],
+        writable: true,
+        enumerable: false,
+        configurable: true
+    },
+}
+// 建议仅修改 prototype, 而非直接覆盖 function.prototype,
+// 因为默认的 prototype 有自动设置的 constructor property.
+```
+
+- for-in loop 包含 inherited properties;
+- `Object.keys/values/entries(obj)` 等只考虑 `obj.hasOwnProperty(propName)` 为 true 的情况.
+
+Non-pure-dictionary 对象的 `__proto__` 在 specification 中被称为 *`[[Prototype]]`*, 它只能是 object (including `null`).
 
 ```js
 /* Accessor Property */
@@ -8,7 +27,7 @@ Non-pure-dictionary 对象的 `__proto__` 在 specification 中被称为 *`[[Pro
           return `${this.name} ${this.surname}`
       },
       set fullName(value) {
-          [this.name, this.surname] = value.split(" ")
+          [this.name, this.surname] = value.split(' ')
       },
   }
 > Object.getOwnPropertyDescriptor(me, 'fullName')
@@ -25,6 +44,14 @@ Object.preventExtensions({})  // 🈲新建 property
 Object.seal({})               // non-extensible, non-configurable
 Object.freeze({})             // 🈲任何变更
 // preventExtensions < seal < freeze
+```
+
+```js
+// truly exact copy, clone whatever anything, 精准拷贝
+obj => Object.create(
+    Object.getPrototypeOf(obj),            // 获取 __proto__
+    Object.getOwnPropertyDescriptors(obj)  // 获取 non-inherited properties
+)
 ```
 
 ```js
