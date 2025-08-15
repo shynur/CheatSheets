@@ -4,7 +4,7 @@
 > Object.getOwnPropertyDescriptors(function User() {}.prototype)
 {
     constructor: {
-        value: [Function: User],
+        value() {/* Function: User] */},
         writable: true,
         enumerable: false,
         configurable: true
@@ -77,7 +77,7 @@ obj => Object.create(
 // 获取 property 的 flag:
 > Object.getOwnPropertyDescriptor({}, 'toString')
 {
-  value: [Function: toString],
+  value() {/* [Function: toString] */},
   writable: true,
   enumerable: false,
   configurable: true
