@@ -31,7 +31,7 @@ new Promise(
             alert(resolve)  // 打印 “function() {[native code]}”.
             setTimeout(() => resolve(this.num * 2), 2000)
         }
-    })  // 一个 promise-compatible thenable 对象
+    })  // 一个 promise-compatible thenable/awaitable 对象
 ).then(alert)
 ```
 
