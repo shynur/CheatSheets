@@ -1,5 +1,12 @@
 ```js
-
+new Promise(() => {throw new Error("Whoops!")}),
+globalThis.window.addEventListener(
+    'unhandledrejection',
+    event => {
+        alert(event.promise)
+        alert(event.reason)
+    }
+)
 ```
 
 ```js
