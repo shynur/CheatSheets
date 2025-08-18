@@ -1,4 +1,8 @@
 ```js
+
+```
+
+```js
 new Promise(
     resolve => resolve(1)
 ).then(
