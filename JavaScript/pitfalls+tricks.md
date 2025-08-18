@@ -1,4 +1,18 @@
 ```js
+new Promise(
+    resolve => resolve(1)
+).then(
+    result => ({
+        num: result,
+        then(resolve, reject) {
+            alert(resolve)  // 打印 “function() {[native code]}”.
+            setTimeout(() => resolve(this.num * 2), 2000)
+        }
+    })  // 一个 promise-compatible thenable 对象
+).then(alert)
+```
+
+```js
 /* Global Catch */
 globalThis.window.onerror = function(
     msg,
