@@ -1,4 +1,15 @@
 ```js
+// AggregateError 没有 error property, 取而代之的是 errors:
+> Object.getOwnPropertyDescriptors(new AggregateError('123'))
+{
+  errors: {
+    value: ['1', '2', '3'],
+    writable: true, enumerable: false, configurable: true
+  }
+}
+```
+
+```js
 new Promise(() => {throw new Error("Whoops!")}),
 
 globalThis.window.addEventListener(
