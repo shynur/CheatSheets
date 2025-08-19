@@ -63,13 +63,13 @@ Answer 2: Y
 ```
 
 ```js
-// AggregateError 没有 error property, 取而代之的是 errors:
-> Object.getOwnPropertyDescriptors(new AggregateError('123'))
+// AggregateError 存储了若干个 errors:
+> Object.getOwnPropertyDescriptors(new AggregateError([new Error(1), new Error(2)]))
 {
-  errors: {
-    value: ['1', '2', '3'],
-    writable: true, enumerable: false, configurable: true
-  }
+    errors: {
+        value: [Error: 1, Error: 2],
+        writable: true, enumerable: false, configurable: true
+    }
 }
 ```
 
