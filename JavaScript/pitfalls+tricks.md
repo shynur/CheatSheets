@@ -1,4 +1,19 @@
 ```js
+> var g = function*() {
+      try {
+          yield "请在这里把我退出"
+      } finally {
+          console.log('会执行到这儿的')
+      }
+  }()
+> g.next()
+{ value: "请在这里把我退出", done: false }
+> g.return(42)
+会执行到这儿的
+{ value: 42, done: true }
+```
+
+```js
 > var question = function*generate() {
       try {
           const question = " π 的最后一位是?  "
