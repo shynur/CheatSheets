@@ -521,7 +521,7 @@ var now = new Date  // 当前时间
 console.assert(now.getTime() == +now)
 new Date(- 24 * 3600e3)             // UNIX 纪元的前一天
 new Date(Date.now() - 24 * 3600e3)  // 昨天
-(new Date).getTime() / 1000         // UNIX epoch (秒)
+;(new Date).getTime() / 1000         // UNIX epoch (秒)
 ```
 
 ```js
