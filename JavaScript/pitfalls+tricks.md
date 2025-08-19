@@ -1,4 +1,17 @@
 ```js
+// “yield” is a two-way street.
+> var questions = function*() {
+      console.log(`Answer 1: ${yield 1}`)
+      console.log(`Answer 2: ${yield 2}`)
+  }()
+> questions.next()
+> questions.next('X')
+Answer 1: X
+> questions.next('Y')
+Answer 2: Y
+```
+
+```js
 // Generator Composition
 > [
       ...function*() {
