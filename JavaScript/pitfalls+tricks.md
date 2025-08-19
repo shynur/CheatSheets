@@ -1,4 +1,28 @@
 ```js
+// Diacritical Mark & Normalization
+> 'S\u0307\u0323'
+'Ṩ'
+> 'S\u0323\u0307'
+'Ṩ'
+> [...'S\u0307\u0323'.normalize()]
+[ 'Ṩ' ]
+> 'S\u0307\u0323'.normalize() == 'S\u0323\u0307'.normalize()
+true
+```
+
+```js
+// JavaScript 字符串使用 UTF-16 编码, 每个 char 占用 2 个字节.
+> '\xA9'          // \xXX - 仅限 ASCII
+©
+> '\u00A9'        // \uXXXX - 只能表示 U+0000 到 U+FFFF 之间的 Unicode rune
+©
+> '\uD83D\uDE0D'  // U+{D800..DBFF} U+{DC00..DFFF} - surrogate pair
+😍
+> '\u{1F60D}'     // 表示任何 Unicode rune - 会被拆成 surrogate pair
+😍
+```
+
+```js
 > const RangePrototype = {
       [Symbol.asyncIterator]() {
           let i = this.begin
