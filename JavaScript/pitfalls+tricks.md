@@ -1,3 +1,5 @@
+<a href='about:blank' target=_blank>新建空白标签页</a>
+
 ```js
 > const RangePrototype = {
       [Symbol.asyncIterator]() {
