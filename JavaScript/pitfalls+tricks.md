@@ -1,4 +1,4 @@
-<a href='about:blank' target=_blank>新建空白标签页</a>
+<about:blank>
 
 ```js
 > const RangePrototype = {
