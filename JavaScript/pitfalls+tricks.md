@@ -1,4 +1,29 @@
 ```js
+// Generator Composition
+> [
+      ...function*() {
+          const Range = {
+              *[Symbol.iterator]() {
+                  for (let i = this.start; i < this.end; ++i)
+                      yield i
+              }
+          }
+          yield 1
+          yield*{
+              __proto__: Range,
+              start: 2, end: 5
+          }
+          yield 5
+          yield*{
+              __proto__: Range,
+              start: 6, end: 9
+          }
+      }()
+  ]
+[ 1, 2, 3, 4, 5, 6, 7, 8 ]
+```
+
+```js
 // generator
 > var g = function*() { yield 1; yield 2; return 3 }()
 > [g.next(), g.next(), g.next(), g.next()]
