@@ -1,5 +1,3 @@
-<about:blank>
-
 ```js
 > const RangePrototype = {
       [Symbol.asyncIterator]() {
