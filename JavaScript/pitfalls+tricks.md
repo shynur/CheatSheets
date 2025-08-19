@@ -1,4 +1,12 @@
 ```js
+// BigInt
+> 0n || console.log('BigInt(0) is falsy')
+BigInt(0) is falsy
+> 3n / 2n  // 和 C 一样的整型封闭运算.
+1n
+```
+
+```js
 // Diacritical Mark & Normalization
 > 'S\u0307\u0323'
 'Ṩ'
