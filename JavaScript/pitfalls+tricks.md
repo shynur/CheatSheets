@@ -1,4 +1,18 @@
 ```js
+> var question = function*generate() {
+      try {
+          const question = " π 的最后一位是?  "
+          console.log(question, yield question)
+      } catch (err) {
+          console.log(`- 你居然不会!  - ${err.message}`)
+      }
+  }()
+> question.next()
+> question.throw(new Error("啊?  我不到啊.."))
+- 你居然不会!  - 啊?  我不到啊..
+```
+
+```js
 // “yield” is a two-way street.
 > var questions = function*() {
       console.log(`Answer 1: ${yield 1}`)
