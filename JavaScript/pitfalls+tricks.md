@@ -2,13 +2,11 @@
 > const RangePrototype = {
       [Symbol.asyncIterator]() {
           let i = this.begin
-          const end = this.end
-          const interval = this.interval
           return {
-              async next() {
-                  if (i >= end)
+              next: async() => {
+                  if (i >= this.end)
                       return {done: true}
-                  await {then(res) {setTimeout(res, interval*1e3)}}
+                  await {then: res => setTimeout(res, this.interval*1e3)}
                   return {done: false, value: i++}
               }
           }
