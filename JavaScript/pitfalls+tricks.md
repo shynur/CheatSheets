@@ -13,7 +13,7 @@ BigInt(0) is falsy
 > 'S\u0323\u0307'
 'Ṩ'
 > [...'S\u0307\u0323'.normalize()]
-[ 'Ṩ' ]
+['Ṩ']
 > 'S\u0307\u0323'.normalize() == 'S\u0323\u0307'.normalize()
 true
 ```
@@ -204,7 +204,7 @@ try {} catch (e) {} catch () {} finally {}
 ```js
 // 所有的内置 Error 都有 name/message property.
 try {
-    +function() {
+    !function() {
         'use strict'
         Math.PI = 3
     }()
@@ -271,7 +271,7 @@ obj => Object.create(
 
 ```js
 // “flags-aware” way of cloning an object
-> +function() {
+> !function() {
       'use strict'
       try {
           Object.defineProperties(
@@ -307,7 +307,7 @@ obj => Object.create(
 
 // 新建 property:
 > var const_x = Object.defineProperty({}, 'x', {enumerable: true, value: 42})  // 未写明的 attributes 默认是 false.
-> +function() {
+> !function() {
       'use strict'
       try {
           const_x.x = 123
@@ -328,7 +328,7 @@ f.bind('kfc', 'v').bind('this 不能再被 bound 了', 'me', 50)()
 
 ```js
 // Method Borrowing (方法借用)
-> +function() {
+> !function() {
       console.log(
           // arguments 可以借用 Array.prototype 的 方法:
           [].join.call(arguments, '.')
@@ -593,8 +593,8 @@ console.assert(m.has(0) && m.has(1))
 ```js
 // 获取字符串的 Unicode Point 数量:
 console.assert(
-        '𝒳😂'.length == 4
-        && [...'𝒳😂'].length == 2
+    '𝒳😂'.length == 4
+    && [...'𝒳😂'].length == 2
 )
 ```
 
@@ -627,8 +627,8 @@ console.assert(Array.isArray([]))
 ```
 
 ```js
-var arr = [1, 2]
-var arr_like = {0: 'A', 1: 'B', length: 2},
+var arr = [1, 2],
+    arr_like = {0: 'A', 1: 'B', length: 2},
     arr_like_concatspreadable = {
         0: 'C', 1: 'D',
         length: 2,
@@ -877,7 +877,7 @@ false
 ```
 
 ```JavaScript
-+function() {
+!function() {
     labelName: for (let i=0; ; ++i)
         for (let j=0; ; ++j) {
             console.log(i, j)
@@ -885,7 +885,7 @@ false
         }
 }()
 
-+function() {
+!function() {
     outer: {
         console.log('outer: before break')
         inner: {
