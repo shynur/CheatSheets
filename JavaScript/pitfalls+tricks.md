@@ -86,10 +86,7 @@ Answer 2: Y
               start: 2, end: 5
           }
           yield 5
-          yield*{
-              __proto__: Range,
-              start: 6, end: 9
-          }
+          yield*[6, 7, 8]
       }()
   ]
 [ 1, 2, 3, 4, 5, 6, 7, 8 ]
