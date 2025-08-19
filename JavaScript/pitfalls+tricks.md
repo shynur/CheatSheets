@@ -7,10 +7,10 @@
       }
   }()
 > g.next()
-{ value: "请在这里把我退出", done: false }
+{done: false, value: "请在这里把我退出"}
 > g.return(42)
 会执行到这儿的
-{ value: 42, done: true }
+{done: true, value: 42}
 ```
 
 ```js
