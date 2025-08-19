@@ -17,12 +17,9 @@
 > for await (
       const i of {
           __proto__: RangePrototype,
-          begin: 1, end: 4,
-          interval: 1
+          begin: 1, end: 4, interval: 1
       }
-  ) {
-      console.log(new Date, i)
-  }
+  ) console.log(new Date, i)
 2025-08-19T04:23:40.662Z 1
 2025-08-19T04:23:41.666Z 2
 2025-08-19T04:23:42.667Z 3
@@ -36,12 +33,9 @@
 > for await (
       const i of {
           __proto__: NewRangePrototype,
-          begin: 1, end: 4,
-          interval: 1
+          begin: 1, end: 4, interval: 1
       }
-  ) {
-      console.log(new Date, i)
-  }
+  ) console.log(new Date, i)
 2025-08-19T07:02:23.123Z 1
 2025-08-19T07:02:24.130Z 2
 2025-08-19T07:02:25.133Z 3
