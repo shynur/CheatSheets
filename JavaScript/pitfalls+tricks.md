@@ -1,4 +1,16 @@
 ```js
+// generator
+> var g = function*() { yield 1; yield 2; return 3 }()
+> [g.next(), g.next(), g.next(), g.next()]
+[
+  {done: false, value: 1},
+  {done: false, value: 2},
+  {done:  true, value: 3},  // 不会出现在 for-loop 中.
+  {done:  true}
+]
+```
+
+```js
 // AggregateError 没有 error property, 取而代之的是 errors:
 > Object.getOwnPropertyDescriptors(new AggregateError('123'))
 {
