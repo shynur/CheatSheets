@@ -1,4 +1,34 @@
 ```js
+> const RangePrototype = {
+      [Symbol.asyncIterator]() {
+          let i = this.begin
+          const end = this.end
+          const interval = this.interval
+          return {
+              async next() {
+                  if (i >= end)
+                      return {done: true}
+                  await {then(res) {setTimeout(res, interval*1e3)}}
+                  return {done: false, value: i++}
+              }
+          }
+      }
+  }
+> for await (
+      const i of {
+          __proto__: RangePrototype,
+          begin: 1, end: 4,
+          interval: 1
+      }
+  ) {
+      console.log(new Date, i)
+  }
+2025-08-19T04:23:40.662Z 1
+2025-08-19T04:23:41.666Z 2
+2025-08-19T04:23:42.667Z 3
+```
+
+```js
 > var g = function*() {
       try {
           yield "请在这里把我退出"
