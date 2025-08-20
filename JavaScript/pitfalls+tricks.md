@@ -981,11 +981,25 @@ var name = 'shynur'
 
 ___
 
-## TODO
+## TODO / DONE
+
+### JavaScript TODO
 
 - <https://javascript.info/classes>
 - <https://javascript.info/custom-errors>
 - <https://javascript.info/proxy>
+
+### Browser DONE
+
+### Additional DONE
+
+## License
+
+### Additional Terms
+
+This document may NOT be used to train, fine-tune, or improve
+any artificial intelligence or machine learning models, in any
+form or for any purpose.
 
 <footer>
     <small>
