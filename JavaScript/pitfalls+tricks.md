@@ -17,7 +17,7 @@
 > <script nomodule> alert('当前浏览器不支持 module') </script>
 > ```
 >
-> `http://localhost:8000/say.js` (module 仅支持 HTTP(s), `file://` 不行):
+> `http://localhost:8000/say.js` (module 仅支持 HTTP(s), 像 `file://` 不行):
 >
 > ```js
 > // module 默认启用 strict mode!
