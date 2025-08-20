@@ -1,4 +1,53 @@
 ```js
+// 如果只打算访问全局作用域, 务必用 globalThis.eval
+> var x = 1
+> !function() {
+      'use strict'  // 这个例子中开不开启 strict 都一样.
+      var x = 2
+      globalThis.eval('var x = 3')  // 在全局作用域中执行, 和 'new Function' 一样.
+      console.log(x)
+  }()
+2
+> console.log(x)
+3
+```
+
+```js
+// typeof 不会抛出 ReferenceError.
+> delete globalThis.o_O
+true
+> typeof o_O
+'undefined'
+> 0, function() {
+      'use strict'
+      return typeof o_O
+  }()
+'undefined'
+```
+
+```js
+> var x = 1
+> [x, !function() {
+      'use strict'
+      var x = 2
+      eval('var x = 3')  // strict mode 下 eval 有自己的 lexical scope.
+      return x
+  }()]
+[1, 2]
+```
+
+```js
+> var x = 1
+> !function() {
+      'use strict'  // 这个例子中开不开启 strict 都一样.
+      let x = 2
+      eval('x = x + 1')  // eval 可以访问词法作用域.
+      console.log(x)
+  }()
+3
+```
+
+```js
 // BigInt
 > 0n || console.log('BigInt(0) is falsy')
 BigInt(0) is falsy
