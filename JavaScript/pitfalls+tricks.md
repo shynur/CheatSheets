@@ -27,7 +27,7 @@ export {default} from './mod-B.js'  // default 必须显式指出.
 > `./hi.js` (module):
 >
 > ```js
-> // export 的宾语是 name, 随便放到 top level 的哪里都行.
+> // export 的宾语是 name 而不是 variable, 随便放到 top level 的哪里都行.
 > export { a }; var a
 > export var b
 > var c; export { c as C }
@@ -36,6 +36,7 @@ export {default} from './mod-B.js'  // default 必须显式指出.
 > `./main.js` (module):
 >
 > ```js
+> // import 必须放到 top level, 否则只能使用 dynamic import.
 > import * as hi from './hi.js'  /* module object */
 > hi.a, hi.b, hi.c
 >
