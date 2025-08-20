@@ -1,3 +1,11 @@
+```html
+<!DOCTYPE html>
+<script><!-- 'import()' 表达式不在 module 中也 work.  -->
+    const {default: ComponentName, varName} = await import('./ComponentName.js')
+    // 此处 'import()' 是一种 syntax, 即 import 并不是一个 function.
+</script>
+```
+
 ```js
 // re-export
 export {default as A, B} from './mod-A.js'  // re-export 的名字在当前 module 中不可见!
