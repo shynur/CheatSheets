@@ -1,3 +1,11 @@
+```js
+// re-export
+export {default as A, B} from './mod-A.js'  // re-export 的名字在当前 module 中不可见!
+
+export * from './mod-B.js'  // 're-export * from' 不包含 default export, 以防名字冲突.
+export {default} from './mod-B.js'  // default 必须显式指出.
+```
+
 > `./ComponentName.js` (module):
 >
 > ```js
