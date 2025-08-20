@@ -979,6 +979,14 @@ var name = 'shynur'
 {name, age: 22}  // 属性值简写 (property value shorthand)
 ```
 
+___
+
+## TODO
+
+- <https://javascript.info/classes>
+- <https://javascript.info/custom-errors>
+- <https://javascript.info/proxy>
+
 <footer>
     <small>
         Copyright &copy; 2025  谢骐 &lt;<a href='mailto:shynur@outlook.com'>shynur@outlook.com</a>&gt;.
