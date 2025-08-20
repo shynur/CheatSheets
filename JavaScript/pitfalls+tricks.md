@@ -1,3 +1,39 @@
+> `./ComponentName.js` (module):
+>
+> ```js
+> // default-export 时名字可以省略, 或者说它的名字就是 default.
+> export default function /* ComponentName */ () {}
+> /* ^^ alternative */ export {ComponentName as default}
+> export var x
+> ```
+>
+> `./main.js` (module):
+>
+> ```js
+> import ComponentName from './ComponentName.js'
+> /* ^^ alternative */ import {default as ComponentName} from './ComponentName.js'
+> import {default as ComponentName, x} from './ComponentName.js'
+> import * as M /* : {default, x} */ from './ComponentName.js'
+> ```
+
+> `./hi.js` (module):
+>
+> ```js
+> // export 的宾语是 name, 随便放到 top level 的哪里都行.
+> export { a }; var a
+> export var b
+> var c; export { c as C }
+> ```
+>
+> `./main.js` (module):
+>
+> ```js
+> import * as hi from './hi.js'  /* module object */
+> hi.a, hi.b, hi.c
+>
+> import { a as A } from './hi.js'
+> ```
+
 > `http://localhost:8000/index.html` (只是举例):
 >
 > ```html
