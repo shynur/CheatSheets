@@ -1,3 +1,34 @@
+> `http://localhost:8000/index.html` (只是举例):
+>
+> ```html
+> <!DOCTYPE html>
+> <script type='module'><!-- 须用 type=module 告诉浏览器此 script 应该被当做 module 对待.  -->
+>     import {sayHi} from './say.js'
+>     // 浏览器环境下不允许使用 bare module, 路径必须是 URL 或者相对路径.
+>
+>     document.body.innerHTML = sayHi('John')
+>     alert(import.meta.url)  // 当前 HTML 页面的 URL.
+>     console.assert(typeof this == 'undefined')
+> </script>
+> <script>
+>     'use strict'  // 这个例子中开不开启 strict 都一样.
+>     console.assert(this === globalThis)
+> </script>
+> <script nomodule> alert('当前浏览器不支持 module') </script>
+> ```
+>
+> `http://localhost:8000/say.js` (module 仅支持 HTTP(s), `file://` 不行):
+>
+> ```js
+> // module 默认启用 strict mode!
+> // 不管被 import (或者以 `<script type=module src='...'>` 的方式) 多少次, 只创建一次 module 实体.
+> export function sayHi(user) {return `Hello, ${user}!`}
+> alert(import.meta.url)  // 当前 module 文件的 URL.
+> ```
+>
+> Module 默认 deferred, 直到 HTML is fully ready 各 module 才开始按照出现的顺序执行.  <br />
+> `<script async type="module">` 会在所需 module 皆被 import 后立即执行, 不等待 HTML.
+
 ```js
 // 如果只打算访问全局作用域, 务必用 globalThis.eval
 > var x = 1
@@ -997,9 +1028,9 @@ ___
 
 ### Additional Terms
 
-This document may NOT be used to train, fine-tune, or improve
-any artificial intelligence or machine learning models, in any
-form or for any purpose.
+This document and its historical versions may NOT be used to
+train, fine-tune, or improve any artificial intelligence or
+machine learning models, in any form or for any purpose.
 
 <footer>
     <small>
