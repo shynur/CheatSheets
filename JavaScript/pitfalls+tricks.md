@@ -1,20 +1,20 @@
 ```html
 <!DOCTYPE html>
 <script><!-- 'import()' 表达式不在 module 中也 work.  -->
-    const {default: ComponentName, varName} = await import('./ComponentName.js')
+    const {default: ComponentName, varName} = await import('./ComponentName.mjs')
     // 此处 'import()' 是一种 syntax, 即 import 并不是一个 function.
 </script>
 ```
 
 ```js
 // re-export
-export {default as A, B} from './mod-A.js'  // re-export 的名字在当前 module 中不可见!
+export {default as A, B} from './mod-A.mjs'  // re-export 的名字在当前 module 中不可见!
 
-export * from './mod-B.js'  // 're-export * from' 不包含 default export, 以防名字冲突.
-export {default} from './mod-B.js'  // default 必须显式指出.
+export * from './mod-B.mjs'  // 're-export * from' 不包含 default export, 以防名字冲突.
+export {default} from './mod-B.mjs'  // default 必须显式指出.
 ```
 
-> `./ComponentName.js` (module):
+> `./ComponentName.mjs`:
 >
 > ```js
 > // default-export 时名字可以省略, 或者说它的名字就是 default.
@@ -23,16 +23,16 @@ export {default} from './mod-B.js'  // default 必须显式指出.
 > export var x
 > ```
 >
-> `./main.js` (module):
+> `./main.mjs`:
 >
 > ```js
-> import ComponentName from './ComponentName.js'
-> /* ^^ alternative */ import {default as ComponentName} from './ComponentName.js'
-> import {default as ComponentName, x} from './ComponentName.js'
-> import * as M /* : {default, x} */ from './ComponentName.js'
+> import ComponentName from './ComponentName.mjs'
+> /* ^^ alternative */ import {default as ComponentName} from './ComponentName.mjs'
+> import {default as ComponentName, x} from './ComponentName.mjs'
+> import * as M /* : {default, x} */ from './ComponentName.mjs'
 > ```
 
-> `./hi.js` (module):
+> `./hi.mjs`:
 >
 > ```js
 > // export 的宾语是 name 而不是 variable, 随便放到 top level 的哪里都行.
@@ -41,14 +41,14 @@ export {default} from './mod-B.js'  // default 必须显式指出.
 > var c; export { c as C }
 > ```
 >
-> `./main.js` (module):
+> `./main.mjs`:
 >
 > ```js
 > // import 必须放到 top level, 否则只能使用 dynamic import.
-> import * as hi from './hi.js'  /* module object */
+> import * as hi from './hi.mjs'  /* module object */
 > hi.a, hi.b, hi.c
 >
-> import { a as A } from './hi.js'
+> import { a as A } from './hi.mjs'
 > ```
 
 > `http://localhost:8000/index.html` (只是举例):
@@ -56,7 +56,7 @@ export {default} from './mod-B.js'  // default 必须显式指出.
 > ```html
 > <!DOCTYPE html>
 > <script type='module'><!-- 须用 type=module 告诉浏览器此 script 应该被当做 module 对待.  -->
->     import {sayHi} from './say.js'
+>     import {sayHi} from './say.mjs'
 >     // 浏览器环境下不允许使用 bare module, 路径必须是 URL 或者相对路径.
 >
 >     document.body.innerHTML = sayHi('John')
@@ -70,7 +70,7 @@ export {default} from './mod-B.js'  // default 必须显式指出.
 > <script nomodule> alert('当前浏览器不支持 module') </script>
 > ```
 >
-> `http://localhost:8000/say.js` (module 仅支持 HTTP(s), 像 `file://` 不行):
+> `http://localhost:8000/say.mjs` (module 仅支持 HTTP(s), 像 `file://` 不行):
 >
 > ```js
 > // module 默认启用 strict mode!
@@ -80,7 +80,7 @@ export {default} from './mod-B.js'  // default 必须显式指出.
 > ```
 >
 > Module 默认 deferred, 直到 HTML is fully ready 各 module 才开始按照出现的顺序执行.  <br />
-> `<script async type="module">` 会在所需 module 皆被 import 后立即执行, 不等待 HTML.
+> `<script async type=module>` 会在所需 module 皆被 import 后立即执行, 不等待 HTML.
 
 ```js
 // 如果只打算访问全局作用域, 务必用 globalThis.eval
@@ -1078,6 +1078,7 @@ ___
 ### Additional DONE
 
 - <https://zh.javascript.info/regular-expressions>
+- <https://javascript.info/data-storage>
 
 ## License
 
