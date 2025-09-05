@@ -9,12 +9,6 @@
    default   finally  interface   static     var
 */
 
-// 基本类型变量 (e.g., number, string, boolean) 存储值, 对象变量存储引用.
-
-// 以 ‘$’ 打头的变量名通常保留用于 JS 库; 有些作者根据各种约定使用以 ‘_’ 打头的变量名.
-var my_variable_1 = "Hello, " + 'world!',
-    my_variable_2;  // <- 其值为 ‘undefined’.
-
 // 输入
 prompt("请输入文本");  // 若用户取消了对话框或没有输入任何响应, 则返回 null, 否则返回字符串.
 // 输出
@@ -63,15 +57,6 @@ var my_element = document.getElementById("element-id");  // 若 ID 不存在则�
 my_element.innerHTML, my_element.outerHTML;
 my_element.getAttribute("attr"),  // 若不存在则返回 null.
 my_element.setAttribute("attr", "val");  // 新增/修改 attribute.
-
-undefined == null, 0 == '';
-1 + 2  // ‘+’ 的 结合性 是 从左到右 的:
-    + '3' === '33',
-true + 1 === 2,
-true + 'STR' === 'trueSTR',
-'2.5' - 0 === 2.5;
-// 非 boolean 也可用在条件表达式中, 它们要么是 falsy 要么是 truthy.  下面是 falsy:
-undefined, null, 0, '', NaN;
 
 /* String */
 var my_dog = 'dog dog';  // 下列都是 string _方法_:
