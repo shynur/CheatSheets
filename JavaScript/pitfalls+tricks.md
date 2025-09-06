@@ -352,7 +352,7 @@ try {
 > Object.getOwnPropertyDescriptors(function User() {}.prototype)
 {
     constructor: {
-        value() {/* Function: User] */},
+        value() {/* [Function: User] */},
         writable: true,
         enumerable: false,
         configurable: true
