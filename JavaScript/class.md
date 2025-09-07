@@ -1,5 +1,5 @@
-由 `class` 创建的 constructor 有 `[[IsClassConstructor]]: true`.
-带有 `[[IsClassConstructor]]: true` 的 function 只允许通过 `new` 调用:
+由 `class` 创建的 constructor 具备 `[[IsClassConstructor]]:true`.
+带有 `[[IsClassConstructor]]:true` 的 function 只允许通过 `new` 调用:
 
 ```js
 > !class{}()
@@ -44,10 +44,67 @@ Class field, 类似于 C++ constructor 的成员初始化列表.
 
 ```js
 > new class {
-      x  // 声明名为 'x' 的 class field.
+      x  // 声明名为 'x' 的 class field, 隐式赋值为 undefined.
       y = 1  // 直接赋值也是声明 class field.
       z = this.y + 1  // 按顺序执行, 因此此时 `this.y === 1`.
       getZ = () => this.z  // 相当于放在 constructor 中, 可以有效捕获 `this`.
   }().getZ()
 2
+```
+
+_______________________________________
+
+Derived constructor 具备 `[[ConstructorKind]]:"derived"`,
+因此它自己不新建对象, 而是通过 `super` 委托 parent constructor.
+
+默认情况下会自动把 constructor 接收到的实参传递给 parent constructor:
+
+```js
+> new class extends class {
+      constructor(...args) { console.log(args) }
+  } {
+      // 默认行为: constructor(...args) { super(...args) }
+  }(1, 'b', false)
+[1, 'b', false]
+```
+
+_______________________________________
+
+`super()` 在新建对象之后, 先初始化 class field,
+再恢复 derived constructor 的执行.
+
+```js
+> new class extends class {
+      a = (console.log("declare class filed 'a'"), 1)
+      constructor() {
+          console.log('a =', this.a)
+      }
+  } {
+      b = (console.log("declare class filed 'b'"), 2)
+      constructor() {
+          console.log('before super()')
+          super()
+          console.log('after super()')
+          console.log('b =', this.b)
+      }
+  }
+before super()
+declare class filed 'a'
+a = 1
+declare class filed 'b'
+after super()
+b = 2
+```
+
+_______________________________________
+
+Method 创建时会记住自己的 `[[HomeObject]]`,
+从而 `super` 可以调用 `[[HomeObject]].__proto__` 的 method.
+
+```js
+> var o = { m() {super.m()} }  // m.[[HomeObject]] === o
+> m = o.m
+> o.__proto__ = { m() {console.log(233)} }
+> m()
+233
 ```
