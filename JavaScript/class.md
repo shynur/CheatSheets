@@ -40,7 +40,7 @@ ________________________________________
 
 ________________________________________
 
-Class field, 类似于 C++ constructor 的成员初始化列表.
+*Class field*, 类似于 C++ constructor 的成员初始化列表.
 
 ```js
 > new class {
@@ -54,8 +54,10 @@ Class field, 类似于 C++ constructor 的成员初始化列表.
 
 _______________________________________
 
-Derived constructor 具备 `[[ConstructorKind]]:"derived"`,
-因此它自己不新建对象, 而是通过 `super` 委托 parent constructor.
+*Derived constructor* 具备 `[[ConstructorKind]]:"derived"`,
+因此它自己不新建对象, 而是通过 `super` 委托 *parent constructor*.
+由 *parent constructor* 新建的对象的 `__proto__` 就是 *derived constructor* 的 `prototype`,
+但除此以外的所有字段都未设置.
 
 默认情况下会自动把 constructor 接收到的实参传递给 parent constructor:
 
@@ -107,4 +109,15 @@ Method 创建时会记住自己的 `[[HomeObject]]`,
 > o.__proto__ = { m() {console.log(233)} }
 > m()
 233
+```
+
+_______________________________________
+
+`class` 的 `static` method/field 也通过 `extends` 继承.
+
+```js
+var {x, __proto__: {x: super_x}} = class extends class {
+    static x = Symbol()
+} {}
+console.assert(x == super_x)
 ```
