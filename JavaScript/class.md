@@ -121,3 +121,23 @@ var {x, __proto__: {x: super_x}} = class extends class {
 } {}
 console.assert(x == super_x)
 ```
+
+_______________________________________
+
+`Array.prototype.filter` 和 `Array.prototype.map` 等方法会根据 `this.constructor` 构造结果对象:
+
+```js
+new class extends Array {
+    [0]='a'; [1]='b'; [2]='c'
+}().map(l => l.toUpperCase()).__proto__.__proto__ == [].__proto__
+```
+
+但我们可以通过 `Symbol.species` 定制这种行为:
+
+```js
+> new class extends Array {
+      static get [Symbol.species]() {return Number}
+      [0]='a'; [1]='b'; [2]='c'
+  }().map(l => l.toUpperCase())
+[Number:3] { '0':'A', '1':'B', '2':'C'}
+```
