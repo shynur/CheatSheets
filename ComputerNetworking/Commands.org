@@ -34,7 +34,7 @@
 
 #+CAPTION: =测试=
 #+BEGIN_SRC shell  :post strip首4行尾2行(*this*)
-arp -a
+  arp -a
 #+END_SRC
 
 
