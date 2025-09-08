@@ -1065,10 +1065,6 @@ var name = 'shynur'
 
 ___
 
-## TODO
-
-- <https://javascript.info/proxy>
-
 ## License
 
 ### Additional Terms
