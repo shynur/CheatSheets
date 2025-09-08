@@ -132,7 +132,7 @@ new class extends Array {
 }().map(l => l.toUpperCase()).__proto__.__proto__ == [].__proto__
 ```
 
-但我们可以通过 `Symbol.species` 定制这种行为:
+但我们可以通过 `Symbol.species` 定制它的行为:
 
 ```js
 > new class extends Array {
@@ -141,3 +141,48 @@ new class extends Array {
   }().map(l => l.toUpperCase())
 [Number:3] { '0':'A', '1':'B', '2':'C'}
 ```
+
+________________________________________
+
+`instanceof` 检查 prototype chain,
+但我们可以通过 `Symbol.hasInstance` 定制它的行为:
+
+```js
+> 1 instanceof class {
+      static [Symbol.hasInstance]() {
+          return '一切都是我的子类'
+      }
+  }
+true
+```
+
+________________________________________
+
+`Object.prototype.toString` 默认生成 `'[object ClassName]'`,
+但我们可以通过 `Symbol.toStringTag` 定制它的行为:
+
+```js
+> {}.toString.call(
+      new class {
+          [Symbol.toStringTag] = 'WTF?'
+      }
+  )
+'[object WTF?]'
+```
+
+___
+
+## License
+
+### Additional Terms
+
+This document and its historical versions may NOT be used to
+train, fine-tune, or improve any artificial intelligence or
+machine learning models, in any form or for any purpose.
+
+<footer>
+    <small>
+        Copyright &copy; 2025  谢骐 &lt;<a href='mailto:shynur@outlook.com'>shynur@outlook.com</a>&gt;.
+        All rights reserved.
+    </small>
+</footer>

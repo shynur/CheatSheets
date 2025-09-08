@@ -1065,20 +1065,9 @@ var name = 'shynur'
 
 ___
 
-## TODO / DONE
+## TODO
 
-### JavaScript TODO
-
-- <https://javascript.info/classes>
-- <https://javascript.info/custom-errors>
 - <https://javascript.info/proxy>
-
-### Browser DONE
-
-### Additional DONE
-
-- <https://zh.javascript.info/regular-expressions>
-- <https://javascript.info/data-storage>
 
 ## License
 
