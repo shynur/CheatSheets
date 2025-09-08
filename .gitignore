@@ -25,6 +25,7 @@
 /JavaScript/*
 !/JavaScript/class.md
 !/JavaScript/ECMAScript.md
+!/JavaScript/Proxy+Reflect.md
 
 !/Java/
 /Java/*
