@@ -156,7 +156,7 @@ class mypkgRecipe(conan.ConanFile):
             src=self.source_folder,
             dst=os.path.join(self.package_folder, 'licenses'),
         )  # Conan package 的常见约定.
-        if 不使用CMake安装 := False:
+        if 不使用CMake安装 := True:
             conan.tools.files.copy(
                 self,
                 pattern='*.h',
