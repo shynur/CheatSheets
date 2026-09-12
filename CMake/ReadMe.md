@@ -659,7 +659,9 @@ include(CheckSourceCompiles)
 check_source_compiles(CXX
     [[
         typedef double v2df __attribute__((vector_size(16)));
-        int main() { __builtin_ia32_sqrtsd(v2df{}); }
+        int main() {
+            __builtin_ia32_sqrtsd(v2df{});
+        }
     ]]
     HAS_GNU_BUILTIN
 )
